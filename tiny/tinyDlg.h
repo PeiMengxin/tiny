@@ -29,6 +29,13 @@ public:
 // 实现
 protected:
 	HICON m_hIcon;
+	HICON m_hIcon_indicator_black;
+	HICON m_hIcon_indicator_green;
+	HICON m_hIcon_indicator_yellow;
+	HICON m_hIcon_indicator_red;
+	HICON m_hIcon_com_black;
+	HICON m_hIcon_com_green;
+	
 
 	// 生成的消息映射函数
 	virtual BOOL OnInitDialog();
@@ -95,4 +102,8 @@ public:
 	CButton m_check_setheight;
 	CButton m_check_avoidobjection;
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
+	void UpdateDataShow();
+	void initIcon();
+	CStatic m_icon_state;
+	CStatic m_icon_comstate;
 };

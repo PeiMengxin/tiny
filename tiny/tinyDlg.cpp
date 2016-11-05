@@ -90,6 +90,8 @@ void CtinyDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_DATASETTING_PID_I, m_edit_pid_i);
 	DDX_Text(pDX, IDC_DATASETTING_PID_D, m_edit_pid_d);
 
+	DDX_Control(pDX, IDC_ICON_STATE, m_icon_state);
+	DDX_Control(pDX, IDC_ICON_COMSTATE, m_icon_comstate);
 }
 
 BEGIN_MESSAGE_MAP(CtinyDlg, CDialogEx)
@@ -197,6 +199,7 @@ HCURSOR CtinyDlg::OnQueryDragIcon()
 bool CtinyDlg::init()
 {
 	initCom();
+	initIcon();
 	initDataShow();
 
 	UpdateData(FALSE);
@@ -298,6 +301,7 @@ void CtinyDlg::OnBnClickedButtonOpencom()
 		m_serialport.close();
 		m_btn_opencom.SetWindowTextA(_T("打开串口"));
 		m_static_comstate.SetWindowTextA(_T("端口已关闭"));
+		m_icon_comstate.SetIcon(m_hIcon_com_black);
 		Sleep(300);
 		return;
 	}
@@ -329,6 +333,7 @@ void CtinyDlg::OnBnClickedButtonOpencom()
 	{
 		m_btn_opencom.SetWindowTextA(_T("关闭串口"));
 		m_static_comstate.SetWindowTextA(_T("端口已打开"));
+		m_icon_comstate.SetIcon(m_hIcon_com_green);
 		Sleep(300);
 		return;
 	}
@@ -429,6 +434,10 @@ void CtinyDlg::serialRead()
 void CtinyDlg::OnClose()
 {
 	// TODO:  在此添加消息处理程序代码和/或调用默认值
+	if (m_serialport.isOpen())
+	{
+		m_serialport.close();
+	}
 	isTerminal = true;
 	serial_thread.join();
 
@@ -452,12 +461,31 @@ void CtinyDlg::writeParam()
 	m_param.enable_height = m_check_setheight.GetCheck();
 	m_param.enable_avoidObj = m_check_avoidobjection.GetCheck();
 
-
+	// TODO
+	// serial_send(writeparam);
 }
 
 
 void CtinyDlg::readParam()
 {
+	// TODO
+	// serial_send(readparam);
+
+	m_edit_pid_p = m_param.pid_p;
+	m_edit_pid_i = m_param.pid_i;
+	m_edit_pid_d = m_param.pid_d;
+	m_edit_rockermid1 = m_param.rocker_mid[0];
+	m_edit_rockermid2 = m_param.rocker_mid[1];
+	m_edit_rockermid3 = m_param.rocker_mid[2];
+	m_edit_rockermid4 = m_param.rocker_mid[3];
+	m_edit_exceptheight = m_param.excepted_height;
+	m_edit_avoidscope = m_param.avoid_scope;
+	m_edit_sensitivity = m_param.sensitivity;
+	
+	m_check_setheight.SetCheck(m_param.enable_height);
+	m_check_avoidobjection.SetCheck(m_param.enable_avoidObj);
+
+	UpdateData(FALSE);
 
 }
 
@@ -483,7 +511,62 @@ void CtinyDlg::OnTimer(UINT_PTR nIDEvent)
 	m_datashow_expectedheight = m_showdata.excepted_height;
 	m_datashow_radarfusiondata = m_showdata.radar_fusion;
 
-	UpdateData(FALSE);
+	UpdateDataShow();
 
 	CDialogEx::OnTimer(nIDEvent);
+}
+
+
+void CtinyDlg::UpdateDataShow()
+{
+	CString cstr_temp;
+
+	cstr_temp.Format("%d", m_datashow_pwm1);
+	GetDlgItem(IDC_DATASHOW_PWM1)->SetWindowTextA(cstr_temp);
+
+	cstr_temp.Format("%d", m_datashow_pwm2);
+	GetDlgItem(IDC_DATASHOW_PWM2)->SetWindowTextA(cstr_temp);
+
+	cstr_temp.Format("%d", m_datashow_pwm3);
+	GetDlgItem(IDC_DATASHOW_PWM3)->SetWindowTextA(cstr_temp);
+
+	cstr_temp.Format("%d", m_datashow_pwm4);
+	GetDlgItem(IDC_DATASHOW_PWM4)->SetWindowTextA(cstr_temp);
+
+	cstr_temp.Format("%d", m_datashow_pwm5);
+	GetDlgItem(IDC_DATASHOW_PWM5)->SetWindowTextA(cstr_temp);
+
+	cstr_temp.Format("%d", m_datashow_control1);
+	GetDlgItem(IDC_DATASHOW_CONTROL1)->SetWindowTextA(cstr_temp);
+
+	cstr_temp.Format("%d", m_datashow_control2);
+	GetDlgItem(IDC_DATASHOW_CONTROL2)->SetWindowTextA(cstr_temp);
+
+	cstr_temp.Format("%d", m_datashow_control3);
+	GetDlgItem(IDC_DATASHOW_CONTROL3)->SetWindowTextA(cstr_temp);
+
+	cstr_temp.Format("%d", m_datashow_control4);
+	GetDlgItem(IDC_DATASHOW_CONTROL4)->SetWindowTextA(cstr_temp);
+
+	cstr_temp.Format("%.2f", m_datashow_radarfusiondata);
+	GetDlgItem(IDC_DATASHOW_RADAEFUSIONDATA)->SetWindowTextA(cstr_temp);
+
+	cstr_temp.Format("%.2f", m_datashow_expectedheight);
+	GetDlgItem(IDC_DATASHOW_EXPECTEDHEIGHT)->SetWindowTextA(cstr_temp);
+
+	m_icon_state.SetIcon(m_hIcon_indicator_red);
+}
+
+
+void CtinyDlg::initIcon()
+{
+	m_hIcon_indicator_black = AfxGetApp()->LoadIcon(IDI_ICON_INDICATOR_BLACK);
+	m_hIcon_indicator_green = AfxGetApp()->LoadIcon(IDI_ICON_INDICATOR_GREEN);
+	m_hIcon_indicator_yellow = AfxGetApp()->LoadIcon(IDI_ICON_INDICATOR_YELLOW);
+	m_hIcon_indicator_red = AfxGetApp()->LoadIcon(IDI_ICON_INDICATOR_RED);
+	m_hIcon_com_green = AfxGetApp()->LoadIcon(IDI_ICON_COM_GREEN);
+	m_hIcon_com_black = AfxGetApp()->LoadIcon(IDI_ICON_COM_BLACK);
+
+	m_icon_comstate.SetIcon(m_hIcon_com_black);
+	m_icon_state.SetIcon(m_hIcon_indicator_black);
 }

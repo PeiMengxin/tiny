@@ -126,7 +126,17 @@
     <None Include="res\tiny.rc2" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="res\icon1.ico" />
+    <Image Include="res\indicator_black.ico" />
+    <Image Include="res\indicator_green.ico" />
+    <Image Include="res\indicator_red.ico" />
+    <Image Include="res\indicator_yellow.ico" />
+    <Image Include="res\serialport_black.ico" />
+    <Image Include="res\serialport_green.ico" />
     <Image Include="res\tiny.ico" />
+    <Image Include="res\www.ico.la_61aac58a4ee616e6b9bfd61219ab889d_32X32.ico" />
+    <Image Include="res\指示器.png" />
+    <Image Include="res\指示器_green.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
