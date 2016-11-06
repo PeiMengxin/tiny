@@ -15,6 +15,13 @@
 // CtinyDlg 对话框
 class CtinyDlg : public CDialogEx
 {
+	typedef enum SerialSendOrder
+	{
+		WRITE_PARAM = 0,
+		READ_PARAM,
+		WRITE_FLASH
+	};
+
 // 构造
 public:
 	CtinyDlg(CWnd* pParent = NULL);	// 标准构造函数
@@ -81,6 +88,7 @@ private:
 	DataShow m_showdata;
 
 	bool isTerminal;
+	bool m_serial_closing;
 
 	std::thread serial_thread;
 
@@ -106,4 +114,5 @@ public:
 	void initIcon();
 	CStatic m_icon_state;
 	CStatic m_icon_comstate;
+	void serialSend(SerialSendOrder sendOrder);
 };

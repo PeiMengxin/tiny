@@ -50,6 +50,7 @@ END_MESSAGE_MAP()
 CtinyDlg::CtinyDlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CtinyDlg::IDD, pParent)
 	, isTerminal(false)
+	, m_serial_closing(false)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
@@ -221,7 +222,7 @@ bool CtinyDlg::initCom()
 	m_combo_combaudrate.InsertString(3, _T("230400"));
 	detectCom();
 
-	m_static_comstate.SetWindowTextA(_T("端口已关闭"));
+	m_static_comstate.SetWindowText(_T("端口已关闭"));
 
 	if (m_combo_comnum.GetCount() == 0)
 	{
@@ -298,11 +299,17 @@ void CtinyDlg::OnBnClickedButtonOpencom()
 
 	if (m_serialport.isOpen())
 	{
+		m_serial_closing = true;
+		Sleep(50);
 		m_serialport.close();
-		m_btn_opencom.SetWindowTextA(_T("打开串口"));
-		m_static_comstate.SetWindowTextA(_T("端口已关闭"));
+		Sleep(50);
+
+		m_btn_opencom.SetWindowText(_T("打开串口"));
+		m_static_comstate.SetWindowText(_T("端口已关闭"));
 		m_icon_comstate.SetIcon(m_hIcon_com_black);
-		Sleep(300);
+		m_combo_combaudrate.EnableWindow(TRUE);
+		m_combo_comnum.EnableWindow(TRUE);
+	
 		return;
 	}
 
@@ -310,11 +317,12 @@ void CtinyDlg::OnBnClickedButtonOpencom()
 
 	int idx = m_combo_combaudrate.GetCurSel();
 	m_combo_combaudrate.GetLBText(idx, temp_cstring);
-	std::string baud_str((temp_cstring).GetBuffer());
+	USES_CONVERSION;
+	std::string baud_str(W2A(temp_cstring));
 
 	idx = m_combo_comnum.GetCurSel();
 	m_combo_comnum.GetLBText(idx, temp_cstring);
-	std::string com_str((temp_cstring).GetBuffer());
+	std::string com_str(W2A(temp_cstring));
 
 	std::stringstream ss;
 	ss << baud_str;
@@ -322,19 +330,23 @@ void CtinyDlg::OnBnClickedButtonOpencom()
 	ss >> baud;
 	ss.clear();
 
-	m_serialport.setPort(com_str);
+	m_serialport.setPort(com_str.c_str());
 	m_serialport.setBaudrate(baud);
 	serial::Timeout serial_timeout = serial::Timeout::simpleTimeout(1000);
 	m_serialport.setTimeout(serial_timeout);
 
 	m_serialport.open();
+	m_serial_closing = true;
+	Sleep(100);
 
 	if (m_serialport.isOpen())
 	{
-		m_btn_opencom.SetWindowTextA(_T("关闭串口"));
-		m_static_comstate.SetWindowTextA(_T("端口已打开"));
+		m_btn_opencom.SetWindowText(_T("关闭串口"));
+		m_static_comstate.SetWindowText(_T("端口已打开"));
 		m_icon_comstate.SetIcon(m_hIcon_com_green);
-		Sleep(300);
+		m_combo_combaudrate.EnableWindow(FALSE);
+		m_combo_comnum.EnableWindow(FALSE);
+		
 		return;
 	}
 }
@@ -377,7 +389,7 @@ void CtinyDlg::serialRead()
 
 	while (!isTerminal)
 	{
-		if (!m_serialport.isOpen())
+		if (!m_serialport.isOpen()||(m_serial_closing))
 		{
 			Sleep(100);
 			continue;
@@ -424,7 +436,7 @@ void CtinyDlg::serialRead()
 				*/
 			}
 		}
-
+		
 		Sleep(delay_ms);
 	}
 	//cout << "thread quit" << endl;
@@ -462,14 +474,14 @@ void CtinyDlg::writeParam()
 	m_param.enable_avoidObj = m_check_avoidobjection.GetCheck();
 
 	// TODO
-	// serial_send(writeparam);
+	serialSend(WRITE_PARAM);
 }
 
 
 void CtinyDlg::readParam()
 {
 	// TODO
-	// serial_send(readparam);
+	serialSend(READ_PARAM);
 
 	m_edit_pid_p = m_param.pid_p;
 	m_edit_pid_i = m_param.pid_i;
@@ -492,6 +504,8 @@ void CtinyDlg::readParam()
 
 void CtinyDlg::writeFlash()
 {
+	// TODO
+	serialSend(WRITE_FLASH);
 }
 
 
@@ -519,40 +533,40 @@ void CtinyDlg::OnTimer(UINT_PTR nIDEvent)
 
 void CtinyDlg::UpdateDataShow()
 {
-	CString cstr_temp;
+	CStringW cstr_temp;
 
-	cstr_temp.Format("%d", m_datashow_pwm1);
-	GetDlgItem(IDC_DATASHOW_PWM1)->SetWindowTextA(cstr_temp);
+	cstr_temp.Format(_T("%d"), m_datashow_pwm1);
+	GetDlgItem(IDC_DATASHOW_PWM1)->SetWindowText(cstr_temp);
 
-	cstr_temp.Format("%d", m_datashow_pwm2);
-	GetDlgItem(IDC_DATASHOW_PWM2)->SetWindowTextA(cstr_temp);
+	cstr_temp.Format(_T("%d"), m_datashow_pwm2);
+	GetDlgItem(IDC_DATASHOW_PWM2)->SetWindowText(cstr_temp);
 
-	cstr_temp.Format("%d", m_datashow_pwm3);
-	GetDlgItem(IDC_DATASHOW_PWM3)->SetWindowTextA(cstr_temp);
+	cstr_temp.Format(_T("%d"), m_datashow_pwm3);
+	GetDlgItem(IDC_DATASHOW_PWM3)->SetWindowText(cstr_temp);
 
-	cstr_temp.Format("%d", m_datashow_pwm4);
-	GetDlgItem(IDC_DATASHOW_PWM4)->SetWindowTextA(cstr_temp);
+	cstr_temp.Format(_T("%d"), m_datashow_pwm4);
+	GetDlgItem(IDC_DATASHOW_PWM4)->SetWindowText(cstr_temp);
 
-	cstr_temp.Format("%d", m_datashow_pwm5);
-	GetDlgItem(IDC_DATASHOW_PWM5)->SetWindowTextA(cstr_temp);
+	cstr_temp.Format(_T("%d"), m_datashow_pwm5);
+	GetDlgItem(IDC_DATASHOW_PWM5)->SetWindowText(cstr_temp);
 
-	cstr_temp.Format("%d", m_datashow_control1);
-	GetDlgItem(IDC_DATASHOW_CONTROL1)->SetWindowTextA(cstr_temp);
+	cstr_temp.Format(_T("%d"), m_datashow_control1);
+	GetDlgItem(IDC_DATASHOW_CONTROL1)->SetWindowText(cstr_temp);
 
-	cstr_temp.Format("%d", m_datashow_control2);
-	GetDlgItem(IDC_DATASHOW_CONTROL2)->SetWindowTextA(cstr_temp);
+	cstr_temp.Format(_T("%d"), m_datashow_control2);
+	GetDlgItem(IDC_DATASHOW_CONTROL2)->SetWindowText(cstr_temp);
 
-	cstr_temp.Format("%d", m_datashow_control3);
-	GetDlgItem(IDC_DATASHOW_CONTROL3)->SetWindowTextA(cstr_temp);
+	cstr_temp.Format(_T("%d"), m_datashow_control3);
+	GetDlgItem(IDC_DATASHOW_CONTROL3)->SetWindowText(cstr_temp);
 
-	cstr_temp.Format("%d", m_datashow_control4);
-	GetDlgItem(IDC_DATASHOW_CONTROL4)->SetWindowTextA(cstr_temp);
+	cstr_temp.Format(_T("%d"), m_datashow_control4);
+	GetDlgItem(IDC_DATASHOW_CONTROL4)->SetWindowText(cstr_temp);
 
-	cstr_temp.Format("%.2f", m_datashow_radarfusiondata);
-	GetDlgItem(IDC_DATASHOW_RADAEFUSIONDATA)->SetWindowTextA(cstr_temp);
+	cstr_temp.Format(_T("%.2f"), m_datashow_radarfusiondata);
+	GetDlgItem(IDC_DATASHOW_RADAEFUSIONDATA)->SetWindowText(cstr_temp);
 
-	cstr_temp.Format("%.2f", m_datashow_expectedheight);
-	GetDlgItem(IDC_DATASHOW_EXPECTEDHEIGHT)->SetWindowTextA(cstr_temp);
+	cstr_temp.Format(_T("%.2f"), m_datashow_expectedheight);
+	GetDlgItem(IDC_DATASHOW_EXPECTEDHEIGHT)->SetWindowText(cstr_temp);
 
 	m_icon_state.SetIcon(m_hIcon_indicator_red);
 }
@@ -569,4 +583,60 @@ void CtinyDlg::initIcon()
 
 	m_icon_comstate.SetIcon(m_hIcon_com_black);
 	m_icon_state.SetIcon(m_hIcon_indicator_black);
+}
+
+
+void CtinyDlg::serialSend(SerialSendOrder sendOrder)
+{
+	if (!m_serialport.isOpen())
+	{
+		MessageBox(_T("串口未打开!"), _T("提示"));
+		return;
+	}
+
+	int _cnt = 0, i = 0, sum = 0;
+	int char_to_recognition = 0;
+	unsigned char data_to_send[50];
+
+	data_to_send[_cnt++] = 0xAA;
+	data_to_send[_cnt++] = 0xAF;
+
+	switch (sendOrder)
+	{
+		case CtinyDlg::WRITE_PARAM:
+		{
+			data_to_send[_cnt++] = 0x00;
+			data_to_send[_cnt++] = 0;
+
+			data_to_send[_cnt++] = uint16_t(m_param.pid_p) / 256;
+			data_to_send[_cnt++] = uint16_t(m_param.pid_p) % 256;
+			break;
+		}
+
+		case CtinyDlg::READ_PARAM:
+		{
+			data_to_send[_cnt++] = 0x01;
+			data_to_send[_cnt++] = 0;
+
+			break;
+		}
+
+		case CtinyDlg::WRITE_FLASH:
+		{
+			data_to_send[_cnt++] = 0x02;
+			data_to_send[_cnt++] = 0;
+
+			break;
+		}
+
+		default:
+			break;
+	}
+
+	data_to_send[3] = _cnt - 4;
+	for (i = 0; i < _cnt; i++)
+		sum += data_to_send[i];
+	data_to_send[_cnt++] = sum;
+	
+	m_serialport.write(data_to_send, _cnt);
 }
