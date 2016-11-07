@@ -4,6 +4,7 @@
 
 #pragma once
 #include "afxwin.h"
+#include <Dbt.h>
 #include <iostream>
 #include <string>
 #include <vector>
@@ -103,6 +104,7 @@ public:
 	afx_msg void OnBnClickedButtonWriteparam();
 	afx_msg void OnBnClickedButtonReadparam();
 	afx_msg void OnBnClickedButtonWriteflash();
+	afx_msg BOOL OnDeviceChange(UINT nEventType, DWORD dwData);
 	afx_msg void OnClose();
 	void writeParam();
 	void readParam();

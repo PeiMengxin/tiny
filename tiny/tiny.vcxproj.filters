@@ -68,21 +68,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="res\tiny.ico">
-      <Filter>资源文件</Filter>
-    </Image>
-    <Image Include="res\指示器.png">
-      <Filter>资源文件</Filter>
-    </Image>
-    <Image Include="res\icon1.ico">
-      <Filter>资源文件</Filter>
-    </Image>
-    <Image Include="res\指示器_green.png">
-      <Filter>资源文件</Filter>
-    </Image>
-    <Image Include="res\www.ico.la_61aac58a4ee616e6b9bfd61219ab889d_32X32.ico">
-      <Filter>资源文件</Filter>
-    </Image>
     <Image Include="res\indicator_black.ico">
       <Filter>资源文件</Filter>
     </Image>
@@ -99,6 +84,21 @@
       <Filter>资源文件</Filter>
     </Image>
     <Image Include="res\serialport_green.ico">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\tiny_24X24.ico">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\tiny_32x32.ico">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\tiny_48X48.ico">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\tiny_64X64.ico">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\tiny.ico">
       <Filter>资源文件</Filter>
     </Image>
   </ItemGroup>

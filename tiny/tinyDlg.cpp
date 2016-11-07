@@ -99,6 +99,7 @@ BEGIN_MESSAGE_MAP(CtinyDlg, CDialogEx)
 	ON_WM_SYSCOMMAND()
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
+	ON_WM_DEVICECHANGE()
 	ON_BN_CLICKED(IDC_BUTTON_OPENCOM, &CtinyDlg::OnBnClickedButtonOpencom)
 	ON_BN_CLICKED(IDC_BUTTON_WRITEPARAM, &CtinyDlg::OnBnClickedButtonWriteparam)
 	ON_BN_CLICKED(IDC_BUTTON_READPARAM, &CtinyDlg::OnBnClickedButtonReadparam)
@@ -271,7 +272,7 @@ void CtinyDlg::detectCom()
 	int num = 0;
 	int count = 0;
 	CString str;
-	((CComboBox *)GetDlgItem(IDC_COMBO_COMNUM))->ResetContent();
+	m_combo_comnum.ResetContent();
 	BOOL flag = FALSE;
 	for (int i = 1; i <= 16; i++)
 	{//此程序支持16个串口
@@ -290,6 +291,8 @@ void CtinyDlg::detectCom()
 			}
 		}
 	}
+
+	m_combo_comnum.SetCurSel(0);
 }
 
 
@@ -377,6 +380,33 @@ void CtinyDlg::OnBnClickedButtonWriteflash()
 	this->writeFlash();
 
 }
+
+#define USE_DEVICECHANGE 0
+
+BOOL CtinyDlg::OnDeviceChange(UINT nEventType, DWORD dwData)
+{
+#if USE_DEVICECHANGE
+
+	switch (nEventType)
+	{
+		case DBT_DEVICEREMOVECOMPLETE://移除设备，关闭串口  
+		{
+			m_serialport.close();
+		}
+			break;
+		case DBT_DEVICEARRIVAL://添加设备，打开串口  
+		{
+			detectCom();
+		}
+			break;
+		default:
+			break;
+	}
+
+#endif // USE_DEVICECHANGE
+	return TRUE;
+}
+
 
 
 void CtinyDlg::serialRead()
