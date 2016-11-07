@@ -339,7 +339,7 @@ void CtinyDlg::OnBnClickedButtonOpencom()
 	m_serialport.setTimeout(serial_timeout);
 
 	m_serialport.open();
-	m_serial_closing = true;
+	m_serial_closing = false;
 	Sleep(100);
 
 	if (m_serialport.isOpen())
@@ -411,11 +411,12 @@ BOOL CtinyDlg::OnDeviceChange(UINT nEventType, DWORD dwData)
 
 void CtinyDlg::serialRead()
 {
+#define DATA_SIZE_MAX 50
 	size_t data_length = 0;
 	unsigned char sum = 0;
-	unsigned char data_buf[50] = { 0 };
+	unsigned char data_buf[DATA_SIZE_MAX] = { 0 };
 	int16_t temp = 0;
-	int delay_ms = 20;
+	int delay_ms = 5;
 
 	while (!isTerminal)
 	{
@@ -426,7 +427,13 @@ void CtinyDlg::serialRead()
 		}
 		sum = 0;
 		data_length = m_serialport.available();
-
+		if (data_length>DATA_SIZE_MAX)
+		{
+			unsigned char *data_buf_temp = new unsigned char[data_length];
+			m_serialport.read(data_buf_temp, data_length);
+			delete data_buf_temp;
+			continue;
+		}
 		if (data_length)
 		{
 			m_serialport.read(data_buf, data_length);
@@ -439,31 +446,124 @@ void CtinyDlg::serialRead()
 				continue;		//判断sum
 			if (!(*(data_buf) == 0xAA && *(data_buf + 1) == 0xAF))
 				continue;		//判断帧头
-			if (*(data_buf + 2) == 0x01)
+			if (*(data_buf + 2) == 0x03)
 			{
-				m_showdata.radar_fusion = data_buf[4];
-				/*target_num = data_buf[5];
+				temp = data_buf[4];
+				temp <<= 8;
+				temp |= data_buf[5];
+				m_showdata.pwm[0] = temp;
 
 				temp = data_buf[6];
 				temp <<= 8;
 				temp |= data_buf[7];
-				Pitch = (float)temp / 10.0f;
+				m_showdata.pwm[1] = temp;
 
 				temp = data_buf[8];
 				temp <<= 8;
 				temp |= data_buf[9];
-				Roll = (float)temp / 10.0f;
+				m_showdata.pwm[2] = temp;
 
 				temp = data_buf[10];
 				temp <<= 8;
 				temp |= data_buf[11];
-				Yaw = (float)temp / 10.0f;
+				m_showdata.pwm[3] = temp;
 
-				for (size_t i = 0; i < 10; i++)
-				{
-				ignore_char[i] = data_buf[12 + i];
-				}
-				*/
+				temp = data_buf[12];
+				temp <<= 8;
+				temp |= data_buf[13];
+				m_showdata.pwm[4] = temp;
+
+				temp = data_buf[14];
+				temp <<= 8;
+				temp |= data_buf[15];
+				m_showdata.control[0] = temp;
+
+				temp = data_buf[16];
+				temp <<= 8;
+				temp |= data_buf[17];
+				m_showdata.control[1] = temp;
+
+				temp = data_buf[18];
+				temp <<= 8;
+				temp |= data_buf[19];
+				m_showdata.control[2] = temp;
+
+				temp = data_buf[20];
+				temp <<= 8;
+				temp |= data_buf[21];
+				m_showdata.control[3] = temp;
+
+				temp = data_buf[22];
+				temp <<= 8;
+				temp |= data_buf[23];
+				m_showdata.radar_fusion = temp;
+
+				temp = data_buf[24];
+				temp <<= 8;
+				temp |= data_buf[25];
+				m_showdata.excepted_height = temp;
+
+				temp = data_buf[26];
+				m_showdata.state = uint8_t(temp);
+				
+			}
+			else if (*(data_buf + 2) == 0x01)
+			{
+				temp = data_buf[4];
+				temp <<= 8;
+				temp |= data_buf[5];
+				m_param.pid_p = temp;
+
+				temp = data_buf[6];
+				temp <<= 8;
+				temp |= data_buf[7];
+				m_param.pid_i = temp;
+
+				temp = data_buf[8];
+				temp <<= 8;
+				temp |= data_buf[9];
+				m_param.pid_d = temp;
+
+				temp = data_buf[10];
+				temp <<= 8;
+				temp |= data_buf[11];
+				m_param.excepted_height = (float)temp / 1000;
+
+				temp = data_buf[12];
+				temp <<= 8;
+				temp |= data_buf[13];
+				m_param.avoid_scope = (float)temp / 1000;
+
+				temp = data_buf[14];
+				temp <<= 8;
+				temp |= data_buf[15];
+				m_param.sensitivity = (float)temp / 1000;
+
+				temp = data_buf[16];
+				m_param.enable_height = temp;
+
+				temp = data_buf[17];
+				m_param.enable_avoidObj = temp;
+
+				temp = data_buf[18];
+				temp <<= 8;
+				temp |= data_buf[19];
+				m_param.rocker_mid[0] = temp;
+
+				temp = data_buf[20];
+				temp <<= 8;
+				temp |= data_buf[21];
+				m_param.rocker_mid[1] = temp;
+
+				temp = data_buf[22];
+				temp <<= 8;
+				temp |= data_buf[23];
+				m_param.rocker_mid[2] = temp;
+
+				temp = data_buf[24];
+				temp <<= 8;
+				temp |= data_buf[25];
+				m_param.rocker_mid[3] = temp;
 			}
 		}
 		
@@ -504,15 +604,21 @@ void CtinyDlg::writeParam()
 	m_param.enable_avoidObj = m_check_avoidobjection.GetCheck();
 
 	// TODO
-	serialSend(WRITE_PARAM);
+	if (serialSend(WRITE_PARAM))
+	{
+		MessageBox(_T("参数已写入！"), _T("提示"));
+	}
 }
 
 
 void CtinyDlg::readParam()
 {
 	// TODO
-	serialSend(READ_PARAM);
-
+	/*if (!serialSend(READ_PARAM))
+	{
+	return;
+	}
+	Sleep(100);*/
 	m_edit_pid_p = m_param.pid_p;
 	m_edit_pid_i = m_param.pid_i;
 	m_edit_pid_d = m_param.pid_d;
@@ -535,13 +641,21 @@ void CtinyDlg::readParam()
 void CtinyDlg::writeFlash()
 {
 	// TODO
-	serialSend(WRITE_FLASH);
+	if (serialSend(WRITE_FLASH))
+	{
+		MessageBox(_T("参数已写入！"), _T("提示"));
+	}
 }
 
 
 void CtinyDlg::OnTimer(UINT_PTR nIDEvent)
 {
 	// TODO:  在此添加消息处理程序代码和/或调用默认值
+
+	if (m_serialport.isOpen())
+	{
+		serialSend(READ_DATA);
+	}
 
 	m_datashow_pwm1 = m_showdata.pwm[0];
 	m_datashow_pwm2 = m_showdata.pwm[1];
@@ -616,16 +730,15 @@ void CtinyDlg::initIcon()
 }
 
 
-void CtinyDlg::serialSend(SerialSendOrder sendOrder)
+bool CtinyDlg::serialSend(SerialSendOrder sendOrder)
 {
 	if (!m_serialport.isOpen())
 	{
 		MessageBox(_T("串口未打开!"), _T("提示"));
-		return;
+		return false;
 	}
 
 	int _cnt = 0, i = 0, sum = 0;
-	int char_to_recognition = 0;
 	unsigned char data_to_send[50];
 
 	data_to_send[_cnt++] = 0xAA;
@@ -640,6 +753,40 @@ void CtinyDlg::serialSend(SerialSendOrder sendOrder)
 
 			data_to_send[_cnt++] = uint16_t(m_param.pid_p) / 256;
 			data_to_send[_cnt++] = uint16_t(m_param.pid_p) % 256;
+			data_to_send[_cnt++] = uint16_t(m_param.pid_i) / 256;
+			data_to_send[_cnt++] = uint16_t(m_param.pid_i) % 256;
+			data_to_send[_cnt++] = uint16_t(m_param.pid_d) / 256;
+			data_to_send[_cnt++] = uint16_t(m_param.pid_d) % 256;
+			
+			uint16_t temp = 0;
+			temp = m_param.excepted_height * 1000;
+			data_to_send[_cnt++] = temp / 256;
+			data_to_send[_cnt++] = temp % 256;
+
+			temp = m_param.avoid_scope * 1000;
+			data_to_send[_cnt++] = temp / 256;
+			data_to_send[_cnt++] = temp % 256;
+
+			temp = m_param.sensitivity * 1000;
+			data_to_send[_cnt++] = temp / 256;
+			data_to_send[_cnt++] = temp % 256;
+
+			data_to_send[_cnt++] = m_param.enable_height;
+			data_to_send[_cnt++] = m_param.enable_avoidObj;
+
+			temp = m_param.rocker_mid[0];
+			data_to_send[_cnt++] = temp / 256;
+			data_to_send[_cnt++] = temp % 256;
+			temp = m_param.rocker_mid[1];
+			data_to_send[_cnt++] = temp / 256;
+			data_to_send[_cnt++] = temp % 256;
+			temp = m_param.rocker_mid[2];
+			data_to_send[_cnt++] = temp / 256;
+			data_to_send[_cnt++] = temp % 256;
+			temp = m_param.rocker_mid[3];
+			data_to_send[_cnt++] = temp / 256;
+			data_to_send[_cnt++] = temp % 256;
+
 			break;
 		}
 
@@ -659,6 +806,14 @@ void CtinyDlg::serialSend(SerialSendOrder sendOrder)
 			break;
 		}
 
+		case CtinyDlg::READ_DATA:
+		{
+			data_to_send[_cnt++] = 0x03;
+			data_to_send[_cnt++] = 0;
+
+			break;
+		}
+
 		default:
 			break;
 	}
@@ -669,4 +824,6 @@ void CtinyDlg::serialSend(SerialSendOrder sendOrder)
 	data_to_send[_cnt++] = sum;
 	
 	m_serialport.write(data_to_send, _cnt);
+
+	return true;
 }

@@ -20,7 +20,8 @@ class CtinyDlg : public CDialogEx
 	{
 		WRITE_PARAM = 0,
 		READ_PARAM,
-		WRITE_FLASH
+		WRITE_FLASH,
+		READ_DATA
 	};
 
 // ππ‘Ï
@@ -116,5 +117,5 @@ public:
 	void initIcon();
 	CStatic m_icon_state;
 	CStatic m_icon_comstate;
-	void serialSend(SerialSendOrder sendOrder);
+	bool serialSend(SerialSendOrder sendOrder);
 };
