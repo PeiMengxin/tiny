@@ -51,10 +51,28 @@ protected:
 	afx_msg void OnSysCommand(UINT nID, LPARAM lParam);
 	afx_msg void OnPaint();
 	afx_msg HCURSOR OnQueryDragIcon();
+	afx_msg void OnBnClickedButtonOpencom();
+	afx_msg void OnBnClickedButtonWriteparam();
+	afx_msg void OnBnClickedButtonReadparam();
+	afx_msg void OnBnClickedButtonWriteflash();
+	afx_msg BOOL OnDeviceChange(UINT nEventType, DWORD dwData);
+	afx_msg void OnTimer(UINT_PTR nIDEvent);
+	afx_msg void OnClose();
 	DECLARE_MESSAGE_MAP()
 private:
 	CComboBox m_combo_combaudrate;
 	CComboBox m_combo_comnum;
+
+	CButton m_btn_opencom;
+	CButton m_btn_writeparam;
+	CButton m_btn_readparam;
+	CButton m_btn_writeflash;
+	CButton m_check_setheight;
+	CButton m_check_avoidobjection;
+
+	CStatic m_icon_state;
+	CStatic m_icon_comstate;
+	CStatic m_static_comstate;
 
 	int m_datashow_pwm1;
 	int m_datashow_pwm2;
@@ -67,12 +85,6 @@ private:
 	int m_datashow_control4;
 	float m_datashow_radarfusiondata;
 	float m_datashow_expectedheight;
-
-	CButton m_btn_opencom;
-	CButton m_btn_writeparam;
-	CButton m_btn_readparam;
-	CButton m_btn_writeflash;
-	CStatic m_static_comstate;
 	
 	int m_edit_pid_p;
 	int m_edit_pid_i;
@@ -85,37 +97,28 @@ private:
 	float m_edit_avoidscope;
 	float m_edit_sensitivity;
 
+	bool isTerminal;
+	bool m_serial_closing;
+
 	serial::Serial m_serialport;
 	Param m_param;
 	DataShow m_showdata;
 
-	bool isTerminal;
-	bool m_serial_closing;
-
 	std::thread serial_thread;
 
-public:
 	bool init();
 	bool initCom();
+	void initIcon();
 	bool initDataShow();
+
 	void detectCom();
 	void serialRead();
+	bool serialSend(SerialSendOrder sendOrder);
 
-	afx_msg void OnBnClickedButtonOpencom();
-	afx_msg void OnBnClickedButtonWriteparam();
-	afx_msg void OnBnClickedButtonReadparam();
-	afx_msg void OnBnClickedButtonWriteflash();
-	afx_msg BOOL OnDeviceChange(UINT nEventType, DWORD dwData);
-	afx_msg void OnClose();
 	void writeParam();
 	void readParam();
 	void writeFlash();
-	CButton m_check_setheight;
-	CButton m_check_avoidobjection;
-	afx_msg void OnTimer(UINT_PTR nIDEvent);
+
 	void UpdateDataShow();
-	void initIcon();
-	CStatic m_icon_state;
-	CStatic m_icon_comstate;
-	bool serialSend(SerialSendOrder sendOrder);
+
 };

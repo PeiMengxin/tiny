@@ -102,7 +102,6 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="my_serial.h" />
     <ClInclude Include="Param.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
@@ -111,7 +110,6 @@
     <ClInclude Include="tinyDlg.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="my_serial.cpp" />
     <ClCompile Include="Param.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

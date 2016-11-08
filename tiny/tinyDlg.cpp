@@ -569,7 +569,6 @@ void CtinyDlg::serialRead()
 		
 		Sleep(delay_ms);
 	}
-	//cout << "thread quit" << endl;
 }
 
 
