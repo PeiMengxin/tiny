@@ -12,6 +12,8 @@
 #include <sstream>
 #include <serial/serial.h>
 #include "Param.h"
+#include "E:\software\ChartCtrl\ChartCtrl.h"
+#include <ChartLineSerie.h>
 
 // CtinyDlg ¶Ô»°¿ò
 class CtinyDlg : public CDialogEx
@@ -103,6 +105,8 @@ private:
 	serial::Serial m_serialport;
 	Param m_param;
 	DataShow m_showdata;
+	ChartCtrlData m_chartctrldata;
+	int m_count;
 
 	std::thread serial_thread;
 
@@ -121,4 +125,10 @@ private:
 
 	void UpdateDataShow();
 
+public:
+	CChartCtrl m_chartctrl;
+private:
+	bool initChartCtrl();
+public:
+	void UpdateChartCtrlData();
 };

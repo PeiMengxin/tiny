@@ -93,6 +93,7 @@ void CtinyDlg::DoDataExchange(CDataExchange* pDX)
 
 	DDX_Control(pDX, IDC_ICON_STATE, m_icon_state);
 	DDX_Control(pDX, IDC_ICON_COMSTATE, m_icon_comstate);
+	DDX_Control(pDX, IDC_CUSTOM1, m_chartctrl);
 }
 
 BEGIN_MESSAGE_MAP(CtinyDlg, CDialogEx)
@@ -203,6 +204,7 @@ bool CtinyDlg::init()
 	initCom();
 	initIcon();
 	initDataShow();
+	initChartCtrl();
 
 	UpdateData(FALSE);
 
@@ -670,6 +672,8 @@ void CtinyDlg::OnTimer(UINT_PTR nIDEvent)
 
 	UpdateDataShow();
 
+	UpdateChartCtrlData();
+
 	CDialogEx::OnTimer(nIDEvent);
 }
 
@@ -825,4 +829,45 @@ bool CtinyDlg::serialSend(SerialSendOrder sendOrder)
 	m_serialport.write(data_to_send, _cnt);
 
 	return true;
+}
+
+
+bool CtinyDlg::initChartCtrl()
+{
+	m_count = 0;
+
+	m_chartctrl.CreateStandardAxis(CChartCtrl::LeftAxis)->SetAutomatic(true);
+	m_chartctrl.CreateStandardAxis(CChartCtrl::BottomAxis)->SetAutomatic(true);
+
+	for (size_t i = 0; i < 500; i++)
+	{
+		m_count++;
+		m_chartctrldata.x.push_back(m_count);
+		m_chartctrldata.y.push_back(sin((double)m_chartctrldata.x[i] * 3.1415926 / 100));
+	}
+
+	m_chartctrl.EnableRefresh(false);
+	m_chartctrl.RemoveAllSeries();
+	CChartLineSerie *pChartLineSerie = m_chartctrl.CreateLineSerie();
+	pChartLineSerie->AddPoints(m_chartctrldata.x.data(), m_chartctrldata.y.data(), 400);
+	m_chartctrl.EnableRefresh(true);
+
+	return true;
+}
+
+
+void CtinyDlg::UpdateChartCtrlData()
+{
+	m_count++;
+	m_chartctrldata.x.erase(m_chartctrldata.x.begin());
+	m_chartctrldata.y.erase(m_chartctrldata.y.begin());
+
+	m_chartctrldata.x.push_back(m_count);
+	m_chartctrldata.y.push_back(sin((double)m_count * 3.1415926 / 100));
+
+	m_chartctrl.EnableRefresh(false);
+	m_chartctrl.RemoveAllSeries();
+	CChartLineSerie *pChartLineSerie = m_chartctrl.CreateLineSerie();
+	pChartLineSerie->AddPoints(m_chartctrldata.x.data(), m_chartctrldata.y.data(), 400);
+	m_chartctrl.EnableRefresh(true);
 }

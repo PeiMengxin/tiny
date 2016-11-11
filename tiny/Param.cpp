@@ -44,3 +44,13 @@ DataShow::DataShow()
 DataShow::~DataShow()
 {
 }
+
+
+
+ChartCtrlData::ChartCtrlData()
+{
+}
+
+ChartCtrlData::~ChartCtrlData()
+{
+}

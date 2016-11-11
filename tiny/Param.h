@@ -2,6 +2,8 @@
 #define _PARAM_H__
 
 #include <stdint.h>
+#include <iostream>
+#include <vector>
 
 class Param
 {
@@ -37,6 +39,19 @@ public:
 	uint8_t state;
 	float radar_fusion;
 	float excepted_height;
+
+private:
+
+};
+
+class ChartCtrlData
+{
+public:
+	ChartCtrlData();
+	~ChartCtrlData();
+
+	std::vector<double> x;
+	std::vector<double> y;
 
 private:
 
