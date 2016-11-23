@@ -127,6 +127,8 @@ private:
 
 public:
 	CChartCtrl m_chartctrl;
+	CChartStandardAxis *pChartStandarAxisX;
+	CChartStandardAxis *pChartStandarAxisY;
 private:
 	bool initChartCtrl();
 public:

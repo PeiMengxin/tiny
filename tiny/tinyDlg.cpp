@@ -836,9 +836,11 @@ bool CtinyDlg::initChartCtrl()
 {
 	m_count = 0;
 
-	m_chartctrl.CreateStandardAxis(CChartCtrl::LeftAxis)->SetAutomatic(true);
-	m_chartctrl.CreateStandardAxis(CChartCtrl::BottomAxis)->SetAutomatic(true);
-
+	pChartStandarAxisY = m_chartctrl.CreateStandardAxis(CChartCtrl::LeftAxis);
+	pChartStandarAxisX = m_chartctrl.CreateStandardAxis(CChartCtrl::BottomAxis);
+	pChartStandarAxisX->SetAutomatic(false);
+	pChartStandarAxisY->SetAutomatic(false);
+	
 	for (size_t i = 0; i < 500; i++)
 	{
 		m_count++;
@@ -848,8 +850,10 @@ bool CtinyDlg::initChartCtrl()
 
 	m_chartctrl.EnableRefresh(false);
 	m_chartctrl.RemoveAllSeries();
+	pChartStandarAxisX->SetMinMax(m_chartctrldata.x[0], m_chartctrldata.x[m_chartctrldata.x.size() - 1]+100);
+	pChartStandarAxisY->SetMinMax(-1, 1);
 	CChartLineSerie *pChartLineSerie = m_chartctrl.CreateLineSerie();
-	pChartLineSerie->AddPoints(m_chartctrldata.x.data(), m_chartctrldata.y.data(), 400);
+	pChartLineSerie->AddPoints(m_chartctrldata.x.data(), m_chartctrldata.y.data(), 500);
 	m_chartctrl.EnableRefresh(true);
 
 	return true;
@@ -863,11 +867,12 @@ void CtinyDlg::UpdateChartCtrlData()
 	m_chartctrldata.y.erase(m_chartctrldata.y.begin());
 
 	m_chartctrldata.x.push_back(m_count);
-	m_chartctrldata.y.push_back(sin((double)m_count * 3.1415926 / 100));
+	m_chartctrldata.y.push_back(m_datashow_radarfusiondata);
 
 	m_chartctrl.EnableRefresh(false);
 	m_chartctrl.RemoveAllSeries();
+	pChartStandarAxisX->SetMinMax(m_chartctrldata.x[0], m_chartctrldata.x[m_chartctrldata.x.size() - 1] + 100);
 	CChartLineSerie *pChartLineSerie = m_chartctrl.CreateLineSerie();
-	pChartLineSerie->AddPoints(m_chartctrldata.x.data(), m_chartctrldata.y.data(), 400);
+	pChartLineSerie->AddPoints(m_chartctrldata.x.data(), m_chartctrldata.y.data(), 500);
 	m_chartctrl.EnableRefresh(true);
 }
