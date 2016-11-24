@@ -42,97 +42,97 @@
     <ClInclude Include="Param.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="E:\software\ChartCtrl\ChartAxis.h">
+    <ClInclude Include="ChartCtrl\ChartAxis.h">
       <Filter>头文件\ChartCtrl</Filter>
     </ClInclude>
-    <ClInclude Include="E:\software\ChartCtrl\ChartAxisLabel.h">
+    <ClInclude Include="ChartCtrl\ChartAxisLabel.h">
       <Filter>头文件\ChartCtrl</Filter>
     </ClInclude>
-    <ClInclude Include="E:\software\ChartCtrl\ChartBalloonLabel.h">
+    <ClInclude Include="ChartCtrl\ChartBalloonLabel.h">
       <Filter>头文件\ChartCtrl</Filter>
     </ClInclude>
-    <ClInclude Include="E:\software\ChartCtrl\ChartBarSerie.h">
+    <ClInclude Include="ChartCtrl\ChartBarSerie.h">
       <Filter>头文件\ChartCtrl</Filter>
     </ClInclude>
-    <ClInclude Include="E:\software\ChartCtrl\ChartCandlestickSerie.h">
+    <ClInclude Include="ChartCtrl\ChartCandlestickSerie.h">
       <Filter>头文件\ChartCtrl</Filter>
     </ClInclude>
-    <ClInclude Include="E:\software\ChartCtrl\ChartCrossHairCursor.h">
+    <ClInclude Include="ChartCtrl\ChartCrossHairCursor.h">
       <Filter>头文件\ChartCtrl</Filter>
     </ClInclude>
-    <ClInclude Include="E:\software\ChartCtrl\ChartCtrl.h">
+    <ClInclude Include="ChartCtrl\ChartCtrl.h">
       <Filter>头文件\ChartCtrl</Filter>
     </ClInclude>
-    <ClInclude Include="E:\software\ChartCtrl\ChartCursor.h">
+    <ClInclude Include="ChartCtrl\ChartCursor.h">
       <Filter>头文件\ChartCtrl</Filter>
     </ClInclude>
-    <ClInclude Include="E:\software\ChartCtrl\ChartDateTimeAxis.h">
+    <ClInclude Include="ChartCtrl\ChartDateTimeAxis.h">
       <Filter>头文件\ChartCtrl</Filter>
     </ClInclude>
-    <ClInclude Include="E:\software\ChartCtrl\ChartDragLineCursor.h">
+    <ClInclude Include="ChartCtrl\ChartDragLineCursor.h">
       <Filter>头文件\ChartCtrl</Filter>
     </ClInclude>
-    <ClInclude Include="E:\software\ChartCtrl\ChartFont.h">
+    <ClInclude Include="ChartCtrl\ChartFont.h">
       <Filter>头文件\ChartCtrl</Filter>
     </ClInclude>
-    <ClInclude Include="E:\software\ChartCtrl\ChartGanttSerie.h">
+    <ClInclude Include="ChartCtrl\ChartGanttSerie.h">
       <Filter>头文件\ChartCtrl</Filter>
     </ClInclude>
-    <ClInclude Include="E:\software\ChartCtrl\ChartGradient.h">
+    <ClInclude Include="ChartCtrl\ChartGradient.h">
       <Filter>头文件\ChartCtrl</Filter>
     </ClInclude>
-    <ClInclude Include="E:\software\ChartCtrl\ChartGrid.h">
+    <ClInclude Include="ChartCtrl\ChartGrid.h">
       <Filter>头文件\ChartCtrl</Filter>
     </ClInclude>
-    <ClInclude Include="E:\software\ChartCtrl\ChartLabel.h">
+    <ClInclude Include="ChartCtrl\ChartLabel.h">
       <Filter>头文件\ChartCtrl</Filter>
     </ClInclude>
-    <ClInclude Include="E:\software\ChartCtrl\ChartLegend.h">
+    <ClInclude Include="ChartCtrl\ChartLegend.h">
       <Filter>头文件\ChartCtrl</Filter>
     </ClInclude>
-    <ClInclude Include="E:\software\ChartCtrl\ChartLineSerie.h">
+    <ClInclude Include="ChartCtrl\ChartLineSerie.h">
       <Filter>头文件\ChartCtrl</Filter>
     </ClInclude>
-    <ClInclude Include="E:\software\ChartCtrl\ChartLogarithmicAxis.h">
+    <ClInclude Include="ChartCtrl\ChartLogarithmicAxis.h">
       <Filter>头文件\ChartCtrl</Filter>
     </ClInclude>
-    <ClInclude Include="E:\software\ChartCtrl\ChartMouseListener.h">
+    <ClInclude Include="ChartCtrl\ChartMouseListener.h">
       <Filter>头文件\ChartCtrl</Filter>
     </ClInclude>
-    <ClInclude Include="E:\software\ChartCtrl\ChartPointsArray.h">
+    <ClInclude Include="ChartCtrl\ChartPointsArray.h">
       <Filter>头文件\ChartCtrl</Filter>
     </ClInclude>
-    <ClInclude Include="E:\software\ChartCtrl\ChartPointsSerie.h">
+    <ClInclude Include="ChartCtrl\ChartPointsSerie.h">
       <Filter>头文件\ChartCtrl</Filter>
     </ClInclude>
-    <ClInclude Include="E:\software\ChartCtrl\ChartScrollBar.h">
+    <ClInclude Include="ChartCtrl\ChartScrollBar.h">
       <Filter>头文件\ChartCtrl</Filter>
     </ClInclude>
-    <ClInclude Include="E:\software\ChartCtrl\ChartSerie.h">
+    <ClInclude Include="ChartCtrl\ChartSerie.h">
       <Filter>头文件\ChartCtrl</Filter>
     </ClInclude>
-    <ClInclude Include="E:\software\ChartCtrl\ChartSerieBase.h">
+    <ClInclude Include="ChartCtrl\ChartSerieBase.h">
       <Filter>头文件\ChartCtrl</Filter>
     </ClInclude>
-    <ClInclude Include="E:\software\ChartCtrl\ChartSeriesMouseListener.h">
+    <ClInclude Include="ChartCtrl\ChartSeriesMouseListener.h">
       <Filter>头文件\ChartCtrl</Filter>
     </ClInclude>
-    <ClInclude Include="E:\software\ChartCtrl\ChartStandardAxis.h">
+    <ClInclude Include="ChartCtrl\ChartStandardAxis.h">
       <Filter>头文件\ChartCtrl</Filter>
     </ClInclude>
-    <ClInclude Include="E:\software\ChartCtrl\ChartString.h">
+    <ClInclude Include="ChartCtrl\ChartString.h">
       <Filter>头文件\ChartCtrl</Filter>
     </ClInclude>
-    <ClInclude Include="E:\software\ChartCtrl\ChartSurfaceSerie.h">
+    <ClInclude Include="ChartCtrl\ChartSurfaceSerie.h">
       <Filter>头文件\ChartCtrl</Filter>
     </ClInclude>
-    <ClInclude Include="E:\software\ChartCtrl\ChartTitle.h">
+    <ClInclude Include="ChartCtrl\ChartTitle.h">
       <Filter>头文件\ChartCtrl</Filter>
     </ClInclude>
-    <ClInclude Include="E:\software\ChartCtrl\ChartXYSerie.h">
+    <ClInclude Include="ChartCtrl\ChartXYSerie.h">
       <Filter>头文件\ChartCtrl</Filter>
     </ClInclude>
-    <ClInclude Include="E:\software\ChartCtrl\PointsOrdering.h">
+    <ClInclude Include="ChartCtrl\PointsOrdering.h">
       <Filter>头文件\ChartCtrl</Filter>
     </ClInclude>
   </ItemGroup>
@@ -149,73 +149,73 @@
     <ClCompile Include="Param.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="E:\software\ChartCtrl\ChartAxis.cpp">
+    <ClCompile Include="ChartCtrl\ChartAxis.cpp">
       <Filter>源文件\ChartCtrl</Filter>
     </ClCompile>
-    <ClCompile Include="E:\software\ChartCtrl\ChartAxisLabel.cpp">
+    <ClCompile Include="ChartCtrl\ChartAxisLabel.cpp">
       <Filter>源文件\ChartCtrl</Filter>
     </ClCompile>
-    <ClCompile Include="E:\software\ChartCtrl\ChartBarSerie.cpp">
+    <ClCompile Include="ChartCtrl\ChartBarSerie.cpp">
       <Filter>源文件\ChartCtrl</Filter>
     </ClCompile>
-    <ClCompile Include="E:\software\ChartCtrl\ChartCandlestickSerie.cpp">
+    <ClCompile Include="ChartCtrl\ChartCandlestickSerie.cpp">
       <Filter>源文件\ChartCtrl</Filter>
     </ClCompile>
-    <ClCompile Include="E:\software\ChartCtrl\ChartCrossHairCursor.cpp">
+    <ClCompile Include="ChartCtrl\ChartCrossHairCursor.cpp">
       <Filter>源文件\ChartCtrl</Filter>
     </ClCompile>
-    <ClCompile Include="E:\software\ChartCtrl\ChartCtrl.cpp">
+    <ClCompile Include="ChartCtrl\ChartCtrl.cpp">
       <Filter>源文件\ChartCtrl</Filter>
     </ClCompile>
-    <ClCompile Include="E:\software\ChartCtrl\ChartCursor.cpp">
+    <ClCompile Include="ChartCtrl\ChartCursor.cpp">
       <Filter>源文件\ChartCtrl</Filter>
     </ClCompile>
-    <ClCompile Include="E:\software\ChartCtrl\ChartDateTimeAxis.cpp">
+    <ClCompile Include="ChartCtrl\ChartDateTimeAxis.cpp">
       <Filter>源文件\ChartCtrl</Filter>
     </ClCompile>
-    <ClCompile Include="E:\software\ChartCtrl\ChartDragLineCursor.cpp">
+    <ClCompile Include="ChartCtrl\ChartDragLineCursor.cpp">
       <Filter>源文件\ChartCtrl</Filter>
     </ClCompile>
-    <ClCompile Include="E:\software\ChartCtrl\ChartFont.cpp">
+    <ClCompile Include="ChartCtrl\ChartFont.cpp">
       <Filter>源文件\ChartCtrl</Filter>
     </ClCompile>
-    <ClCompile Include="E:\software\ChartCtrl\ChartGanttSerie.cpp">
+    <ClCompile Include="ChartCtrl\ChartGanttSerie.cpp">
       <Filter>源文件\ChartCtrl</Filter>
     </ClCompile>
-    <ClCompile Include="E:\software\ChartCtrl\ChartGradient.cpp">
+    <ClCompile Include="ChartCtrl\ChartGradient.cpp">
       <Filter>源文件\ChartCtrl</Filter>
     </ClCompile>
-    <ClCompile Include="E:\software\ChartCtrl\ChartGrid.cpp">
+    <ClCompile Include="ChartCtrl\ChartGrid.cpp">
       <Filter>源文件\ChartCtrl</Filter>
     </ClCompile>
-    <ClCompile Include="E:\software\ChartCtrl\ChartLegend.cpp">
+    <ClCompile Include="ChartCtrl\ChartLegend.cpp">
       <Filter>源文件\ChartCtrl</Filter>
     </ClCompile>
-    <ClCompile Include="E:\software\ChartCtrl\ChartLineSerie.cpp">
+    <ClCompile Include="ChartCtrl\ChartLineSerie.cpp">
       <Filter>源文件\ChartCtrl</Filter>
     </ClCompile>
-    <ClCompile Include="E:\software\ChartCtrl\ChartLogarithmicAxis.cpp">
+    <ClCompile Include="ChartCtrl\ChartLogarithmicAxis.cpp">
       <Filter>源文件\ChartCtrl</Filter>
     </ClCompile>
-    <ClCompile Include="E:\software\ChartCtrl\ChartPointsSerie.cpp">
+    <ClCompile Include="ChartCtrl\ChartPointsSerie.cpp">
       <Filter>源文件\ChartCtrl</Filter>
     </ClCompile>
-    <ClCompile Include="E:\software\ChartCtrl\ChartScrollBar.cpp">
+    <ClCompile Include="ChartCtrl\ChartScrollBar.cpp">
       <Filter>源文件\ChartCtrl</Filter>
     </ClCompile>
-    <ClCompile Include="E:\software\ChartCtrl\ChartSerie.cpp">
+    <ClCompile Include="ChartCtrl\ChartSerie.cpp">
       <Filter>源文件\ChartCtrl</Filter>
     </ClCompile>
-    <ClCompile Include="E:\software\ChartCtrl\ChartStandardAxis.cpp">
+    <ClCompile Include="ChartCtrl\ChartStandardAxis.cpp">
       <Filter>源文件\ChartCtrl</Filter>
     </ClCompile>
-    <ClCompile Include="E:\software\ChartCtrl\ChartSurfaceSerie.cpp">
+    <ClCompile Include="ChartCtrl\ChartSurfaceSerie.cpp">
       <Filter>源文件\ChartCtrl</Filter>
     </ClCompile>
-    <ClCompile Include="E:\software\ChartCtrl\ChartTitle.cpp">
+    <ClCompile Include="ChartCtrl\ChartTitle.cpp">
       <Filter>源文件\ChartCtrl</Filter>
     </ClCompile>
-    <ClCompile Include="E:\software\ChartCtrl\ChartXYSerie.cpp">
+    <ClCompile Include="ChartCtrl\ChartXYSerie.cpp">
       <Filter>源文件\ChartCtrl</Filter>
     </ClCompile>
   </ItemGroup>
@@ -228,19 +228,19 @@
     <None Include="res\tiny.rc2">
       <Filter>资源文件</Filter>
     </None>
-    <None Include="E:\software\ChartCtrl\ChartBalloonLabel.inl">
-      <Filter>头文件\ChartCtrl</Filter>
-    </None>
-    <None Include="E:\software\ChartCtrl\ChartLabel.inl">
-      <Filter>头文件\ChartCtrl</Filter>
-    </None>
-    <None Include="E:\software\ChartCtrl\ChartPointsArray.inl">
-      <Filter>头文件\ChartCtrl</Filter>
-    </None>
-    <None Include="E:\software\ChartCtrl\ChartSerieBase.inl">
-      <Filter>头文件\ChartCtrl</Filter>
-    </None>
     <None Include="ClassDiagram.cd" />
+    <None Include="ChartCtrl\ChartBalloonLabel.inl">
+      <Filter>头文件\ChartCtrl</Filter>
+    </None>
+    <None Include="ChartCtrl\ChartLabel.inl">
+      <Filter>头文件\ChartCtrl</Filter>
+    </None>
+    <None Include="ChartCtrl\ChartPointsArray.inl">
+      <Filter>头文件\ChartCtrl</Filter>
+    </None>
+    <None Include="ChartCtrl\ChartSerieBase.inl">
+      <Filter>头文件\ChartCtrl</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\indicator_black.ico">

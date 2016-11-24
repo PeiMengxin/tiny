@@ -12,8 +12,8 @@
 #include <sstream>
 #include <serial/serial.h>
 #include "Param.h"
-#include "E:\software\ChartCtrl\ChartCtrl.h"
-#include <ChartLineSerie.h>
+#include "ChartCtrl/ChartAxis.h"
+#include "ChartCtrl/ChartLineSerie.h"
 
 // CtinyDlg ¶Ô»°¿ò
 class CtinyDlg : public CDialogEx

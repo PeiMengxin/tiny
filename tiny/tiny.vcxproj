@@ -36,11 +36,11 @@
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="E:\serial\serial.props" />
+    <Import Project="serial.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="E:\serial\serial.props" />
+    <Import Project="serial.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -48,7 +48,6 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>E:\software\ChartCtrl;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -103,37 +102,37 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="E:\software\ChartCtrl\ChartAxis.h" />
-    <ClInclude Include="E:\software\ChartCtrl\ChartAxisLabel.h" />
-    <ClInclude Include="E:\software\ChartCtrl\ChartBalloonLabel.h" />
-    <ClInclude Include="E:\software\ChartCtrl\ChartBarSerie.h" />
-    <ClInclude Include="E:\software\ChartCtrl\ChartCandlestickSerie.h" />
-    <ClInclude Include="E:\software\ChartCtrl\ChartCrossHairCursor.h" />
-    <ClInclude Include="E:\software\ChartCtrl\ChartCtrl.h" />
-    <ClInclude Include="E:\software\ChartCtrl\ChartCursor.h" />
-    <ClInclude Include="E:\software\ChartCtrl\ChartDateTimeAxis.h" />
-    <ClInclude Include="E:\software\ChartCtrl\ChartDragLineCursor.h" />
-    <ClInclude Include="E:\software\ChartCtrl\ChartFont.h" />
-    <ClInclude Include="E:\software\ChartCtrl\ChartGanttSerie.h" />
-    <ClInclude Include="E:\software\ChartCtrl\ChartGradient.h" />
-    <ClInclude Include="E:\software\ChartCtrl\ChartGrid.h" />
-    <ClInclude Include="E:\software\ChartCtrl\ChartLabel.h" />
-    <ClInclude Include="E:\software\ChartCtrl\ChartLegend.h" />
-    <ClInclude Include="E:\software\ChartCtrl\ChartLineSerie.h" />
-    <ClInclude Include="E:\software\ChartCtrl\ChartLogarithmicAxis.h" />
-    <ClInclude Include="E:\software\ChartCtrl\ChartMouseListener.h" />
-    <ClInclude Include="E:\software\ChartCtrl\ChartPointsArray.h" />
-    <ClInclude Include="E:\software\ChartCtrl\ChartPointsSerie.h" />
-    <ClInclude Include="E:\software\ChartCtrl\ChartScrollBar.h" />
-    <ClInclude Include="E:\software\ChartCtrl\ChartSerie.h" />
-    <ClInclude Include="E:\software\ChartCtrl\ChartSerieBase.h" />
-    <ClInclude Include="E:\software\ChartCtrl\ChartSeriesMouseListener.h" />
-    <ClInclude Include="E:\software\ChartCtrl\ChartStandardAxis.h" />
-    <ClInclude Include="E:\software\ChartCtrl\ChartString.h" />
-    <ClInclude Include="E:\software\ChartCtrl\ChartSurfaceSerie.h" />
-    <ClInclude Include="E:\software\ChartCtrl\ChartTitle.h" />
-    <ClInclude Include="E:\software\ChartCtrl\ChartXYSerie.h" />
-    <ClInclude Include="E:\software\ChartCtrl\PointsOrdering.h" />
+    <ClInclude Include="ChartCtrl\ChartAxis.h" />
+    <ClInclude Include="ChartCtrl\ChartAxisLabel.h" />
+    <ClInclude Include="ChartCtrl\ChartBalloonLabel.h" />
+    <ClInclude Include="ChartCtrl\ChartBarSerie.h" />
+    <ClInclude Include="ChartCtrl\ChartCandlestickSerie.h" />
+    <ClInclude Include="ChartCtrl\ChartCrossHairCursor.h" />
+    <ClInclude Include="ChartCtrl\ChartCtrl.h" />
+    <ClInclude Include="ChartCtrl\ChartCursor.h" />
+    <ClInclude Include="ChartCtrl\ChartDateTimeAxis.h" />
+    <ClInclude Include="ChartCtrl\ChartDragLineCursor.h" />
+    <ClInclude Include="ChartCtrl\ChartFont.h" />
+    <ClInclude Include="ChartCtrl\ChartGanttSerie.h" />
+    <ClInclude Include="ChartCtrl\ChartGradient.h" />
+    <ClInclude Include="ChartCtrl\ChartGrid.h" />
+    <ClInclude Include="ChartCtrl\ChartLabel.h" />
+    <ClInclude Include="ChartCtrl\ChartLegend.h" />
+    <ClInclude Include="ChartCtrl\ChartLineSerie.h" />
+    <ClInclude Include="ChartCtrl\ChartLogarithmicAxis.h" />
+    <ClInclude Include="ChartCtrl\ChartMouseListener.h" />
+    <ClInclude Include="ChartCtrl\ChartPointsArray.h" />
+    <ClInclude Include="ChartCtrl\ChartPointsSerie.h" />
+    <ClInclude Include="ChartCtrl\ChartScrollBar.h" />
+    <ClInclude Include="ChartCtrl\ChartSerie.h" />
+    <ClInclude Include="ChartCtrl\ChartSerieBase.h" />
+    <ClInclude Include="ChartCtrl\ChartSeriesMouseListener.h" />
+    <ClInclude Include="ChartCtrl\ChartStandardAxis.h" />
+    <ClInclude Include="ChartCtrl\ChartString.h" />
+    <ClInclude Include="ChartCtrl\ChartSurfaceSerie.h" />
+    <ClInclude Include="ChartCtrl\ChartTitle.h" />
+    <ClInclude Include="ChartCtrl\ChartXYSerie.h" />
+    <ClInclude Include="ChartCtrl\PointsOrdering.h" />
     <ClInclude Include="Param.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
@@ -142,29 +141,29 @@
     <ClInclude Include="tinyDlg.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="E:\software\ChartCtrl\ChartAxis.cpp" />
-    <ClCompile Include="E:\software\ChartCtrl\ChartAxisLabel.cpp" />
-    <ClCompile Include="E:\software\ChartCtrl\ChartBarSerie.cpp" />
-    <ClCompile Include="E:\software\ChartCtrl\ChartCandlestickSerie.cpp" />
-    <ClCompile Include="E:\software\ChartCtrl\ChartCrossHairCursor.cpp" />
-    <ClCompile Include="E:\software\ChartCtrl\ChartCtrl.cpp" />
-    <ClCompile Include="E:\software\ChartCtrl\ChartCursor.cpp" />
-    <ClCompile Include="E:\software\ChartCtrl\ChartDateTimeAxis.cpp" />
-    <ClCompile Include="E:\software\ChartCtrl\ChartDragLineCursor.cpp" />
-    <ClCompile Include="E:\software\ChartCtrl\ChartFont.cpp" />
-    <ClCompile Include="E:\software\ChartCtrl\ChartGanttSerie.cpp" />
-    <ClCompile Include="E:\software\ChartCtrl\ChartGradient.cpp" />
-    <ClCompile Include="E:\software\ChartCtrl\ChartGrid.cpp" />
-    <ClCompile Include="E:\software\ChartCtrl\ChartLegend.cpp" />
-    <ClCompile Include="E:\software\ChartCtrl\ChartLineSerie.cpp" />
-    <ClCompile Include="E:\software\ChartCtrl\ChartLogarithmicAxis.cpp" />
-    <ClCompile Include="E:\software\ChartCtrl\ChartPointsSerie.cpp" />
-    <ClCompile Include="E:\software\ChartCtrl\ChartScrollBar.cpp" />
-    <ClCompile Include="E:\software\ChartCtrl\ChartSerie.cpp" />
-    <ClCompile Include="E:\software\ChartCtrl\ChartStandardAxis.cpp" />
-    <ClCompile Include="E:\software\ChartCtrl\ChartSurfaceSerie.cpp" />
-    <ClCompile Include="E:\software\ChartCtrl\ChartTitle.cpp" />
-    <ClCompile Include="E:\software\ChartCtrl\ChartXYSerie.cpp" />
+    <ClCompile Include="ChartCtrl\ChartAxis.cpp" />
+    <ClCompile Include="ChartCtrl\ChartAxisLabel.cpp" />
+    <ClCompile Include="ChartCtrl\ChartBarSerie.cpp" />
+    <ClCompile Include="ChartCtrl\ChartCandlestickSerie.cpp" />
+    <ClCompile Include="ChartCtrl\ChartCrossHairCursor.cpp" />
+    <ClCompile Include="ChartCtrl\ChartCtrl.cpp" />
+    <ClCompile Include="ChartCtrl\ChartCursor.cpp" />
+    <ClCompile Include="ChartCtrl\ChartDateTimeAxis.cpp" />
+    <ClCompile Include="ChartCtrl\ChartDragLineCursor.cpp" />
+    <ClCompile Include="ChartCtrl\ChartFont.cpp" />
+    <ClCompile Include="ChartCtrl\ChartGanttSerie.cpp" />
+    <ClCompile Include="ChartCtrl\ChartGradient.cpp" />
+    <ClCompile Include="ChartCtrl\ChartGrid.cpp" />
+    <ClCompile Include="ChartCtrl\ChartLegend.cpp" />
+    <ClCompile Include="ChartCtrl\ChartLineSerie.cpp" />
+    <ClCompile Include="ChartCtrl\ChartLogarithmicAxis.cpp" />
+    <ClCompile Include="ChartCtrl\ChartPointsSerie.cpp" />
+    <ClCompile Include="ChartCtrl\ChartScrollBar.cpp" />
+    <ClCompile Include="ChartCtrl\ChartSerie.cpp" />
+    <ClCompile Include="ChartCtrl\ChartStandardAxis.cpp" />
+    <ClCompile Include="ChartCtrl\ChartSurfaceSerie.cpp" />
+    <ClCompile Include="ChartCtrl\ChartTitle.cpp" />
+    <ClCompile Include="ChartCtrl\ChartXYSerie.cpp" />
     <ClCompile Include="Param.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -177,11 +176,11 @@
     <ResourceCompile Include="tiny.rc" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="ChartCtrl\ChartBalloonLabel.inl" />
+    <None Include="ChartCtrl\ChartLabel.inl" />
+    <None Include="ChartCtrl\ChartPointsArray.inl" />
+    <None Include="ChartCtrl\ChartSerieBase.inl" />
     <None Include="ClassDiagram.cd" />
-    <None Include="E:\software\ChartCtrl\ChartBalloonLabel.inl" />
-    <None Include="E:\software\ChartCtrl\ChartLabel.inl" />
-    <None Include="E:\software\ChartCtrl\ChartPointsArray.inl" />
-    <None Include="E:\software\ChartCtrl\ChartSerieBase.inl" />
     <None Include="res\tiny.rc2" />
   </ItemGroup>
   <ItemGroup>
