@@ -8,10 +8,6 @@ Param::Param()
 	excepted_height = 1000;
 	sensitivity = 1500;
 
-	pid_p = 0;
-	pid_i = 0;
-	pid_d = 0;
-
 	rocker_mid[0] = 1500;
 	rocker_mid[1] = 1500;
 	rocker_mid[2] = 1500;
@@ -53,4 +49,17 @@ ChartCtrlData::ChartCtrlData()
 
 ChartCtrlData::~ChartCtrlData()
 {
+}
+
+PID::~PID()
+{
+
+}
+
+PID::PID()
+{
+	p = 0;
+	i = 4;
+	d = 0;
+	n = 0;
 }

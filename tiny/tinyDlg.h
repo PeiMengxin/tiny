@@ -14,6 +14,7 @@
 #include "Param.h"
 #include "ChartCtrl/ChartAxis.h"
 #include "ChartCtrl/ChartLineSerie.h"
+#include "ColorButton/ColorButton.h"
 
 // CtinyDlg ¶Ô»°¿ò
 class CtinyDlg : public CDialogEx
@@ -60,6 +61,13 @@ protected:
 	afx_msg BOOL OnDeviceChange(UINT nEventType, DWORD dwData);
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
 	afx_msg void OnClose();
+
+	afx_msg LONG OnSelEndOK(UINT lParam, LONG wParam);
+	afx_msg LONG OnSelEndCancel(UINT lParam, LONG wParam);
+	afx_msg LONG OnSelChange(UINT lParam, LONG wParam);
+	afx_msg LONG OnCloseUp(UINT lParam, LONG wParam);
+	afx_msg LONG OnDropDown(UINT lParam, LONG wParam);
+
 	DECLARE_MESSAGE_MAP()
 private:
 	CComboBox m_combo_combaudrate;
@@ -88,9 +96,26 @@ private:
 	float m_datashow_radarfusiondata;
 	float m_datashow_expectedheight;
 	
-	int m_edit_pid_p;
-	int m_edit_pid_i;
-	int m_edit_pid_d;
+	int m_edit_pid_p_custom;
+	int m_edit_pid_i_custom;
+	int m_edit_pid_d_custom;
+
+	int m_edit_pid_p_outerlayer;
+	int m_edit_pid_i_outerlayer;
+	int m_edit_pid_d_outerlayer;
+
+	int m_edit_pid_p_innerlayer;
+	int m_edit_pid_i_innerlayer;
+	int m_edit_pid_d_innerlayer;
+
+	int m_edit_pid_p_height;
+	int m_edit_pid_i_height;
+	int m_edit_pid_d_height;
+
+	int m_edit_pid_p_position;
+	int m_edit_pid_i_position;
+	int m_edit_pid_d_position;
+
 	int m_edit_rockermid1;
 	int m_edit_rockermid2;
 	int m_edit_rockermid3;
@@ -127,10 +152,23 @@ private:
 
 public:
 	CChartCtrl m_chartctrl;
-	CChartStandardAxis *pChartStandarAxisX;
-	CChartStandardAxis *pChartStandarAxisY;
+	CChartStandardAxis *m_pChartStandarAxisX;
+	CChartStandardAxis *m_pChartStandarAxisY;
+	CChartLineSerie *m_pChartLineSerie_fusiondata;
+	CChartLineSerie *m_pChartLineSerie_exceptedheight;
+	COleDateTime m_time;
+	COleDateTimeSpan m_time_span;
 private:
 	bool initChartCtrl();
 public:
 	void UpdateChartCtrlData();
+	CColorButton m_btn_color_fusiondata;
+	CColorButton m_btn_color_exceptedheight;
+	bool initColorButton();
+	COLORREF m_color;
+	CButton m_check_fusiondata;
+	CButton m_check_exceptedheight;
+	afx_msg void OnBnClickedCheckFusiondata();
+	afx_msg void OnBnClickedCheckExceptedheight();
+	
 };

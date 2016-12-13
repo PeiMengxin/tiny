@@ -87,13 +87,29 @@ void CtinyDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_DATASETTING_EXPECTEDHEIGHT, m_edit_exceptheight);
 	DDX_Text(pDX, IDC_DATASETTING_AVOIDSCOPE, m_edit_avoidscope);
 	DDX_Text(pDX, IDC_DATASETTING_SENSITIVITY, m_edit_sensitivity);
-	DDX_Text(pDX, IDC_DATASETTING_PID_P, m_edit_pid_p);
-	DDX_Text(pDX, IDC_DATASETTING_PID_I, m_edit_pid_i);
-	DDX_Text(pDX, IDC_DATASETTING_PID_D, m_edit_pid_d);
+	DDX_Text(pDX, IDC_DATASETTING_PID_P_CUSTOM, m_edit_pid_p_custom);
+	DDX_Text(pDX, IDC_DATASETTING_PID_I_CUSTOM, m_edit_pid_i_custom);
+	DDX_Text(pDX, IDC_DATASETTING_PID_D_CUSTOM, m_edit_pid_d_custom);
+	DDX_Text(pDX, IDC_DATASETTING_PID_P_OUTERLAYER, m_edit_pid_p_outerlayer);
+	DDX_Text(pDX, IDC_DATASETTING_PID_I_OUTERLAYER, m_edit_pid_i_outerlayer);
+	DDX_Text(pDX, IDC_DATASETTING_PID_D_OUTERLAYER, m_edit_pid_d_outerlayer);
+	DDX_Text(pDX, IDC_DATASETTING_PID_P_INNERLAYER, m_edit_pid_p_innerlayer);
+	DDX_Text(pDX, IDC_DATASETTING_PID_I_INNERLAYER, m_edit_pid_i_innerlayer);
+	DDX_Text(pDX, IDC_DATASETTING_PID_D_INNERLAYER, m_edit_pid_d_innerlayer);
+	DDX_Text(pDX, IDC_DATASETTING_PID_P_POSITION, m_edit_pid_p_position);
+	DDX_Text(pDX, IDC_DATASETTING_PID_I_POSITION, m_edit_pid_i_position);
+	DDX_Text(pDX, IDC_DATASETTING_PID_D_POSITION, m_edit_pid_d_position);
+	DDX_Text(pDX, IDC_DATASETTING_PID_P_HEIGHT, m_edit_pid_p_height);
+	DDX_Text(pDX, IDC_DATASETTING_PID_I_HEIGHT, m_edit_pid_i_height);
+	DDX_Text(pDX, IDC_DATASETTING_PID_D_HEIGHT, m_edit_pid_d_height);
 
 	DDX_Control(pDX, IDC_ICON_STATE, m_icon_state);
 	DDX_Control(pDX, IDC_ICON_COMSTATE, m_icon_comstate);
 	DDX_Control(pDX, IDC_CUSTOM1, m_chartctrl);
+	DDX_Control(pDX, IDC_BUTTON_COLOR_FUSIONDATA, m_btn_color_fusiondata);
+	DDX_Control(pDX, IDC_CHECK_FUSIONDATA, m_check_fusiondata);
+	DDX_Control(pDX, IDC_CHECK_EXCEPTEDHEIGHT, m_check_exceptedheight);
+	DDX_Control(pDX, IDC_BUTTON_COLOR_EXCEPTEDHEIGHT, m_btn_color_exceptedheight);
 }
 
 BEGIN_MESSAGE_MAP(CtinyDlg, CDialogEx)
@@ -107,6 +123,13 @@ BEGIN_MESSAGE_MAP(CtinyDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON_WRITEFLASH, &CtinyDlg::OnBnClickedButtonWriteflash)
 	ON_WM_CLOSE()
 	ON_WM_TIMER()
+	ON_MESSAGE(CPN_SELENDOK, OnSelEndOK)
+	ON_MESSAGE(CPN_SELENDCANCEL, OnSelEndCancel)
+	ON_MESSAGE(CPN_SELCHANGE, OnSelChange)
+	ON_MESSAGE(CPN_CLOSEUP, OnCloseUp)
+	ON_MESSAGE(CPN_DROPDOWN, OnDropDown)
+	ON_BN_CLICKED(IDC_CHECK_FUSIONDATA, &CtinyDlg::OnBnClickedCheckFusiondata)
+	ON_BN_CLICKED(IDC_CHECK_EXCEPTEDHEIGHT, &CtinyDlg::OnBnClickedCheckExceptedheight)
 END_MESSAGE_MAP()
 
 
@@ -205,6 +228,7 @@ bool CtinyDlg::init()
 	initIcon();
 	initDataShow();
 	initChartCtrl();
+	initColorButton();
 
 	UpdateData(FALSE);
 
@@ -253,9 +277,26 @@ bool CtinyDlg::initDataShow()
 	m_datashow_expectedheight = 0;
 	m_datashow_radarfusiondata = 0;
 
-	m_edit_pid_p = 0;
-	m_edit_pid_i = 0;
-	m_edit_pid_d = 0;
+	m_edit_pid_p_custom = 0;
+	m_edit_pid_i_custom = 0;
+	m_edit_pid_d_custom = 0;
+
+	m_edit_pid_p_height = 0;
+	m_edit_pid_i_height = 0;
+	m_edit_pid_d_height = 0;
+
+	m_edit_pid_p_position = 0;
+	m_edit_pid_i_position = 0;
+	m_edit_pid_d_position = 0;
+
+	m_edit_pid_p_innerlayer = 0;
+	m_edit_pid_i_innerlayer = 0;
+	m_edit_pid_d_innerlayer = 0;
+
+	m_edit_pid_p_outerlayer = 0;
+	m_edit_pid_i_outerlayer = 0;
+	m_edit_pid_d_outerlayer = 0;
+
 	m_edit_rockermid1 = 0;
 	m_edit_rockermid2 = 0;
 	m_edit_rockermid3 = 0;
@@ -514,17 +555,17 @@ void CtinyDlg::serialRead()
 				temp = data_buf[4];
 				temp <<= 8;
 				temp |= data_buf[5];
-				m_param.pid_p = temp;
+				m_param.pid_custom.p = temp;
 
 				temp = data_buf[6];
 				temp <<= 8;
 				temp |= data_buf[7];
-				m_param.pid_i = temp;
+				m_param.pid_custom.i = temp;
 
 				temp = data_buf[8];
 				temp <<= 8;
 				temp |= data_buf[9];
-				m_param.pid_d = temp;
+				m_param.pid_custom.d = temp;
 
 				temp = data_buf[10];
 				temp <<= 8;
@@ -592,9 +633,21 @@ void CtinyDlg::writeParam()
 {
 	UpdateData(TRUE);
 	m_param.avoid_scope = m_edit_avoidscope;
-	m_param.pid_p = m_edit_pid_p;
-	m_param.pid_i = m_edit_pid_i;
-	m_param.pid_d = m_edit_pid_d;
+	m_param.pid_custom.p = m_edit_pid_p_custom;
+	m_param.pid_custom.i = m_edit_pid_i_custom;
+	m_param.pid_custom.d = m_edit_pid_d_custom;
+	m_param.pid_height.p = m_edit_pid_p_height;
+	m_param.pid_height.i = m_edit_pid_i_height;
+	m_param.pid_height.d = m_edit_pid_d_height;
+	m_param.pid_position.p = m_edit_pid_p_position;
+	m_param.pid_position.i = m_edit_pid_i_position;
+	m_param.pid_position.d = m_edit_pid_d_position;
+	m_param.pid_innerlayer.p = m_edit_pid_p_innerlayer;
+	m_param.pid_innerlayer.i = m_edit_pid_i_innerlayer;
+	m_param.pid_innerlayer.d = m_edit_pid_d_innerlayer;
+	m_param.pid_outerlayer.p = m_edit_pid_p_outerlayer;
+	m_param.pid_outerlayer.i = m_edit_pid_i_outerlayer;
+	m_param.pid_outerlayer.d = m_edit_pid_d_outerlayer;
 	m_param.rocker_mid[0] = m_edit_rockermid1;
 	m_param.rocker_mid[1] = m_edit_rockermid2;
 	m_param.rocker_mid[2] = m_edit_rockermid3;
@@ -620,9 +673,26 @@ void CtinyDlg::readParam()
 	return;
 	}
 	Sleep(100);*/
-	m_edit_pid_p = m_param.pid_p;
-	m_edit_pid_i = m_param.pid_i;
-	m_edit_pid_d = m_param.pid_d;
+	m_edit_pid_p_custom = m_param.pid_custom.p;
+	m_edit_pid_i_custom = m_param.pid_custom.i;
+	m_edit_pid_d_custom = m_param.pid_custom.d;
+
+	m_edit_pid_p_height = m_param.pid_height.p;
+	m_edit_pid_i_height = m_param.pid_height.i;
+	m_edit_pid_d_height = m_param.pid_height.d;
+
+	m_edit_pid_p_position = m_param.pid_position.p;
+	m_edit_pid_i_position = m_param.pid_position.i;
+	m_edit_pid_d_position = m_param.pid_position.d;
+
+	m_edit_pid_p_innerlayer = m_param.pid_innerlayer.p;
+	m_edit_pid_i_innerlayer = m_param.pid_innerlayer.i;
+	m_edit_pid_d_innerlayer = m_param.pid_innerlayer.d;
+
+	m_edit_pid_p_outerlayer = m_param.pid_position.p;
+	m_edit_pid_i_outerlayer = m_param.pid_position.i;
+	m_edit_pid_d_outerlayer = m_param.pid_position.d;
+
 	m_edit_rockermid1 = m_param.rocker_mid[0];
 	m_edit_rockermid2 = m_param.rocker_mid[1];
 	m_edit_rockermid3 = m_param.rocker_mid[2];
@@ -737,7 +807,7 @@ bool CtinyDlg::serialSend(SerialSendOrder sendOrder)
 {
 	if (!m_serialport.isOpen())
 	{
-		MessageBox(_T("串口未打开!"), _T("提示"));
+		MessageBox(_T("    串口未打开!"), _T("提示"));
 		return false;
 	}
 
@@ -754,12 +824,12 @@ bool CtinyDlg::serialSend(SerialSendOrder sendOrder)
 			data_to_send[_cnt++] = 0x00;
 			data_to_send[_cnt++] = 0;
 
-			data_to_send[_cnt++] = uint16_t(m_param.pid_p) / 256;
-			data_to_send[_cnt++] = uint16_t(m_param.pid_p) % 256;
-			data_to_send[_cnt++] = uint16_t(m_param.pid_i) / 256;
-			data_to_send[_cnt++] = uint16_t(m_param.pid_i) % 256;
-			data_to_send[_cnt++] = uint16_t(m_param.pid_d) / 256;
-			data_to_send[_cnt++] = uint16_t(m_param.pid_d) % 256;
+			data_to_send[_cnt++] = uint16_t(m_param.pid_custom.p) / 256;
+			data_to_send[_cnt++] = uint16_t(m_param.pid_custom.p) % 256;
+			data_to_send[_cnt++] = uint16_t(m_param.pid_custom.i) / 256;
+			data_to_send[_cnt++] = uint16_t(m_param.pid_custom.i) % 256;
+			data_to_send[_cnt++] = uint16_t(m_param.pid_custom.d) / 256;
+			data_to_send[_cnt++] = uint16_t(m_param.pid_custom.d) % 256;
 			
 			uint16_t temp = 0;
 			temp = m_param.excepted_height * 1000;
@@ -835,13 +905,18 @@ bool CtinyDlg::serialSend(SerialSendOrder sendOrder)
 bool CtinyDlg::initChartCtrl()
 {
 	m_count = 0;
+	m_chartctrl.SetBackColor(RGB(0, 0, 0));
+	m_pChartStandarAxisY = m_chartctrl.CreateStandardAxis(CChartCtrl::LeftAxis);
+	m_pChartStandarAxisX = m_chartctrl.CreateStandardAxis(CChartCtrl::BottomAxis);
+	m_pChartStandarAxisX->SetAutomatic(false);
+	m_pChartStandarAxisY->SetAutomatic(false);
+	m_pChartStandarAxisX->SetAxisColor(RGB(255, 255, 255));
+	m_pChartStandarAxisY->SetAxisColor(RGB(255, 255, 255));
+	m_pChartStandarAxisX->SetTextColor(RGB(255, 255, 255));
+	m_pChartStandarAxisY->SetTextColor(RGB(255, 255, 255));
+	//m_pChartStandarAxisX->SetTextColor(m_chartctrl.GetBackColor());
 
-	pChartStandarAxisY = m_chartctrl.CreateStandardAxis(CChartCtrl::LeftAxis);
-	pChartStandarAxisX = m_chartctrl.CreateStandardAxis(CChartCtrl::BottomAxis);
-	pChartStandarAxisX->SetAutomatic(false);
-	pChartStandarAxisY->SetAutomatic(false);
-	
-	for (size_t i = 0; i < 500; i++)
+	for (size_t i = 0; i < 200; i++)
 	{
 		m_count++;
 		m_chartctrldata.x.push_back(m_count);
@@ -850,11 +925,22 @@ bool CtinyDlg::initChartCtrl()
 
 	m_chartctrl.EnableRefresh(false);
 	m_chartctrl.RemoveAllSeries();
-	pChartStandarAxisX->SetMinMax(m_chartctrldata.x[0], m_chartctrldata.x[m_chartctrldata.x.size() - 1]+100);
-	pChartStandarAxisY->SetMinMax(-1, 1);
-	CChartLineSerie *pChartLineSerie = m_chartctrl.CreateLineSerie();
-	pChartLineSerie->AddPoints(m_chartctrldata.x.data(), m_chartctrldata.y.data(), 500);
+	m_pChartStandarAxisX->SetMinMax(m_chartctrldata.x[0], m_chartctrldata.x[m_chartctrldata.x.size() - 1]+100);
+	m_pChartStandarAxisY->SetMinMax(-1, 1);
+	m_pChartLineSerie_fusiondata = m_chartctrl.CreateLineSerie();
+	m_pChartLineSerie_fusiondata->SetWidth(2);
+	m_pChartLineSerie_fusiondata->SetColor(RGB(0, 255, 0));
+	m_pChartLineSerie_fusiondata->AddPoints(m_chartctrldata.x.data(), m_chartctrldata.y.data(), 200);
+
+	m_pChartLineSerie_exceptedheight = m_chartctrl.CreateLineSerie();
+	m_pChartLineSerie_exceptedheight->SetWidth(2);
+	m_pChartLineSerie_exceptedheight->SetColor(RGB(255, 0, 0));
+	m_pChartLineSerie_exceptedheight->AddPoints(m_chartctrldata.x.data(), m_chartctrldata.y.data(), 200);
+
 	m_chartctrl.EnableRefresh(true);
+
+	m_check_exceptedheight.SetCheck(true);
+	m_check_fusiondata.SetCheck(true);
 
 	return true;
 }
@@ -867,12 +953,112 @@ void CtinyDlg::UpdateChartCtrlData()
 	m_chartctrldata.y.erase(m_chartctrldata.y.begin());
 
 	m_chartctrldata.x.push_back(m_count);
-	m_chartctrldata.y.push_back(m_datashow_radarfusiondata);
+	m_chartctrldata.y.push_back(sin((double)m_count * 3.1415926 / 100));
 
 	m_chartctrl.EnableRefresh(false);
-	m_chartctrl.RemoveAllSeries();
-	pChartStandarAxisX->SetMinMax(m_chartctrldata.x[0], m_chartctrldata.x[m_chartctrldata.x.size() - 1] + 100);
-	CChartLineSerie *pChartLineSerie = m_chartctrl.CreateLineSerie();
-	pChartLineSerie->AddPoints(m_chartctrldata.x.data(), m_chartctrldata.y.data(), 500);
+	//m_chartctrl.RemoveAllSeries();
+	//m_pChartLineSerie = m_chartctrl.CreateLineSerie();
+
+	//m_pChartLineSerie->SetWidth(2);
+	//m_pChartLineSerie->SetColor(m_color);
+
+	//m_pChartLineSerie->AddPoints(m_chartctrldata.x.data(), m_chartctrldata.y.data(), 500);
+
+	m_pChartLineSerie_fusiondata->AddPoint(m_chartctrldata.x[m_chartctrldata.x.size() - 1], m_chartctrldata.y[m_chartctrldata.y.size() - 1]);
+	m_pChartLineSerie_fusiondata->RemovePointsFromBegin(0);
+
+	m_pChartLineSerie_exceptedheight->AddPoint(m_chartctrldata.x[m_chartctrldata.x.size() - 1], m_chartctrldata.y[m_chartctrldata.y.size() - 1]/2);
+	m_pChartLineSerie_exceptedheight->RemovePointsFromBegin(0);
+
+	m_pChartStandarAxisX->SetMinMax(m_chartctrldata.x[0], m_chartctrldata.x[m_chartctrldata.x.size() - 1] + 100);
+
 	m_chartctrl.EnableRefresh(true);
+}
+
+
+bool CtinyDlg::initColorButton()
+{
+	m_btn_color_fusiondata.Color = RGB(0, 255, 0);
+	m_btn_color_fusiondata.DefaultColor = RGB(0, 255, 0);
+	m_btn_color_fusiondata.TrackSelection = TRUE;
+	m_btn_color_fusiondata.CustomText = _T("更多颜色...");
+	m_btn_color_fusiondata.DefaultText = _T("自动");
+
+	m_btn_color_exceptedheight.Color = RGB(255,0,0);
+	m_btn_color_exceptedheight.DefaultColor = RGB(255, 0, 0);
+	m_btn_color_exceptedheight.TrackSelection = TRUE;
+	m_btn_color_exceptedheight.CustomText = _T("更多颜色...");
+	m_btn_color_exceptedheight.DefaultText = _T("自动");
+
+	m_color = m_btn_color_fusiondata.GetColor();
+
+	return true;
+}
+
+LONG CtinyDlg::OnSelEndOK(UINT lParam, LONG /*wParam*/)
+{
+	TRACE0("Selection ended OK\n");
+
+	m_pChartLineSerie_exceptedheight->SetColor(m_btn_color_exceptedheight.GetColor());
+	m_pChartLineSerie_fusiondata->SetColor(m_btn_color_fusiondata.GetColor());
+
+	return TRUE;
+}
+
+LONG CtinyDlg::OnSelEndCancel(UINT /*lParam*/, LONG /*wParam*/)
+{
+	TRACE0("Selection cancelled\n");
+	return TRUE;
+}
+
+LONG CtinyDlg::OnSelChange(UINT /*lParam*/, LONG /*wParam*/)
+{
+	TRACE0("Selection changed\n");
+	return TRUE;
+}
+
+LONG CtinyDlg::OnCloseUp(UINT /*lParam*/, LONG /*wParam*/)
+{
+	TRACE0("Colour picker close up\n");
+	return TRUE;
+}
+
+LONG CtinyDlg::OnDropDown(UINT /*lParam*/, LONG /*wParam*/)
+{
+	TRACE0("Colour picker drop down\n");
+	return TRUE;
+}
+
+
+void CtinyDlg::OnBnClickedCheckFusiondata()
+{
+	// TODO:  在此添加控件通知处理程序代码
+	int state = m_check_fusiondata.GetCheck();
+
+	if (state==0)
+	{
+		m_pChartLineSerie_fusiondata->SetVisible(false);
+	}
+	else
+	{
+		m_pChartLineSerie_fusiondata->SetVisible(true);
+	}
+
+}
+
+
+void CtinyDlg::OnBnClickedCheckExceptedheight()
+{
+	// TODO:  在此添加控件通知处理程序代码
+
+	int state = m_check_exceptedheight.GetCheck();
+
+	if (state == 0)
+	{
+		m_pChartLineSerie_exceptedheight->SetVisible(false);
+	}
+	else
+	{
+		m_pChartLineSerie_exceptedheight->SetVisible(true);
+	}
 }

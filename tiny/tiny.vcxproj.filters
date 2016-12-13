@@ -19,6 +19,12 @@
     <Filter Include="源文件\ChartCtrl">
       <UniqueIdentifier>{7da3d605-7912-477b-bbe6-30eddecfe9c0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="头文件\ColorButton">
+      <UniqueIdentifier>{56b6a6ce-3106-4cde-a327-4adbe11f7be1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\ColorButton">
+      <UniqueIdentifier>{80716cc0-c840-4be1-96da-d186cf11ae6b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -135,6 +141,12 @@
     <ClInclude Include="ChartCtrl\PointsOrdering.h">
       <Filter>头文件\ChartCtrl</Filter>
     </ClInclude>
+    <ClInclude Include="ColorButton\ColorButton.h">
+      <Filter>头文件\ColorButton</Filter>
+    </ClInclude>
+    <ClInclude Include="ColorButton\ColourPopup.h">
+      <Filter>头文件\ColorButton</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="tiny.cpp">
@@ -217,6 +229,12 @@
     </ClCompile>
     <ClCompile Include="ChartCtrl\ChartXYSerie.cpp">
       <Filter>源文件\ChartCtrl</Filter>
+    </ClCompile>
+    <ClCompile Include="ColorButton\ColorButton.cpp">
+      <Filter>源文件\ColorButton</Filter>
+    </ClCompile>
+    <ClCompile Include="ColorButton\ColourPopup.cpp">
+      <Filter>源文件\ColorButton</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

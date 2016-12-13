@@ -5,6 +5,21 @@
 #include <iostream>
 #include <vector>
 
+class PID
+{
+public:
+	PID();
+	~PID();
+
+	uint16_t p;
+	uint16_t i;
+	uint16_t d;
+	uint16_t n;
+
+private:
+
+};
+
 class Param
 {
 public:
@@ -18,9 +33,12 @@ public:
 	uint8_t enable_height;
 	uint8_t enable_avoidObj;
 
-	uint16_t pid_p;
-	uint16_t pid_i;
-	uint16_t pid_d;
+	PID pid_custom;
+	PID pid_outerlayer;
+	PID pid_innerlayer;
+	PID pid_height;
+	PID pid_position;
+
 	uint16_t rocker_mid[4];
 
 
