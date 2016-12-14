@@ -33,8 +33,8 @@ DataShow::DataShow()
 	pwm[4] = 0;
 
 	state = 0;
-	radar_fusion = 0;
-	excepted_height = 0;
+	fusion_data = 0;
+	height = 0;
 }
 
 DataShow::~DataShow()
@@ -62,4 +62,34 @@ PID::PID()
 	i = 4;
 	d = 0;
 	n = 0;
+}
+
+Sensor::~Sensor()
+{
+
+}
+
+Sensor::Sensor()
+{
+	VAL_ACC_X = 0;
+	VAL_ACC_Y = 0;
+	VAL_ACC_Z = 0;
+	VAL_GYR_X = 0;
+	VAL_GYR_Y = 0;
+	VAL_GYR_Z = 0;
+	VAL_HM_X = 0;
+	VAL_HM_Y = 0;
+	VAL_HM_Z = 0;
+}
+
+GPS::~GPS()
+{
+
+}
+
+GPS::GPS()
+{
+	latitude = 0.0;
+	longitude = 0.0;
+	elevation = 0.0;
 }

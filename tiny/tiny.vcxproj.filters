@@ -147,6 +147,9 @@
     <ClInclude Include="ColorButton\ColourPopup.h">
       <Filter>头文件\ColorButton</Filter>
     </ClInclude>
+    <ClInclude Include="datatransform.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="tiny.cpp">
@@ -236,6 +239,9 @@
     <ClCompile Include="ColorButton\ColourPopup.cpp">
       <Filter>源文件\ColorButton</Filter>
     </ClCompile>
+    <ClCompile Include="datatransform.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="tiny.rc">
@@ -292,6 +298,12 @@
       <Filter>资源文件</Filter>
     </Image>
     <Image Include="res\tiny.ico">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\zoom-in.ico">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\zoom-out.ico">
       <Filter>资源文件</Filter>
     </Image>
   </ItemGroup>

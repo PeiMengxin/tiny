@@ -24,7 +24,8 @@ class CtinyDlg : public CDialogEx
 		WRITE_PARAM = 0,
 		READ_PARAM,
 		WRITE_FLASH,
-		READ_DATA
+		READ_DATA,
+		SEND_COMMAND
 	};
 
 // 构造
@@ -47,6 +48,8 @@ protected:
 	HICON m_hIcon_indicator_red;
 	HICON m_hIcon_com_black;
 	HICON m_hIcon_com_green;
+	HICON m_hIcon_zoom_out;
+	HICON m_hIcon_zoom_in;
 	
 
 	// 生成的消息映射函数
@@ -93,8 +96,8 @@ private:
 	int m_datashow_control2;
 	int m_datashow_control3;
 	int m_datashow_control4;
-	float m_datashow_radarfusiondata;
-	float m_datashow_expectedheight;
+	float m_datashow_fusiondata;
+	float m_datashow_height;
 	
 	int m_edit_pid_p_custom;
 	int m_edit_pid_i_custom;
@@ -130,7 +133,8 @@ private:
 	serial::Serial m_serialport;
 	Param m_param;
 	DataShow m_showdata;
-	ChartCtrlData m_chartctrldata;
+	ChartCtrlData m_chartctrldata_fusiondata;
+	ChartCtrlData m_chartctrldata_height;
 	int m_count;
 
 	std::thread serial_thread;
@@ -155,20 +159,37 @@ public:
 	CChartStandardAxis *m_pChartStandarAxisX;
 	CChartStandardAxis *m_pChartStandarAxisY;
 	CChartLineSerie *m_pChartLineSerie_fusiondata;
-	CChartLineSerie *m_pChartLineSerie_exceptedheight;
-	COleDateTime m_time;
-	COleDateTimeSpan m_time_span;
+	CChartLineSerie *m_pChartLineSerie_height;
+	
+	int m_scope_y;
+
 private:
 	bool initChartCtrl();
 public:
 	void UpdateChartCtrlData();
 	CColorButton m_btn_color_fusiondata;
-	CColorButton m_btn_color_exceptedheight;
+	CColorButton m_btn_color_height;
 	bool initColorButton();
 	COLORREF m_color;
 	CButton m_check_fusiondata;
-	CButton m_check_exceptedheight;
+	CButton m_check_height;
 	afx_msg void OnBnClickedCheckFusiondata();
-	afx_msg void OnBnClickedCheckExceptedheight();
+	afx_msg void OnBnClickedCheckHeight();
 	
+	afx_msg void OnBnClickedButtonZoomin();
+	afx_msg void OnBnClickedButtonZoomout();
+	short m_datashow_acc_x;
+	short m_datashow_acc_y;
+	short m_datashow_acc_z;
+	short m_datashow_gry_x;
+	short m_datashow_gry_y;
+	short m_datashow_gry_z;
+	short m_datashow_hm_x;
+	short m_datashow_hm_y;
+	short m_datashow_hm_z;
+	void sendCommand();
+	void DataAnl(unsigned char* data_buf_temp, int len, unsigned char* RX_Data);
+	void FrameAnl(unsigned char* RX_Data, int len);
+	CButton m_check_autoscope;
+	afx_msg void OnBnClickedCheckAutoscope();
 };

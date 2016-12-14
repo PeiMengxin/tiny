@@ -135,6 +135,7 @@
     <ClInclude Include="ChartCtrl\PointsOrdering.h" />
     <ClInclude Include="ColorButton\ColorButton.h" />
     <ClInclude Include="ColorButton\ColourPopup.h" />
+    <ClInclude Include="datatransform.h" />
     <ClInclude Include="Param.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
@@ -168,6 +169,7 @@
     <ClCompile Include="ChartCtrl\ChartXYSerie.cpp" />
     <ClCompile Include="ColorButton\ColorButton.cpp" />
     <ClCompile Include="ColorButton\ColourPopup.cpp" />
+    <ClCompile Include="datatransform.cpp" />
     <ClCompile Include="Param.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -199,6 +201,8 @@
     <Image Include="res\tiny_32x32.ico" />
     <Image Include="res\tiny_48x48.ico" />
     <Image Include="res\tiny_64x64.ico" />
+    <Image Include="res\zoom-in.ico" />
+    <Image Include="res\zoom-out.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

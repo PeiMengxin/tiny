@@ -20,6 +20,42 @@ private:
 
 };
 
+class Sensor
+{
+public:
+	Sensor();
+	~Sensor();
+
+	short VAL_ACC_X;
+	short VAL_ACC_Y;
+	short VAL_ACC_Z;
+
+	short VAL_GYR_X;
+	short VAL_GYR_Y;
+	short VAL_GYR_Z;
+	
+	short VAL_HM_X;
+	short VAL_HM_Y;
+	short VAL_HM_Z;
+
+private:
+
+};
+
+class GPS
+{
+public:
+	GPS();
+	~GPS();
+
+	double longitude;
+	double latitude;
+	double elevation;
+
+private:
+
+};
+
 class Param
 {
 public:
@@ -41,7 +77,6 @@ public:
 
 	uint16_t rocker_mid[4];
 
-
 private:
 
 };
@@ -55,8 +90,11 @@ public:
 	uint16_t pwm[5];
 	int control[4];
 	uint8_t state;
-	float radar_fusion;
-	float excepted_height;
+	float fusion_data;
+	float height;
+
+	GPS gps;
+	Sensor sensor;
 
 private:
 
