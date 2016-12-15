@@ -52,7 +52,7 @@ CtinyDlg::CtinyDlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CtinyDlg::IDD, pParent)
 	, isTerminal(false)
 	, m_serial_closing(false)
-	, m_scope_y(1)
+	, m_scope_y(100)
 	, m_datashow_acc_x(0)
 	, m_datashow_acc_y(0)
 	, m_datashow_acc_z(0)
@@ -131,6 +131,9 @@ void CtinyDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_DATASHOW_HMY, m_datashow_hm_y);
 	DDX_Text(pDX, IDC_DATASHOW_HMZ, m_datashow_hm_z);
 	DDX_Control(pDX, IDC_CHECK_AUTOSCOPE, m_check_autoscope);
+	DDX_Control(pDX, IDC_CHECK_ACC, m_check_acc);
+	DDX_Control(pDX, IDC_CHECK_GRY, m_check_gry);
+	DDX_Control(pDX, IDC_CHECK_HM, m_check_hm);
 }
 
 BEGIN_MESSAGE_MAP(CtinyDlg, CDialogEx)
@@ -154,6 +157,9 @@ BEGIN_MESSAGE_MAP(CtinyDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON_ZOOMIN, &CtinyDlg::OnBnClickedButtonZoomin)
 	ON_BN_CLICKED(IDC_BUTTON_ZOOMOUT, &CtinyDlg::OnBnClickedButtonZoomout)
 	ON_BN_CLICKED(IDC_CHECK_AUTOSCOPE, &CtinyDlg::OnBnClickedCheckAutoscope)
+	ON_BN_CLICKED(IDC_CHECK_ACC, &CtinyDlg::OnBnClickedCheckAcc)
+	ON_BN_CLICKED(IDC_CHECK_GRY, &CtinyDlg::OnBnClickedCheckGry)
+	ON_BN_CLICKED(IDC_CHECK_HM, &CtinyDlg::OnBnClickedCheckHm)
 END_MESSAGE_MAP()
 
 
@@ -251,6 +257,7 @@ bool CtinyDlg::init()
 	initCom();
 	initIcon();
 	initDataShow();
+	initColorTable();
 	initChartCtrl();
 	initColorButton();
 
@@ -333,6 +340,28 @@ bool CtinyDlg::initDataShow()
 }
 
 
+bool CtinyDlg::initColorTable()
+{
+	ColorTable.push_back(RGB(255, 0, 0));
+	ColorTable.push_back(RGB(0, 255, 0));
+	ColorTable.push_back(RGB(0, 0, 255));
+	ColorTable.push_back(RGB(255, 255, 0));
+	ColorTable.push_back(RGB(255, 0, 255));
+	ColorTable.push_back(RGB(0, 255, 255));
+	ColorTable.push_back(RGB(65, 100, 225));
+	ColorTable.push_back(RGB(119, 136, 153));
+	ColorTable.push_back(RGB(50, 205, 50));
+	ColorTable.push_back(RGB(255, 140, 0));
+	ColorTable.push_back(RGB(139, 69, 19));
+	ColorTable.push_back(RGB(255, 127, 80));
+	ColorTable.push_back(RGB(178, 34, 34));
+	ColorTable.push_back(RGB(128, 0, 0));
+	ColorTable.push_back(RGB(189, 183, 107));
+	ColorTable.push_back(RGB(218, 165, 32));
+
+	return true;
+}
+
 void CtinyDlg::detectCom()
 {
 	HANDLE hCom;
@@ -379,7 +408,7 @@ void CtinyDlg::OnBnClickedButtonOpencom()
 		m_icon_comstate.SetIcon(m_hIcon_com_black);
 		m_combo_combaudrate.EnableWindow(TRUE);
 		m_combo_comnum.EnableWindow(TRUE);
-	
+
 		return;
 	}
 
@@ -416,7 +445,7 @@ void CtinyDlg::OnBnClickedButtonOpencom()
 		m_icon_comstate.SetIcon(m_hIcon_com_green);
 		m_combo_combaudrate.EnableWindow(FALSE);
 		m_combo_comnum.EnableWindow(FALSE);
-		
+
 		return;
 	}
 }
@@ -460,12 +489,12 @@ BOOL CtinyDlg::OnDeviceChange(UINT nEventType, DWORD dwData)
 		{
 			m_serialport.close();
 		}
-			break;
+		break;
 		case DBT_DEVICEARRIVAL://添加设备，打开串口  
 		{
 			detectCom();
 		}
-			break;
+		break;
 		default:
 			break;
 	}
@@ -475,18 +504,17 @@ BOOL CtinyDlg::OnDeviceChange(UINT nEventType, DWORD dwData)
 }
 
 
-
 void CtinyDlg::serialRead()
 {
 	size_t data_length = 0;
 	unsigned char sum = 0;
-	unsigned char RX_Data[DATA_SIZE_MAX] = { 0 };
-	int16_t temp = 0;
+	unsigned char RX_Data[COM_DATA_SIZE_MAX] = { 0 };
+
 	int delay_ms = 1;
 
 	while (!isTerminal)
 	{
-		if (!m_serialport.isOpen()||(m_serial_closing))
+		if (!m_serialport.isOpen() || (m_serial_closing))
 		{
 			Sleep(100);
 			continue;
@@ -499,141 +527,11 @@ void CtinyDlg::serialRead()
 			m_serialport.read(data_buf_temp, data_length);
 
 			DataAnl(data_buf_temp, data_length, RX_Data);
+
 			delete data_buf_temp;
 		}
-		
-		/*if (data_length>DATA_SIZE_MAX)
-		{
-			unsigned char *data_buf_temp = new unsigned char[data_length];
-			m_serialport.read(data_buf_temp, data_length);
-			delete data_buf_temp;
-			continue;
-		}*/
-		//if (data_length)
-		//{
-			
-			/*if (*(data_buf + 2) == 0x03)
-			{
-				temp = data_buf[4];
-				temp <<= 8;
-				temp |= data_buf[5];
-				m_showdata.pwm[0] = temp;
 
-				temp = data_buf[6];
-				temp <<= 8;
-				temp |= data_buf[7];
-				m_showdata.pwm[1] = temp;
-
-				temp = data_buf[8];
-				temp <<= 8;
-				temp |= data_buf[9];
-				m_showdata.pwm[2] = temp;
-
-				temp = data_buf[10];
-				temp <<= 8;
-				temp |= data_buf[11];
-				m_showdata.pwm[3] = temp;
-
-				temp = data_buf[12];
-				temp <<= 8;
-				temp |= data_buf[13];
-				m_showdata.pwm[4] = temp;
-
-				temp = data_buf[14];
-				temp <<= 8;
-				temp |= data_buf[15];
-				m_showdata.control[0] = temp;
-
-				temp = data_buf[16];
-				temp <<= 8;
-				temp |= data_buf[17];
-				m_showdata.control[1] = temp;
-
-				temp = data_buf[18];
-				temp <<= 8;
-				temp |= data_buf[19];
-				m_showdata.control[2] = temp;
-
-				temp = data_buf[20];
-				temp <<= 8;
-				temp |= data_buf[21];
-				m_showdata.control[3] = temp;
-
-				temp = data_buf[22];
-				temp <<= 8;
-				temp |= data_buf[23];
-				m_showdata.radar_fusion = temp;
-
-				temp = data_buf[24];
-				temp <<= 8;
-				temp |= data_buf[25];
-				m_showdata.excepted_height = temp;
-
-				temp = data_buf[26];
-				m_showdata.state = uint8_t(temp);
-				
-			}
-			else if (*(data_buf + 2) == 0x01)
-			{
-				temp = data_buf[4];
-				temp <<= 8;
-				temp |= data_buf[5];
-				m_param.pid_custom.p = temp;
-
-				temp = data_buf[6];
-				temp <<= 8;
-				temp |= data_buf[7];
-				m_param.pid_custom.i = temp;
-
-				temp = data_buf[8];
-				temp <<= 8;
-				temp |= data_buf[9];
-				m_param.pid_custom.d = temp;
-
-				temp = data_buf[10];
-				temp <<= 8;
-				temp |= data_buf[11];
-				m_param.excepted_height = (float)temp / 1000;
-
-				temp = data_buf[12];
-				temp <<= 8;
-				temp |= data_buf[13];
-				m_param.avoid_scope = (float)temp / 1000;
-
-				temp = data_buf[14];
-				temp <<= 8;
-				temp |= data_buf[15];
-				m_param.sensitivity = (float)temp / 1000;
-
-				temp = data_buf[16];
-				m_param.enable_height = temp;
-
-				temp = data_buf[17];
-				m_param.enable_avoidObj = temp;
-
-				temp = data_buf[18];
-				temp <<= 8;
-				temp |= data_buf[19];
-				m_param.rocker_mid[0] = temp;
-
-				temp = data_buf[20];
-				temp <<= 8;
-				temp |= data_buf[21];
-				m_param.rocker_mid[1] = temp;
-
-				temp = data_buf[22];
-				temp <<= 8;
-				temp |= data_buf[23];
-				m_param.rocker_mid[2] = temp;
-
-				temp = data_buf[24];
-				temp <<= 8;
-				temp |= data_buf[25];
-				m_param.rocker_mid[3] = temp;
-			}*/
-		//}
-		
-		//Sleep(delay_ms);
+		Sleep(delay_ms);
 	}
 }
 
@@ -723,7 +621,7 @@ void CtinyDlg::readParam()
 	m_edit_exceptheight = m_param.excepted_height;
 	m_edit_avoidscope = m_param.avoid_scope;
 	m_edit_sensitivity = m_param.sensitivity;
-	
+
 	m_check_setheight.SetCheck(m_param.enable_height);
 	m_check_avoidobjection.SetCheck(m_param.enable_avoidObj);
 
@@ -748,7 +646,7 @@ void CtinyDlg::OnTimer(UINT_PTR nIDEvent)
 
 	/*if (m_serialport.isOpen())
 	{
-		serialSend(READ_DATA);
+	serialSend(READ_DATA);
 	}*/
 
 	m_datashow_pwm1 = m_showdata.pwm[0];
@@ -898,7 +796,7 @@ bool CtinyDlg::serialSend(SerialSendOrder sendOrder)
 			data_to_send[_cnt++] = uint16_t(m_param.pid_custom.i) % 256;
 			data_to_send[_cnt++] = uint16_t(m_param.pid_custom.d) / 256;
 			data_to_send[_cnt++] = uint16_t(m_param.pid_custom.d) % 256;
-			
+
 			uint16_t temp = 0;
 			temp = m_param.excepted_height * 1000;
 			data_to_send[_cnt++] = temp / 256;
@@ -990,7 +888,7 @@ bool CtinyDlg::serialSend(SerialSendOrder sendOrder)
 	}
 
 	//data_to_send[3] = _cnt - 4;
-	
+
 	m_serialport.write(data_to_send, _cnt);
 
 	return true;
@@ -1001,6 +899,7 @@ bool CtinyDlg::initChartCtrl()
 {
 	m_count = 0;
 	m_chartctrl.SetBackColor(RGB(0, 0, 0));
+
 	m_pChartStandarAxisY = m_chartctrl.CreateStandardAxis(CChartCtrl::LeftAxis);
 	m_pChartStandarAxisX = m_chartctrl.CreateStandardAxis(CChartCtrl::BottomAxis);
 	m_pChartStandarAxisX->SetAutomatic(false);
@@ -1011,34 +910,29 @@ bool CtinyDlg::initChartCtrl()
 	m_pChartStandarAxisY->SetTextColor(RGB(255, 255, 255));
 	//m_pChartStandarAxisX->SetTextColor(m_chartctrl.GetBackColor());
 
-	for (size_t i = 0; i < 100; i++)
+	ChartCtrlData m_chartctrldata;
+	for (size_t i = 0; i < SHOW_DATA_SIZE; i++)
 	{
 		m_count++;
-		m_chartctrldata_fusiondata.x.push_back(m_count);
-		m_chartctrldata_fusiondata.y.push_back(sin((double)m_chartctrldata_fusiondata.x[i] * 3.1415926 / 100));
-
-		m_chartctrldata_height.x.push_back(m_count);
-		m_chartctrldata_height.y.push_back(sin((double)m_chartctrldata_fusiondata.x[i] * 3.1415926 / 100));
+		m_chartctrldata.x.push_back(m_count);
+		m_chartctrldata.y.push_back(sin((double)m_chartctrldata.x[i] * 3.1415926 / 100));
 	}
 
 	m_chartctrl.EnableRefresh(false);
 	m_chartctrl.RemoveAllSeries();
-	m_pChartStandarAxisX->SetMinMax(m_chartctrldata_fusiondata.x[0], m_chartctrldata_fusiondata.x[m_chartctrldata_fusiondata.x.size() - 1]+20);
-	m_pChartStandarAxisY->SetMinMax(-1*m_scope_y, m_scope_y);
-	m_pChartLineSerie_fusiondata = m_chartctrl.CreateLineSerie();
-	m_pChartLineSerie_fusiondata->SetWidth(2);
-	m_pChartLineSerie_fusiondata->SetColor(RGB(0, 255, 0));
-	m_pChartLineSerie_fusiondata->AddPoints(m_chartctrldata_fusiondata.x.data(), m_chartctrldata_fusiondata.y.data(), 100);
-
-	m_pChartLineSerie_height = m_chartctrl.CreateLineSerie();
-	m_pChartLineSerie_height->SetWidth(2);
-	m_pChartLineSerie_height->SetColor(RGB(255, 0, 0));
-	m_pChartLineSerie_height->AddPoints(m_chartctrldata_height.x.data(), m_chartctrldata_height.y.data(), 100);
+	m_pChartStandarAxisX->SetMinMax(m_count - SHOW_DATA_SIZE, m_count + SHOW_DATA_SIZE_MARGIN);
+	m_pChartStandarAxisY->SetMinMax(-1 * m_scope_y, m_scope_y);
+	
+	for (size_t i = DataName::ACC_X; i < DataName::END; i++)
+	{
+		m_pChartLineSerie.push_back(m_chartctrl.CreateLineSerie());
+		m_pChartLineSerie[i]->SetWidth(2);
+		m_pChartLineSerie[i]->SetColor(ColorTable[i]);
+		m_pChartLineSerie[i]->AddPoints(m_chartctrldata.x.data(), m_chartctrldata.y.data(), SHOW_DATA_SIZE);
+		m_pChartLineSerie[i]->SetVisible(false);
+	}
 
 	m_chartctrl.EnableRefresh(true);
-
-	m_check_height.SetCheck(true);
-	m_check_fusiondata.SetCheck(true);
 
 	return true;
 }
@@ -1047,27 +941,32 @@ bool CtinyDlg::initChartCtrl()
 void CtinyDlg::UpdateChartCtrlData()
 {
 	m_count++;
-	m_chartctrldata_fusiondata.x.erase(m_chartctrldata_fusiondata.x.begin());
-	m_chartctrldata_fusiondata.y.erase(m_chartctrldata_fusiondata.y.begin());
-
-	m_chartctrldata_fusiondata.x.push_back(m_count);
-	m_chartctrldata_fusiondata.y.push_back(m_showdata.sensor.VAL_ACC_X);
-
-	m_chartctrldata_height.x.erase(m_chartctrldata_height.x.begin());
-	m_chartctrldata_height.y.erase(m_chartctrldata_height.y.begin());
-
-	m_chartctrldata_height.x.push_back(m_count);
-	m_chartctrldata_height.y.push_back(m_showdata.height);
 
 	m_chartctrl.EnableRefresh(false);
 
-	m_pChartLineSerie_fusiondata->AddPoint(m_chartctrldata_fusiondata.x[m_chartctrldata_fusiondata.x.size() - 1], m_chartctrldata_fusiondata.y[m_chartctrldata_fusiondata.y.size() - 1]);
-	m_pChartLineSerie_fusiondata->RemovePointsFromBegin(0);
+	m_pChartLineSerie[DataName::ACC_X]->AddPoint(m_count, m_showdata.sensor.VAL_ACC_X);
+	m_pChartLineSerie[DataName::ACC_Y]->AddPoint(m_count, m_showdata.sensor.VAL_ACC_Y);
+	m_pChartLineSerie[DataName::ACC_Z]->AddPoint(m_count, m_showdata.sensor.VAL_ACC_Z);
+	m_pChartLineSerie[DataName::GRY_X]->AddPoint(m_count, m_showdata.sensor.VAL_GYR_X);
+	m_pChartLineSerie[DataName::GRY_Y]->AddPoint(m_count, m_showdata.sensor.VAL_GYR_Y);
+	m_pChartLineSerie[DataName::GRY_Z]->AddPoint(m_count, m_showdata.sensor.VAL_GYR_Z);
+	m_pChartLineSerie[DataName::HM_X]->AddPoint(m_count, m_showdata.sensor.VAL_HM_X);
+	m_pChartLineSerie[DataName::HM_Y]->AddPoint(m_count, m_showdata.sensor.VAL_HM_Y);
+	m_pChartLineSerie[DataName::HM_Z]->AddPoint(m_count, m_showdata.sensor.VAL_HM_Z);
+	m_pChartLineSerie[DataName::FUSIONDATA]->AddPoint(m_count, m_showdata.fusion_data);
+	m_pChartLineSerie[DataName::HEIGHT]->AddPoint(m_count, m_showdata.height);
+	m_pChartLineSerie[DataName::PWM_1]->AddPoint(m_count, m_showdata.pwm[0]);
+	m_pChartLineSerie[DataName::PWM_2]->AddPoint(m_count, m_showdata.pwm[1]);
+	m_pChartLineSerie[DataName::PWM_3]->AddPoint(m_count, m_showdata.pwm[2]);
+	m_pChartLineSerie[DataName::PWM_4]->AddPoint(m_count, m_showdata.pwm[3]);
+	m_pChartLineSerie[DataName::PWM_5]->AddPoint(m_count, m_showdata.pwm[4]);
 
-	m_pChartLineSerie_height->AddPoint(m_chartctrldata_height.x[m_chartctrldata_height.x.size() - 1], m_chartctrldata_height.y[m_chartctrldata_height.y.size() - 1]);
-	m_pChartLineSerie_height->RemovePointsFromBegin(0);
+	for (size_t i = DataName::ACC_X; i < DataName::END; i++)
+	{
+		m_pChartLineSerie[i]->RemovePointsFromBegin(0);
+	}
 
-	m_pChartStandarAxisX->SetMinMax(m_chartctrldata_fusiondata.x[0], m_chartctrldata_fusiondata.x[m_chartctrldata_fusiondata.x.size() - 1] + 20);
+	m_pChartStandarAxisX->SetMinMax(m_count - SHOW_DATA_SIZE, m_count + SHOW_DATA_SIZE_MARGIN);
 
 	m_chartctrl.EnableRefresh(true);
 }
@@ -1081,7 +980,7 @@ bool CtinyDlg::initColorButton()
 	m_btn_color_fusiondata.CustomText = _T("更多颜色...");
 	m_btn_color_fusiondata.DefaultText = _T("自动");
 
-	m_btn_color_height.Color = RGB(255,0,0);
+	m_btn_color_height.Color = RGB(255, 0, 0);
 	m_btn_color_height.DefaultColor = RGB(255, 0, 0);
 	m_btn_color_height.TrackSelection = TRUE;
 	m_btn_color_height.CustomText = _T("更多颜色...");
@@ -1096,8 +995,8 @@ LONG CtinyDlg::OnSelEndOK(UINT lParam, LONG /*wParam*/)
 {
 	TRACE0("Selection ended OK\n");
 
-	m_pChartLineSerie_height->SetColor(m_btn_color_height.GetColor());
-	m_pChartLineSerie_fusiondata->SetColor(m_btn_color_fusiondata.GetColor());
+	m_pChartLineSerie[DataName::HEIGHT]->SetColor(m_btn_color_height.GetColor());
+	m_pChartLineSerie[DataName::FUSIONDATA]->SetColor(m_btn_color_fusiondata.GetColor());
 
 	return TRUE;
 }
@@ -1132,13 +1031,13 @@ void CtinyDlg::OnBnClickedCheckFusiondata()
 	// TODO:  在此添加控件通知处理程序代码
 	int state = m_check_fusiondata.GetCheck();
 
-	if (state==0)
+	if (state == 0)
 	{
-		m_pChartLineSerie_fusiondata->SetVisible(false);
+		m_pChartLineSerie[DataName::FUSIONDATA]->SetVisible(false);
 	}
 	else
 	{
-		m_pChartLineSerie_fusiondata->SetVisible(true);
+		m_pChartLineSerie[DataName::FUSIONDATA]->SetVisible(true);
 	}
 
 }
@@ -1152,11 +1051,11 @@ void CtinyDlg::OnBnClickedCheckHeight()
 
 	if (state == 0)
 	{
-		m_pChartLineSerie_height->SetVisible(false);
+		m_pChartLineSerie[DataName::HEIGHT]->SetVisible(false);
 	}
 	else
 	{
-		m_pChartLineSerie_height->SetVisible(true);
+		m_pChartLineSerie[DataName::HEIGHT]->SetVisible(true);
 	}
 }
 
@@ -1174,15 +1073,13 @@ void CtinyDlg::OnBnClickedButtonZoomin()
 void CtinyDlg::OnBnClickedButtonZoomout()
 {
 	// TODO:  在此添加控件通知处理程序代码
-	if (m_scope_y>2)
+	if (m_scope_y > 2)
 	{
 		m_scope_y /= 2;
 		m_pChartStandarAxisY->SetMinMax(-1 * m_scope_y, m_scope_y);
 	}
-	
+
 }
-
-
 
 void CtinyDlg::sendCommand()
 {
@@ -1245,7 +1142,7 @@ void CtinyDlg::DataAnl(unsigned char* data_buf_temp, int len, unsigned char* RX_
 		else if (rxstate == 5)
 		{
 			RX_Data[rxcnt] = data_buf_temp[i];
-			if (rxcnt <= (DATA_SIZE_MAX - 1))
+			if (rxcnt <= (COM_DATA_SIZE_MAX - 1))
 			{
 				FrameAnl(RX_Data, rxcnt + 1);
 			}
@@ -1333,7 +1230,7 @@ void CtinyDlg::FrameAnl(unsigned char* RX_Data, int len)
 				break;
 		}
 	}
-	
+
 }
 
 
@@ -1349,7 +1246,7 @@ void CtinyDlg::OnBnClickedCheckAutoscope()
 		double minval = 0;
 		m_pChartStandarAxisY->GetMinMax(minval, maxval);
 		m_scope_y = fabs(maxval) > fabs(minval) ? fabs(maxval) : fabs(minval);
-		
+
 		m_pChartStandarAxisY->SetAutomatic(false);
 
 		m_pChartStandarAxisY->SetMinMax(-1 * m_scope_y, m_scope_y);
@@ -1357,5 +1254,68 @@ void CtinyDlg::OnBnClickedCheckAutoscope()
 	else
 	{
 		m_pChartStandarAxisY->SetAutomatic(true);
+	}
+}
+
+
+void CtinyDlg::OnBnClickedCheckAcc()
+{
+	// TODO:  在此添加控件通知处理程序代码
+
+	int state = m_check_acc.GetCheck();
+
+	if (state == 0)
+	{
+		m_pChartLineSerie[DataName::ACC_X]->SetVisible(false);
+		m_pChartLineSerie[DataName::ACC_Y]->SetVisible(false);
+		m_pChartLineSerie[DataName::ACC_Z]->SetVisible(false);
+	}
+	else
+	{
+		m_pChartLineSerie[DataName::ACC_X]->SetVisible(true);
+		m_pChartLineSerie[DataName::ACC_Y]->SetVisible(true);
+		m_pChartLineSerie[DataName::ACC_Z]->SetVisible(true);
+	}
+}
+
+
+void CtinyDlg::OnBnClickedCheckGry()
+{
+	// TODO:  在此添加控件通知处理程序代码
+
+	int state = m_check_gry.GetCheck();
+
+	if (state == 0)
+	{
+		m_pChartLineSerie[DataName::GRY_X]->SetVisible(false);
+		m_pChartLineSerie[DataName::GRY_Y]->SetVisible(false);
+		m_pChartLineSerie[DataName::GRY_Z]->SetVisible(false);
+	}
+	else
+	{
+		m_pChartLineSerie[DataName::GRY_X]->SetVisible(true);
+		m_pChartLineSerie[DataName::GRY_Y]->SetVisible(true);
+		m_pChartLineSerie[DataName::GRY_Z]->SetVisible(true);
+	}
+}
+
+
+void CtinyDlg::OnBnClickedCheckHm()
+{
+	// TODO:  在此添加控件通知处理程序代码
+
+	int state = m_check_hm.GetCheck();
+
+	if (state == 0)
+	{
+		m_pChartLineSerie[DataName::HM_X]->SetVisible(false);
+		m_pChartLineSerie[DataName::HM_Y]->SetVisible(false);
+		m_pChartLineSerie[DataName::HM_Z]->SetVisible(false);
+	}
+	else
+	{
+		m_pChartLineSerie[DataName::HM_X]->SetVisible(true);
+		m_pChartLineSerie[DataName::HM_Y]->SetVisible(true);
+		m_pChartLineSerie[DataName::HM_Z]->SetVisible(true);
 	}
 }

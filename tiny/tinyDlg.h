@@ -16,6 +16,9 @@
 #include "ChartCtrl/ChartLineSerie.h"
 #include "ColorButton/ColorButton.h"
 
+#define SHOW_DATA_SIZE 300
+#define SHOW_DATA_SIZE_MARGIN 50
+
 // CtinyDlg 对话框
 class CtinyDlg : public CDialogEx
 {
@@ -28,18 +31,40 @@ class CtinyDlg : public CDialogEx
 		SEND_COMMAND
 	};
 
-// 构造
+	enum DataName
+	{
+		ACC_X = 0,
+		ACC_Y,
+		ACC_Z,
+		GRY_X,
+		GRY_Y,
+		GRY_Z,
+		HM_X,
+		HM_Y,
+		HM_Z,
+		FUSIONDATA,
+		HEIGHT,
+		PWM_1,
+		PWM_2,
+		PWM_3,
+		PWM_4,
+		PWM_5,
+
+		END
+	};
+
+	// 构造
 public:
 	CtinyDlg(CWnd* pParent = NULL);	// 标准构造函数
 
-// 对话框数据
+	// 对话框数据
 	enum { IDD = IDD_TINY_DIALOG };
 
-	protected:
+protected:
 	virtual void DoDataExchange(CDataExchange* pDX);	// DDX/DDV 支持
 
 
-// 实现
+	// 实现
 protected:
 	HICON m_hIcon;
 	HICON m_hIcon_indicator_black;
@@ -50,7 +75,7 @@ protected:
 	HICON m_hIcon_com_green;
 	HICON m_hIcon_zoom_out;
 	HICON m_hIcon_zoom_in;
-	
+
 
 	// 生成的消息映射函数
 	virtual BOOL OnInitDialog();
@@ -98,7 +123,7 @@ private:
 	int m_datashow_control4;
 	float m_datashow_fusiondata;
 	float m_datashow_height;
-	
+
 	int m_edit_pid_p_custom;
 	int m_edit_pid_i_custom;
 	int m_edit_pid_d_custom;
@@ -133,8 +158,6 @@ private:
 	serial::Serial m_serialport;
 	Param m_param;
 	DataShow m_showdata;
-	ChartCtrlData m_chartctrldata_fusiondata;
-	ChartCtrlData m_chartctrldata_height;
 	int m_count;
 
 	std::thread serial_thread;
@@ -143,6 +166,7 @@ private:
 	bool initCom();
 	void initIcon();
 	bool initDataShow();
+	bool initColorTable();
 
 	void detectCom();
 	void serialRead();
@@ -160,7 +184,9 @@ public:
 	CChartStandardAxis *m_pChartStandarAxisY;
 	CChartLineSerie *m_pChartLineSerie_fusiondata;
 	CChartLineSerie *m_pChartLineSerie_height;
-	
+
+	std::vector <CChartLineSerie*> m_pChartLineSerie;
+	std::vector < COLORREF > ColorTable;
 	int m_scope_y;
 
 private:
@@ -175,7 +201,7 @@ public:
 	CButton m_check_height;
 	afx_msg void OnBnClickedCheckFusiondata();
 	afx_msg void OnBnClickedCheckHeight();
-	
+
 	afx_msg void OnBnClickedButtonZoomin();
 	afx_msg void OnBnClickedButtonZoomout();
 	short m_datashow_acc_x;
@@ -192,4 +218,10 @@ public:
 	void FrameAnl(unsigned char* RX_Data, int len);
 	CButton m_check_autoscope;
 	afx_msg void OnBnClickedCheckAutoscope();
+	afx_msg void OnBnClickedCheckAcc();
+	afx_msg void OnBnClickedCheckGry();
+	afx_msg void OnBnClickedCheckHm();
+	CButton m_check_acc;
+	CButton m_check_gry;
+	CButton m_check_hm;
 };

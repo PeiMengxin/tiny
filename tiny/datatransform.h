@@ -1,7 +1,7 @@
 #ifndef __DATATRANSFORM_H__
 #define __DATATRANSFORM_H__
 
-#define DATA_SIZE_MAX 128
+#define COM_DATA_SIZE_MAX 128
 
 short BytetoUint(unsigned char* databuf, int cnt);
 int BytetoUint3(unsigned char* databuf, int cnt);
