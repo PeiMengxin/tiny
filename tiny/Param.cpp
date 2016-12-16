@@ -23,26 +23,6 @@ Param::~Param()
 }
 
 
-DataShow::DataShow()
-{
-	for (size_t i = 0; i < 4; i++)
-	{
-		pwm[i] = 0;
-		control[i] = 0;
-	}
-	pwm[4] = 0;
-
-	state = 0;
-	fusion_data = 0;
-	height = 0;
-}
-
-DataShow::~DataShow()
-{
-}
-
-
-
 ChartCtrlData::ChartCtrlData()
 {
 }
@@ -92,4 +72,58 @@ GPS::GPS()
 	latitude = 0.0;
 	longitude = 0.0;
 	elevation = 0.0;
+}
+
+Angle::~Angle()
+{
+
+}
+
+Angle::Angle()
+{
+	Pitch = 0;
+	Roll = 0;
+	Yaw = 0;
+}
+
+DataShow *DataShow::m_pInstance = nullptr;
+
+DataShow::DataShow()
+{
+	for (size_t i = 0; i < 4; i++)
+	{
+		pwm[i] = 0;
+		control[i] = 0;
+	}
+	pwm[4] = 0;
+
+	state = 0;
+	fusion_data = 0;
+	height = 0;
+}
+
+DataShow * DataShow::GetInstance()
+{
+	if (m_pInstance == NULL)  //判断是否第一次调用
+		m_pInstance = new DataShow();
+	return m_pInstance;
+}
+
+DataShow::CGarbo::~CGarbo()
+{
+	if (DataShow::m_pInstance)
+		delete DataShow::m_pInstance;
+}
+
+Coordinate::~Coordinate()
+{
+
+}
+
+Coordinate::Coordinate()
+{
+	x = 0;
+	y = 0;
+	z = 0;
+	id = 0;
 }

@@ -150,6 +150,15 @@
     <ClInclude Include="datatransform.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="CtinySheet.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="SerialSingleton.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CoordinatePage.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="tiny.cpp">
@@ -240,6 +249,15 @@
       <Filter>源文件\ColorButton</Filter>
     </ClCompile>
     <ClCompile Include="datatransform.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CtinySheet.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="SerialSingleton.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CoordinatePage.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

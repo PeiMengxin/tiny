@@ -15,7 +15,7 @@
 
 // 用于应用程序“关于”菜单项的 CAboutDlg 对话框
 
-class CAboutDlg : public CDialogEx
+class CAboutDlg : public CPropertyPage
 {
 public:
 	CAboutDlg();
@@ -31,16 +31,16 @@ protected:
 	DECLARE_MESSAGE_MAP()
 };
 
-CAboutDlg::CAboutDlg() : CDialogEx(CAboutDlg::IDD)
+CAboutDlg::CAboutDlg() : CPropertyPage(CAboutDlg::IDD)
 {
 }
 
 void CAboutDlg::DoDataExchange(CDataExchange* pDX)
 {
-	CDialogEx::DoDataExchange(pDX);
+	CPropertyPage::DoDataExchange(pDX);
 }
 
-BEGIN_MESSAGE_MAP(CAboutDlg, CDialogEx)
+BEGIN_MESSAGE_MAP(CAboutDlg, CPropertyPage)
 END_MESSAGE_MAP()
 
 
@@ -48,8 +48,8 @@ END_MESSAGE_MAP()
 
 
 
-CtinyDlg::CtinyDlg(CWnd* pParent /*=NULL*/)
-	: CDialogEx(CtinyDlg::IDD, pParent)
+CtinyDlg::CtinyDlg(/*CWnd* pParent /*=NULL*/)
+	: CPropertyPage(CtinyDlg::IDD/*, pParent*/)
 	, isTerminal(false)
 	, m_serial_closing(false)
 	, m_scope_y(100)
@@ -68,7 +68,7 @@ CtinyDlg::CtinyDlg(CWnd* pParent /*=NULL*/)
 
 void CtinyDlg::DoDataExchange(CDataExchange* pDX)
 {
-	CDialogEx::DoDataExchange(pDX);
+	CPropertyPage::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_COMBO_COMBAUDRATE, m_combo_combaudrate);
 	DDX_Control(pDX, IDC_COMBO_COMNUM, m_combo_comnum);
 	DDX_Control(pDX, IDC_BUTTON_OPENCOM, m_btn_opencom);
@@ -136,7 +136,7 @@ void CtinyDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_CHECK_HM, m_check_hm);
 }
 
-BEGIN_MESSAGE_MAP(CtinyDlg, CDialogEx)
+BEGIN_MESSAGE_MAP(CtinyDlg, CPropertyPage)
 	ON_WM_SYSCOMMAND()
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
@@ -167,7 +167,7 @@ END_MESSAGE_MAP()
 
 BOOL CtinyDlg::OnInitDialog()
 {
-	CDialogEx::OnInitDialog();
+	CPropertyPage::OnInitDialog();
 
 	// 将“关于...”菜单项添加到系统菜单中。
 
@@ -210,7 +210,7 @@ void CtinyDlg::OnSysCommand(UINT nID, LPARAM lParam)
 	}
 	else
 	{
-		CDialogEx::OnSysCommand(nID, lParam);
+		CPropertyPage::OnSysCommand(nID, lParam);
 	}
 }
 
@@ -239,7 +239,7 @@ void CtinyDlg::OnPaint()
 	}
 	else
 	{
-		CDialogEx::OnPaint();
+		CPropertyPage::OnPaint();
 	}
 }
 
@@ -254,10 +254,13 @@ HCURSOR CtinyDlg::OnQueryDragIcon()
 
 bool CtinyDlg::init()
 {
+	m_showdata = DataShow::GetInstance();
+
 	initCom();
+	initSerial();
 	initIcon();
 	initDataShow();
-	initColorTable();
+	initColorTable(ColorTable);
 	initChartCtrl();
 	initColorButton();
 
@@ -266,7 +269,7 @@ bool CtinyDlg::init()
 	std::thread serial_thread_temp(&CtinyDlg::serialRead, this);
 	serial_thread.swap(serial_thread_temp);
 
-	SetTimer(0, 10, NULL);
+	SetTimer(0, 20, NULL);
 
 	return true;
 }
@@ -339,29 +342,6 @@ bool CtinyDlg::initDataShow()
 	return true;
 }
 
-
-bool CtinyDlg::initColorTable()
-{
-	ColorTable.push_back(RGB(255, 0, 0));
-	ColorTable.push_back(RGB(0, 255, 0));
-	ColorTable.push_back(RGB(0, 0, 255));
-	ColorTable.push_back(RGB(255, 255, 0));
-	ColorTable.push_back(RGB(255, 0, 255));
-	ColorTable.push_back(RGB(0, 255, 255));
-	ColorTable.push_back(RGB(65, 100, 225));
-	ColorTable.push_back(RGB(119, 136, 153));
-	ColorTable.push_back(RGB(50, 205, 50));
-	ColorTable.push_back(RGB(255, 140, 0));
-	ColorTable.push_back(RGB(139, 69, 19));
-	ColorTable.push_back(RGB(255, 127, 80));
-	ColorTable.push_back(RGB(178, 34, 34));
-	ColorTable.push_back(RGB(128, 0, 0));
-	ColorTable.push_back(RGB(189, 183, 107));
-	ColorTable.push_back(RGB(218, 165, 32));
-
-	return true;
-}
-
 void CtinyDlg::detectCom()
 {
 	HANDLE hCom;
@@ -396,11 +376,11 @@ void CtinyDlg::OnBnClickedButtonOpencom()
 {
 	// TODO:  在此添加控件通知处理程序代码
 
-	if (m_serialport.isOpen())
+	if (m_serial_instance->serial_port.isOpen())
 	{
 		m_serial_closing = true;
 		Sleep(50);
-		m_serialport.close();
+		m_serial_instance->serial_port.close();
 		Sleep(50);
 
 		m_btn_opencom.SetWindowText(_T("打开串口"));
@@ -429,16 +409,16 @@ void CtinyDlg::OnBnClickedButtonOpencom()
 	ss >> baud;
 	ss.clear();
 
-	m_serialport.setPort(com_str.c_str());
-	m_serialport.setBaudrate(baud);
+	m_serial_instance->serial_port.setPort(com_str.c_str());
+	m_serial_instance->serial_port.setBaudrate(baud);
 	serial::Timeout serial_timeout = serial::Timeout::simpleTimeout(1000);
-	m_serialport.setTimeout(serial_timeout);
+	m_serial_instance->serial_port.setTimeout(serial_timeout);
 
-	m_serialport.open();
+	m_serial_instance->serial_port.open();
 	m_serial_closing = false;
 	Sleep(100);
 
-	if (m_serialport.isOpen())
+	if (m_serial_instance->serial_port.isOpen())
 	{
 		m_btn_opencom.SetWindowText(_T("关闭串口"));
 		m_static_comstate.SetWindowText(_T("端口已打开"));
@@ -487,7 +467,7 @@ BOOL CtinyDlg::OnDeviceChange(UINT nEventType, DWORD dwData)
 	{
 		case DBT_DEVICEREMOVECOMPLETE://移除设备，关闭串口  
 		{
-			m_serialport.close();
+			m_serial_instance->serial_port.close();
 		}
 		break;
 		case DBT_DEVICEARRIVAL://添加设备，打开串口  
@@ -514,17 +494,20 @@ void CtinyDlg::serialRead()
 
 	while (!isTerminal)
 	{
-		if (!m_serialport.isOpen() || (m_serial_closing))
+		if (!m_serial_instance->serial_port.isOpen() || (m_serial_closing))
 		{
 			Sleep(100);
 			continue;
 		}
+		/*g_coodata_x = m_count % 200;
+		g_coodata_y = m_count % 300;
+		*/
 		sum = 0;
-		data_length = m_serialport.available();
+		data_length = m_serial_instance->serial_port.available();
 		if (data_length)
 		{
 			unsigned char *data_buf_temp = new unsigned char[data_length];
-			m_serialport.read(data_buf_temp, data_length);
+			m_serial_instance->serial_port.read(data_buf_temp, data_length);
 
 			DataAnl(data_buf_temp, data_length, RX_Data);
 
@@ -539,14 +522,10 @@ void CtinyDlg::serialRead()
 void CtinyDlg::OnClose()
 {
 	// TODO:  在此添加消息处理程序代码和/或调用默认值
-	if (m_serialport.isOpen())
-	{
-		m_serialport.close();
-	}
-	isTerminal = true;
-	serial_thread.join();
 
-	CDialogEx::OnClose();
+	OnOK();
+
+	CPropertyPage::OnClose();
 }
 
 
@@ -649,36 +628,36 @@ void CtinyDlg::OnTimer(UINT_PTR nIDEvent)
 	serialSend(READ_DATA);
 	}*/
 
-	m_datashow_pwm1 = m_showdata.pwm[0];
-	m_datashow_pwm2 = m_showdata.pwm[1];
-	m_datashow_pwm3 = m_showdata.pwm[2];
-	m_datashow_pwm4 = m_showdata.pwm[3];
-	m_datashow_pwm5 = m_showdata.pwm[4];
-	m_datashow_control1 = m_showdata.control[0];
-	m_datashow_control2 = m_showdata.control[1];
-	m_datashow_control3 = m_showdata.control[2];
-	m_datashow_control4 = m_showdata.control[3];
-	m_datashow_height = m_showdata.height;
-	m_datashow_fusiondata = m_showdata.fusion_data;
+	m_datashow_pwm1 = m_showdata->pwm[0];
+	m_datashow_pwm2 = m_showdata->pwm[1];
+	m_datashow_pwm3 = m_showdata->pwm[2];
+	m_datashow_pwm4 = m_showdata->pwm[3];
+	m_datashow_pwm5 = m_showdata->pwm[4];
+	m_datashow_control1 = m_showdata->control[0];
+	m_datashow_control2 = m_showdata->control[1];
+	m_datashow_control3 = m_showdata->control[2];
+	m_datashow_control4 = m_showdata->control[3];
+	m_datashow_height = m_showdata->height;
+	m_datashow_fusiondata = m_showdata->fusion_data;
 
-	m_datashow_acc_x = m_showdata.sensor.VAL_ACC_X;
-	m_datashow_acc_y = m_showdata.sensor.VAL_ACC_Y;
-	m_datashow_acc_z = m_showdata.sensor.VAL_ACC_Z;
-	m_datashow_gry_x = m_showdata.sensor.VAL_GYR_X;
-	m_datashow_gry_y = m_showdata.sensor.VAL_GYR_Y;
-	m_datashow_gry_z = m_showdata.sensor.VAL_GYR_Z;
+	m_datashow_acc_x = m_showdata->sensor.VAL_ACC_X;
+	m_datashow_acc_y = m_showdata->sensor.VAL_ACC_Y;
+	m_datashow_acc_z = m_showdata->sensor.VAL_ACC_Z;
+	m_datashow_gry_x = m_showdata->sensor.VAL_GYR_X;
+	m_datashow_gry_y = m_showdata->sensor.VAL_GYR_Y;
+	m_datashow_gry_z = m_showdata->sensor.VAL_GYR_Z;
 
 	UpdateDataShow();
 
 	UpdateChartCtrlData();
 
-	if (!m_serialport.isOpen())
+	if (!m_serial_instance->serial_port.isOpen())
 	{
 		return;
 	}
 	sendCommand();
 
-	CDialogEx::OnTimer(nIDEvent);
+	CPropertyPage::OnTimer(nIDEvent);
 }
 
 
@@ -771,7 +750,7 @@ void CtinyDlg::initIcon()
 
 bool CtinyDlg::serialSend(SerialSendOrder sendOrder)
 {
-	if (!m_serialport.isOpen())
+	if (!m_serial_instance->serial_port.isOpen())
 	{
 		MessageBox(_T("    串口未打开!"), _T("提示"));
 		return false;
@@ -889,7 +868,7 @@ bool CtinyDlg::serialSend(SerialSendOrder sendOrder)
 
 	//data_to_send[3] = _cnt - 4;
 
-	m_serialport.write(data_to_send, _cnt);
+	m_serial_instance->serial_port.write(data_to_send, _cnt);
 
 	return true;
 }
@@ -922,7 +901,7 @@ bool CtinyDlg::initChartCtrl()
 	m_chartctrl.RemoveAllSeries();
 	m_pChartStandarAxisX->SetMinMax(m_count - SHOW_DATA_SIZE, m_count + SHOW_DATA_SIZE_MARGIN);
 	m_pChartStandarAxisY->SetMinMax(-1 * m_scope_y, m_scope_y);
-	
+
 	for (size_t i = DataName::ACC_X; i < DataName::END; i++)
 	{
 		m_pChartLineSerie.push_back(m_chartctrl.CreateLineSerie());
@@ -944,22 +923,22 @@ void CtinyDlg::UpdateChartCtrlData()
 
 	m_chartctrl.EnableRefresh(false);
 
-	m_pChartLineSerie[DataName::ACC_X]->AddPoint(m_count, m_showdata.sensor.VAL_ACC_X);
-	m_pChartLineSerie[DataName::ACC_Y]->AddPoint(m_count, m_showdata.sensor.VAL_ACC_Y);
-	m_pChartLineSerie[DataName::ACC_Z]->AddPoint(m_count, m_showdata.sensor.VAL_ACC_Z);
-	m_pChartLineSerie[DataName::GRY_X]->AddPoint(m_count, m_showdata.sensor.VAL_GYR_X);
-	m_pChartLineSerie[DataName::GRY_Y]->AddPoint(m_count, m_showdata.sensor.VAL_GYR_Y);
-	m_pChartLineSerie[DataName::GRY_Z]->AddPoint(m_count, m_showdata.sensor.VAL_GYR_Z);
-	m_pChartLineSerie[DataName::HM_X]->AddPoint(m_count, m_showdata.sensor.VAL_HM_X);
-	m_pChartLineSerie[DataName::HM_Y]->AddPoint(m_count, m_showdata.sensor.VAL_HM_Y);
-	m_pChartLineSerie[DataName::HM_Z]->AddPoint(m_count, m_showdata.sensor.VAL_HM_Z);
-	m_pChartLineSerie[DataName::FUSIONDATA]->AddPoint(m_count, m_showdata.fusion_data);
-	m_pChartLineSerie[DataName::HEIGHT]->AddPoint(m_count, m_showdata.height);
-	m_pChartLineSerie[DataName::PWM_1]->AddPoint(m_count, m_showdata.pwm[0]);
-	m_pChartLineSerie[DataName::PWM_2]->AddPoint(m_count, m_showdata.pwm[1]);
-	m_pChartLineSerie[DataName::PWM_3]->AddPoint(m_count, m_showdata.pwm[2]);
-	m_pChartLineSerie[DataName::PWM_4]->AddPoint(m_count, m_showdata.pwm[3]);
-	m_pChartLineSerie[DataName::PWM_5]->AddPoint(m_count, m_showdata.pwm[4]);
+	m_pChartLineSerie[DataName::ACC_X]->AddPoint(m_count, m_showdata->sensor.VAL_ACC_X);
+	m_pChartLineSerie[DataName::ACC_Y]->AddPoint(m_count, m_showdata->sensor.VAL_ACC_Y);
+	m_pChartLineSerie[DataName::ACC_Z]->AddPoint(m_count, m_showdata->sensor.VAL_ACC_Z);
+	m_pChartLineSerie[DataName::GRY_X]->AddPoint(m_count, m_showdata->sensor.VAL_GYR_X);
+	m_pChartLineSerie[DataName::GRY_Y]->AddPoint(m_count, m_showdata->sensor.VAL_GYR_Y);
+	m_pChartLineSerie[DataName::GRY_Z]->AddPoint(m_count, m_showdata->sensor.VAL_GYR_Z);
+	m_pChartLineSerie[DataName::HM_X]->AddPoint(m_count, m_showdata->sensor.VAL_HM_X);
+	m_pChartLineSerie[DataName::HM_Y]->AddPoint(m_count, m_showdata->sensor.VAL_HM_Y);
+	m_pChartLineSerie[DataName::HM_Z]->AddPoint(m_count, m_showdata->sensor.VAL_HM_Z);
+	m_pChartLineSerie[DataName::FUSIONDATA]->AddPoint(m_count, m_showdata->fusion_data);
+	m_pChartLineSerie[DataName::HEIGHT]->AddPoint(m_count, m_showdata->height);
+	m_pChartLineSerie[DataName::PWM_1]->AddPoint(m_count, m_showdata->pwm[0]);
+	m_pChartLineSerie[DataName::PWM_2]->AddPoint(m_count, m_showdata->pwm[1]);
+	m_pChartLineSerie[DataName::PWM_3]->AddPoint(m_count, m_showdata->pwm[2]);
+	m_pChartLineSerie[DataName::PWM_4]->AddPoint(m_count, m_showdata->pwm[3]);
+	m_pChartLineSerie[DataName::PWM_5]->AddPoint(m_count, m_showdata->pwm[4]);
 
 	for (size_t i = DataName::ACC_X; i < DataName::END; i++)
 	{
@@ -1153,6 +1132,8 @@ void CtinyDlg::DataAnl(unsigned char* data_buf_temp, int len, unsigned char* RX_
 
 void CtinyDlg::FrameAnl(unsigned char* RX_Data, int len)
 {
+	static char init;
+	static float offx, offy;
 	unsigned char sum = 0;
 	for (size_t i = 0; i < (len - 1); i++)
 	{
@@ -1165,19 +1146,29 @@ void CtinyDlg::FrameAnl(unsigned char* RX_Data, int len)
 		{
 			case 1://status
 			{
-				/*m_showdata.sensor.VAL_ACC_X = ((float)(BytetoUint(RX_Data, 4))) / 100;
-				m_showdata.sensor.VAL_ACC_Y = ((float)(BytetoUint(RX_Data, 6))) / 100;
-				m_showdata.sensor.VAL_ACC_Z = ((float)(BytetoUint(RX_Data, 8))) / 100;*/
+				m_showdata->angle.Roll = ((float)(BytetoUint(RX_Data, 4))) / 100;
+				m_showdata->angle.Pitch = ((float)(BytetoUint(RX_Data, 6))) / 100;
+				m_showdata->angle.Yaw = ((float)(BytetoUint(RX_Data, 8))) / 100;
+
+				m_showdata->coodinate.id = BytetoUint(RX_Data, 17);
+				m_showdata->coodinate.x = ((float)BytetoUint(RX_Data, 19)) / 5 - offx;
+				m_showdata->coodinate.y = ((float)BytetoUint(RX_Data, 21)) / 5 - offy;
+				if (!init)
+				{
+					init = 1;
+					offx = m_showdata->coodinate.x;
+					offy = m_showdata->coodinate.y;
+				}
 				break;
 			}
 			case 2://senser
 			{
-				m_showdata.sensor.VAL_ACC_X = BytetoUint(RX_Data, 4);
-				m_showdata.sensor.VAL_ACC_Y = BytetoUint(RX_Data, 6);
-				m_showdata.sensor.VAL_ACC_Z = BytetoUint(RX_Data, 8);
-				m_showdata.sensor.VAL_GYR_X = BytetoUint(RX_Data, 10);
-				m_showdata.sensor.VAL_GYR_Y = BytetoUint(RX_Data, 12);
-				m_showdata.sensor.VAL_GYR_Z = BytetoUint(RX_Data, 14);
+				m_showdata->sensor.VAL_ACC_X = BytetoUint(RX_Data, 4);
+				m_showdata->sensor.VAL_ACC_Y = BytetoUint(RX_Data, 6);
+				m_showdata->sensor.VAL_ACC_Z = BytetoUint(RX_Data, 8);
+				m_showdata->sensor.VAL_GYR_X = BytetoUint(RX_Data, 10);
+				m_showdata->sensor.VAL_GYR_Y = BytetoUint(RX_Data, 12);
+				m_showdata->sensor.VAL_GYR_Z = BytetoUint(RX_Data, 14);
 				break;
 			}
 			case 3:
@@ -1187,10 +1178,10 @@ void CtinyDlg::FrameAnl(unsigned char* RX_Data, int len)
 			}
 			case 4://GPS
 			{
-				m_showdata.gps.latitude = ((double)Bytetoint(RX_Data, 4)) / 10000000;
-				m_showdata.gps.longitude = ((double)Bytetoint(RX_Data, 8)) / 10000000;
-				m_showdata.gps.elevation = ((float)Bytetoint(RX_Data, 12)) / 100;
-				m_showdata.height = m_showdata.gps.elevation;
+				m_showdata->gps.latitude = ((double)Bytetoint(RX_Data, 4)) / 10000000;
+				m_showdata->gps.longitude = ((double)Bytetoint(RX_Data, 8)) / 10000000;
+				m_showdata->gps.elevation = ((float)Bytetoint(RX_Data, 12)) / 100;
+				m_showdata->height = m_showdata->gps.elevation;
 				break;
 			}
 			case 5://votage
@@ -1218,12 +1209,12 @@ void CtinyDlg::FrameAnl(unsigned char* RX_Data, int len)
 			}
 			case 8://sensor
 			{
-				m_showdata.sensor.VAL_ACC_X = BytetoUint(RX_Data, 4);
-				m_showdata.sensor.VAL_ACC_Y = BytetoUint(RX_Data, 6);
-				m_showdata.sensor.VAL_ACC_Z = BytetoUint(RX_Data, 8);
-				m_showdata.sensor.VAL_GYR_X = BytetoUint(RX_Data, 10);
-				m_showdata.sensor.VAL_GYR_Y = BytetoUint(RX_Data, 12);
-				m_showdata.sensor.VAL_GYR_Z = BytetoUint(RX_Data, 14);
+				m_showdata->sensor.VAL_ACC_X = BytetoUint(RX_Data, 4);
+				m_showdata->sensor.VAL_ACC_Y = BytetoUint(RX_Data, 6);
+				m_showdata->sensor.VAL_ACC_Z = BytetoUint(RX_Data, 8);
+				m_showdata->sensor.VAL_GYR_X = BytetoUint(RX_Data, 10);
+				m_showdata->sensor.VAL_GYR_Y = BytetoUint(RX_Data, 12);
+				m_showdata->sensor.VAL_GYR_Z = BytetoUint(RX_Data, 14);
 				break;
 			}
 			default:
@@ -1318,4 +1309,29 @@ void CtinyDlg::OnBnClickedCheckHm()
 		m_pChartLineSerie[DataName::HM_Y]->SetVisible(true);
 		m_pChartLineSerie[DataName::HM_Z]->SetVisible(true);
 	}
+}
+
+
+bool CtinyDlg::initSerial()
+{
+	m_serial_instance = SerialSingleton::GetInstance();
+	m_serial_instance->serial_port;
+	return true;
+}
+
+
+void CtinyDlg::OnOK()
+{
+	// TODO:  在此添加专用代码和/或调用基类
+
+	isTerminal = true;
+	serial_thread.join();
+	
+	if (m_serial_instance->serial_port.isOpen())
+	{
+		m_serial_instance->serial_port.close();
+		Sleep(30);
+	}
+	
+	CPropertyPage::OnOK();
 }

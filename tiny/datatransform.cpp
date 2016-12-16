@@ -37,3 +37,25 @@ long Bytetoint(unsigned char* databuf, int cnt)
 	r |= (databuf[cnt + 3] & 0x00ff);
 	return r;
 }
+
+bool initColorTable(std::vector < COLORREF >& ColorTable)
+{
+	ColorTable.push_back(RGB(255, 0, 0));
+	ColorTable.push_back(RGB(0, 255, 0));
+	ColorTable.push_back(RGB(0, 0, 255));
+	ColorTable.push_back(RGB(255, 255, 0));
+	ColorTable.push_back(RGB(255, 0, 255));
+	ColorTable.push_back(RGB(0, 255, 255));
+	ColorTable.push_back(RGB(65, 100, 225));
+	ColorTable.push_back(RGB(119, 136, 153));
+	ColorTable.push_back(RGB(50, 205, 50));
+	ColorTable.push_back(RGB(255, 140, 0));
+	ColorTable.push_back(RGB(139, 69, 19));
+	ColorTable.push_back(RGB(255, 127, 80));
+	ColorTable.push_back(RGB(178, 34, 34));
+	ColorTable.push_back(RGB(128, 0, 0));
+	ColorTable.push_back(RGB(189, 183, 107));
+	ColorTable.push_back(RGB(218, 165, 32));
+
+	return true;
+}

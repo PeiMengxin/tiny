@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include <iostream>
 #include <vector>
+#include <deque>
 
 class PID
 {
@@ -15,6 +16,20 @@ public:
 	uint16_t i;
 	uint16_t d;
 	uint16_t n;
+
+private:
+
+};
+
+class Angle
+{
+public:
+	Angle();
+	~Angle();
+
+	short Pitch;
+	short Roll;
+	short Yaw;
 
 private:
 
@@ -81,20 +96,16 @@ private:
 
 };
 
-class DataShow
+class Coordinate
 {
 public:
-	DataShow();
-	~DataShow();
+	Coordinate();
+	~Coordinate();
 
-	uint16_t pwm[5];
-	int control[4];
-	uint8_t state;
-	float fusion_data;
-	float height;
-
-	GPS gps;
-	Sensor sensor;
+	int x;
+	int y;
+	int z;
+	int id;
 
 private:
 
@@ -112,6 +123,34 @@ public:
 private:
 
 };
+
+class DataShow
+{
+private:
+	DataShow();
+	static DataShow *m_pInstance;
+	class CGarbo   //它的唯一工作就是在析构函数中删除CSingleton的实例
+	{
+	public:
+		~CGarbo();
+	};
+	static CGarbo Garbo;  //定义一个静态成员变量，程序结束时，系统会自动调用它的析构函数
+
+public:
+	static DataShow * GetInstance();
+
+	uint16_t pwm[5];
+	int control[4];
+	uint8_t state;
+	float fusion_data;
+	float height;
+
+	GPS gps;
+	Sensor sensor;
+	Angle angle;
+	Coordinate coodinate;
+};
+
 
 
 #endif //_PARAM_H__

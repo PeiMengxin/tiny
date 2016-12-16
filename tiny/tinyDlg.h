@@ -15,12 +15,13 @@
 #include "ChartCtrl/ChartAxis.h"
 #include "ChartCtrl/ChartLineSerie.h"
 #include "ColorButton/ColorButton.h"
+#include "SerialSingleton.h"
 
 #define SHOW_DATA_SIZE 300
 #define SHOW_DATA_SIZE_MARGIN 50
 
 // CtinyDlg 对话框
-class CtinyDlg : public CDialogEx
+class CtinyDlg : public CPropertyPage
 {
 	typedef enum SerialSendOrder
 	{
@@ -55,7 +56,7 @@ class CtinyDlg : public CDialogEx
 
 	// 构造
 public:
-	CtinyDlg(CWnd* pParent = NULL);	// 标准构造函数
+	CtinyDlg(/*CWnd* pParent = NULL*/);	// 标准构造函数
 
 	// 对话框数据
 	enum { IDD = IDD_TINY_DIALOG };
@@ -155,9 +156,9 @@ private:
 	bool isTerminal;
 	bool m_serial_closing;
 
-	serial::Serial m_serialport;
+	SerialSingleton* m_serial_instance;
 	Param m_param;
-	DataShow m_showdata;
+	DataShow* m_showdata;
 	int m_count;
 
 	std::thread serial_thread;
@@ -166,7 +167,6 @@ private:
 	bool initCom();
 	void initIcon();
 	bool initDataShow();
-	bool initColorTable();
 
 	void detectCom();
 	void serialRead();
@@ -224,4 +224,6 @@ public:
 	CButton m_check_acc;
 	CButton m_check_gry;
 	CButton m_check_hm;
+	bool initSerial();
+	virtual void OnOK();
 };
