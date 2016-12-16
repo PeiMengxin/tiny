@@ -186,7 +186,6 @@
     <None Include="ChartCtrl\ChartLabel.inl" />
     <None Include="ChartCtrl\ChartPointsArray.inl" />
     <None Include="ChartCtrl\ChartSerieBase.inl" />
-    <None Include="ClassDiagram.cd" />
     <None Include="res\tiny.rc2" />
   </ItemGroup>
   <ItemGroup>
