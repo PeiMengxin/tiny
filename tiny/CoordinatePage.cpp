@@ -23,12 +23,18 @@ CCoordinatePage::~CCoordinatePage()
 void CCoordinatePage::DoDataExchange(CDataExchange* pDX)
 {
 	CPropertyPage::DoDataExchange(pDX);
-	DDX_Control(pDX, IDC_Coodinate, m_coodinate);
+	DDX_Control(pDX, IDC_Coodinate, m_chartctrl_coodinate);
+	DDX_Control(pDX, IDC_CHECK_COOR_ID0, m_check_coor_id0);
+	DDX_Control(pDX, IDC_CHECK_COOR_ID1, m_check_coor_id1);
+	DDX_Control(pDX, IDC_CHECK_COOR_ID2, m_check_coor_id2);
 }
 
 
 BEGIN_MESSAGE_MAP(CCoordinatePage, CPropertyPage)
 	ON_WM_TIMER()
+	ON_BN_CLICKED(IDC_CHECK_COOR_ID0, &CCoordinatePage::OnBnClickedCheckCoorId0)
+	ON_BN_CLICKED(IDC_CHECK_COOR_ID1, &CCoordinatePage::OnBnClickedCheckCoorId1)
+	ON_BN_CLICKED(IDC_CHECK_COOR_ID2, &CCoordinatePage::OnBnClickedCheckCoorId2)
 END_MESSAGE_MAP()
 
 
@@ -52,6 +58,7 @@ bool CCoordinatePage::init()
 {
 	m_showdata = DataShow::GetInstance();
 
+	initLineName();
 	initColorTable(ColorTable);
 	initChartCtrl();
 
@@ -65,10 +72,10 @@ bool CCoordinatePage::initChartCtrl()
 	int m_count = 0;
 	ChartCtrlData chartctrldata;
 
-	m_coodinate.SetBackColor(RGB(0, 0, 0));
+	m_chartctrl_coodinate.SetBackColor(RGB(0, 0, 0));
 
-	m_pChartStandarAxisY = m_coodinate.CreateStandardAxis(CChartCtrl::LeftAxis);
-	m_pChartStandarAxisX = m_coodinate.CreateStandardAxis(CChartCtrl::BottomAxis);
+	m_pChartStandarAxisY = m_chartctrl_coodinate.CreateStandardAxis(CChartCtrl::LeftAxis);
+	m_pChartStandarAxisX = m_chartctrl_coodinate.CreateStandardAxis(CChartCtrl::BottomAxis);
 	m_pChartStandarAxisX->SetAutomatic(false);
 	m_pChartStandarAxisY->SetAutomatic(false);
 	m_pChartStandarAxisX->SetAxisColor(RGB(255, 255, 255));
@@ -84,35 +91,55 @@ bool CCoordinatePage::initChartCtrl()
 		chartctrldata.y.push_back(0);
 	}
 
-	m_coodinate.EnableRefresh(false);
-	m_coodinate.RemoveAllSeries();
+	m_chartctrl_coodinate.EnableRefresh(false);
+	m_chartctrl_coodinate.RemoveAllSeries();
 	m_pChartStandarAxisX->SetMinMax(-1 * COODINATE_WIDTH, COODINATE_WIDTH);
 	m_pChartStandarAxisY->SetMinMax(-1 * COODINATE_HEIGHT, COODINATE_HEIGHT);
 
-	m_pChartPointsSerie_Head.push_back(m_coodinate.CreatePointsSerie());
-	m_pChartPointsSerie_Head[0]->AddPoint(0, 0);
+	m_chartctrl_coodinate.GetLegend()->SetVisible(true);
+	m_chartctrl_coodinate.GetLegend()->EnableShadow(false);
 
-	m_pChartPointsSerie_Head[0]->SetColor(ColorTable[0]);
-	m_pChartPointsSerie_Head[0]->SetPointSize(15, 15);
-	m_pChartPointsSerie_Head[0]->SetPointType(CChartPointsSerie::ptRectangle);
+	for (size_t i = 0; i < ID_NUM; i++)
+	{
+		m_pChartPointsSerie_Head.push_back(m_chartctrl_coodinate.CreatePointsSerie());
+		m_pChartPointsSerie_Head[i]->AddPoint(0, 0);
 
-	m_pChartLineSerie.push_back(m_coodinate.CreateLineSerie());
-	m_pChartLineSerie[0]->AddPoints(chartctrldata.x.data(), chartctrldata.y.data(), DATA_SIZE);
+		m_pChartPointsSerie_Head[i]->SetColor(ColorTable[i]);
+		m_pChartPointsSerie_Head[i]->SetPointSize(15, 15);
+		m_pChartPointsSerie_Head[i]->SetPointType(CChartPointsSerie::ptRectangle);
+		m_pChartPointsSerie_Head[i]->SetVisible(false);
 
-	m_pChartLineSerie[0]->SetColor(ColorTable[0]);
-	m_pChartLineSerie[0]->SetWidth(5);
+		m_pChartLineSerie.push_back(m_chartctrl_coodinate.CreateLineSerie());
+		m_pChartLineSerie[i]->AddPoints(chartctrldata.x.data(), chartctrldata.y.data(), DATA_SIZE);
+		m_pChartLineSerie[i]->SetName(LineName[i]);
+		m_pChartLineSerie[i]->SetColor(ColorTable[i]);
+		m_pChartLineSerie[i]->SetWidth(5);
+		m_pChartLineSerie[i]->SetSeriesOrdering(poNoOrdering);
+		m_pChartLineSerie[i]->SetVisible(false);
+	}
+	
+	m_pChartLineSerie[0]->SetVisible(true);
+	m_pChartPointsSerie_Head[0]->SetVisible(true);
+	m_check_coor_id0.SetCheck(1);
 
-	m_pChartLineSerie[0]->SetSeriesOrdering(poNoOrdering);
-
-	m_coodinate.EnableRefresh(true);
+	m_chartctrl_coodinate.EnableRefresh(true);
 
 	return true;
 }
 
 
+bool CCoordinatePage::initLineName()
+{
+	LineName.push_back(_T("ID0"));
+	LineName.push_back(_T("ID1"));
+	LineName.push_back(_T("ID2"));
+
+	return true;
+}
+
 void CCoordinatePage::UpdateChartCtrlData()
 {
-	m_coodinate.EnableRefresh(false);
+	m_chartctrl_coodinate.EnableRefresh(false);
 	
 	m_pChartLineSerie[0]->RemovePointsFromBegin(1);
 	m_pChartLineSerie[0]->AddPoint(m_showdata->angle.Roll, m_showdata->angle.Yaw);
@@ -120,7 +147,7 @@ void CCoordinatePage::UpdateChartCtrlData()
 	m_pChartPointsSerie_Head[0]->ClearSerie();
 	m_pChartPointsSerie_Head[0]->AddPoint(m_showdata->angle.Roll, m_showdata->angle.Yaw);
 	
-	m_coodinate.EnableRefresh(true);
+	m_chartctrl_coodinate.EnableRefresh(true);
 }
 
 void CCoordinatePage::OnTimer(UINT_PTR nIDEvent)
@@ -132,13 +159,31 @@ void CCoordinatePage::OnTimer(UINT_PTR nIDEvent)
 	CStringW cstr_temp;
 
 	cstr_temp.Format(_T("%d"), m_showdata->coodinate.id);
-	GetDlgItem(IDC_STATIC_ID)->SetWindowText(cstr_temp);
+	GetDlgItem(IDC_CHECK_COOR_ID0)->SetWindowText(cstr_temp);
 
 	cstr_temp.Format(_T("%d"), m_showdata->coodinate.x);
-	GetDlgItem(IDC_STATIC_X)->SetWindowText(cstr_temp);
+	GetDlgItem(IDC_STATIC_ID0_X)->SetWindowText(cstr_temp);
 
 	cstr_temp.Format(_T("%d"), m_showdata->coodinate.y);
-	GetDlgItem(IDC_STATIC_Y)->SetWindowText(cstr_temp);
+	GetDlgItem(IDC_STATIC_ID0_Y)->SetWindowText(cstr_temp);
+
+	cstr_temp.Format(_T("%d"), 0);
+	GetDlgItem(IDC_CHECK_COOR_ID1)->SetWindowText(cstr_temp);
+
+	cstr_temp.Format(_T("%d"), m_showdata->coodinate.x);
+	GetDlgItem(IDC_STATIC_ID1_X)->SetWindowText(cstr_temp);
+
+	cstr_temp.Format(_T("%d"), m_showdata->coodinate.y);
+	GetDlgItem(IDC_STATIC_ID1_Y)->SetWindowText(cstr_temp);
+
+	cstr_temp.Format(_T("%d"), 0);
+	GetDlgItem(IDC_CHECK_COOR_ID2)->SetWindowText(cstr_temp);
+
+	cstr_temp.Format(_T("%d"), m_showdata->coodinate.x);
+	GetDlgItem(IDC_STATIC_ID2_X)->SetWindowText(cstr_temp);
+
+	cstr_temp.Format(_T("%d"), m_showdata->coodinate.y);
+	GetDlgItem(IDC_STATIC_ID2_Y)->SetWindowText(cstr_temp);
 
 	cstr_temp.Format(_T("%d"), m_showdata->angle.Pitch);
 	GetDlgItem(IDC_STATIC_ANGLE_PITCH)->SetWindowText(cstr_temp);
@@ -150,4 +195,59 @@ void CCoordinatePage::OnTimer(UINT_PTR nIDEvent)
 	GetDlgItem(IDC_STATIC_ANGLE_YAW)->SetWindowText(cstr_temp);
 
 	CPropertyPage::OnTimer(nIDEvent);
+}
+
+
+void CCoordinatePage::OnBnClickedCheckCoorId0()
+{
+	// TODO:  在此添加控件通知处理程序代码
+
+	int state = m_check_coor_id0.GetCheck();
+
+	if (state == 0)
+	{
+		m_pChartLineSerie[0]->SetVisible(false);
+		m_pChartPointsSerie_Head[0]->SetVisible(false);
+	}
+	else
+	{
+		m_pChartLineSerie[0]->SetVisible(true);
+		m_pChartPointsSerie_Head[0]->SetVisible(true);
+	}
+}
+
+
+void CCoordinatePage::OnBnClickedCheckCoorId1()
+{
+	// TODO:  在此添加控件通知处理程序代码
+	int state = m_check_coor_id1.GetCheck();
+
+	if (state == 0)
+	{
+		m_pChartLineSerie[1]->SetVisible(false);
+		m_pChartPointsSerie_Head[1]->SetVisible(false);
+	}
+	else
+	{
+		m_pChartLineSerie[1]->SetVisible(true);
+		m_pChartPointsSerie_Head[1]->SetVisible(true);
+	}
+}
+
+
+void CCoordinatePage::OnBnClickedCheckCoorId2()
+{
+	// TODO:  在此添加控件通知处理程序代码
+	int state = m_check_coor_id2.GetCheck();
+
+	if (state == 0)
+	{
+		m_pChartLineSerie[2]->SetVisible(false);
+		m_pChartPointsSerie_Head[2]->SetVisible(false);
+	}
+	else
+	{
+		m_pChartLineSerie[2]->SetVisible(true);
+		m_pChartPointsSerie_Head[2]->SetVisible(true);
+	}
 }

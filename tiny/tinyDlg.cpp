@@ -131,6 +131,7 @@ BEGIN_MESSAGE_MAP(CtinyDlg, CPropertyPage)
 	ON_BN_CLICKED(IDC_CHECK_ACC, &CtinyDlg::OnBnClickedCheckAcc)
 	ON_BN_CLICKED(IDC_CHECK_GRY, &CtinyDlg::OnBnClickedCheckGry)
 	ON_BN_CLICKED(IDC_CHECK_HM, &CtinyDlg::OnBnClickedCheckHm)
+	ON_BN_CLICKED(IDC_CHECK_ANGLE, &CtinyDlg::OnBnClickedCheckAngle)
 END_MESSAGE_MAP()
 
 
@@ -232,6 +233,7 @@ bool CtinyDlg::init()
 	initIcon();
 	initDataShow();
 	initColorTable(ColorTable);
+	initLineName();
 	initChartCtrl();
 	initColorButton();
 
@@ -846,9 +848,13 @@ bool CtinyDlg::initChartCtrl()
 	m_pChartStandarAxisX->SetMinMax(m_count - SHOW_DATA_SIZE, m_count + SHOW_DATA_SIZE_MARGIN);
 	m_pChartStandarAxisY->SetMinMax(-1 * m_scope_y, m_scope_y);
 
+	m_chartctrl.GetLegend()->SetVisible(true);
+	m_chartctrl.GetLegend()->EnableShadow(false);
+
 	for (size_t i = DataName::ACC_X; i < DataName::END; i++)
 	{
 		m_pChartLineSerie.push_back(m_chartctrl.CreateLineSerie());
+		m_pChartLineSerie[i]->SetName(LineName[i]);
 		m_pChartLineSerie[i]->SetWidth(2);
 		m_pChartLineSerie[i]->SetColor(ColorTable[i]);
 		m_pChartLineSerie[i]->AddPoints(m_chartctrldata.x.data(), m_chartctrldata.y.data(), SHOW_DATA_SIZE);
@@ -878,11 +884,10 @@ void CtinyDlg::UpdateChartCtrlData()
 	m_pChartLineSerie[DataName::HM_Z]->AddPoint(m_count, m_showdata->sensor.hm_z);
 	m_pChartLineSerie[DataName::FUSIONDATA]->AddPoint(m_count, m_showdata->fusion_data);
 	m_pChartLineSerie[DataName::HEIGHT]->AddPoint(m_count, m_showdata->height);
-	m_pChartLineSerie[DataName::PWM_1]->AddPoint(m_count, m_showdata->pwm[0]);
-	m_pChartLineSerie[DataName::PWM_2]->AddPoint(m_count, m_showdata->pwm[1]);
-	m_pChartLineSerie[DataName::PWM_3]->AddPoint(m_count, m_showdata->pwm[2]);
-	m_pChartLineSerie[DataName::PWM_4]->AddPoint(m_count, m_showdata->pwm[3]);
-	m_pChartLineSerie[DataName::PWM_5]->AddPoint(m_count, m_showdata->pwm[4]);
+	m_pChartLineSerie[DataName::ANGLE_PITCH]->AddPoint(m_count, m_showdata->angle.Pitch);
+	m_pChartLineSerie[DataName::ANGLE_ROLL]->AddPoint(m_count, m_showdata->angle.Roll);
+	m_pChartLineSerie[DataName::ANGLE_YAW]->AddPoint(m_count, m_showdata->angle.Yaw);
+	
 
 	for (size_t i = DataName::ACC_X; i < DataName::END; i++)
 	{
@@ -983,7 +988,7 @@ void CtinyDlg::OnBnClickedCheckHeight()
 }
 
 
-void CtinyDlg::OnBnClickedButtonZoomin()
+void CtinyDlg::OnBnClickedButtonZoomout()
 {
 	// TODO:  在此添加控件通知处理程序代码
 
@@ -993,7 +998,7 @@ void CtinyDlg::OnBnClickedButtonZoomin()
 }
 
 
-void CtinyDlg::OnBnClickedButtonZoomout()
+void CtinyDlg::OnBnClickedButtonZoomin()
 {
 	// TODO:  在此添加控件通知处理程序代码
 	if (m_scope_y > 2)
@@ -1264,6 +1269,26 @@ bool CtinyDlg::initSerial()
 }
 
 
+bool CtinyDlg::initLineName()
+{
+	LineName.push_back(_T("AX"));
+	LineName.push_back(_T("AY"));
+	LineName.push_back(_T("AZ"));
+	LineName.push_back(_T("GX"));
+	LineName.push_back(_T("GY"));
+	LineName.push_back(_T("GZ"));
+	LineName.push_back(_T("HX"));
+	LineName.push_back(_T("HY"));
+	LineName.push_back(_T("HZ"));
+	LineName.push_back(_T("Pit"));
+	LineName.push_back(_T("Rol"));
+	LineName.push_back(_T("Yaw"));
+	LineName.push_back(_T("FD"));
+	LineName.push_back(_T("Hei"));
+
+	return true;
+}
+
 void CtinyDlg::OnOK()
 {
 	// TODO:  在此添加专用代码和/或调用基类
@@ -1278,4 +1303,25 @@ void CtinyDlg::OnOK()
 	}
 	
 	CPropertyPage::OnOK();
+}
+
+
+void CtinyDlg::OnBnClickedCheckAngle()
+{
+	// TODO:  在此添加控件通知处理程序代码
+
+	int state = m_check_angle.GetCheck();
+
+	if (state == 0)
+	{
+		m_pChartLineSerie[DataName::ANGLE_PITCH]->SetVisible(false);
+		m_pChartLineSerie[DataName::ANGLE_ROLL]->SetVisible(false);
+		m_pChartLineSerie[DataName::ANGLE_YAW]->SetVisible(false);
+	}
+	else
+	{
+		m_pChartLineSerie[DataName::ANGLE_PITCH]->SetVisible(true);
+		m_pChartLineSerie[DataName::ANGLE_ROLL]->SetVisible(true);
+		m_pChartLineSerie[DataName::ANGLE_YAW]->SetVisible(true);
+	}
 }

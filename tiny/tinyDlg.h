@@ -14,6 +14,7 @@
 #include "Param.h"
 #include "ChartCtrl/ChartAxis.h"
 #include "ChartCtrl/ChartLineSerie.h"
+#include "ChartCtrl/ChartLegend.h"
 #include "ColorButton/ColorButton.h"
 #include "SerialSingleton.h"
 
@@ -43,13 +44,11 @@ class CtinyDlg : public CPropertyPage
 		HM_X,
 		HM_Y,
 		HM_Z,
+		ANGLE_PITCH,
+		ANGLE_ROLL,
+		ANGLE_YAW,
 		FUSIONDATA,
 		HEIGHT,
-		PWM_1,
-		PWM_2,
-		PWM_3,
-		PWM_4,
-		PWM_5,
 
 		END
 	};
@@ -205,6 +204,9 @@ public:
 	CButton m_check_gry;
 	CButton m_check_hm;
 	bool initSerial();
+	bool initLineName();
 	virtual void OnOK();
 	CButton m_check_angle;
+	std::vector<TChartString> LineName;
+	afx_msg void OnBnClickedCheckAngle();
 };

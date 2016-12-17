@@ -51,7 +51,7 @@ bool initColorTable(std::vector < COLORREF >& ColorTable)
 	ColorTable.push_back(RGB(50, 205, 50));
 	ColorTable.push_back(RGB(255, 140, 0));
 	ColorTable.push_back(RGB(139, 69, 19));
-	ColorTable.push_back(RGB(255, 127, 80));
+	ColorTable.push_back(RGB(128, 127, 80));
 	ColorTable.push_back(RGB(178, 34, 34));
 	ColorTable.push_back(RGB(128, 0, 0));
 	ColorTable.push_back(RGB(189, 183, 107));
