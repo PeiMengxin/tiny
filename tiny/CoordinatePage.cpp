@@ -63,6 +63,7 @@ bool CCoordinatePage::init()
 bool CCoordinatePage::initChartCtrl()
 {
 	int m_count = 0;
+	ChartCtrlData chartctrldata;
 
 	m_coodinate.SetBackColor(RGB(0, 0, 0));
 
@@ -79,8 +80,8 @@ bool CCoordinatePage::initChartCtrl()
 	for (size_t i = 0; i < DATA_SIZE; i++)
 	{
 		m_count++;
-		m_chartctrldata.x.push_back(0);
-		m_chartctrldata.y.push_back(0);
+		chartctrldata.x.push_back(0);
+		chartctrldata.y.push_back(0);
 	}
 
 	m_coodinate.EnableRefresh(false);
@@ -88,20 +89,15 @@ bool CCoordinatePage::initChartCtrl()
 	m_pChartStandarAxisX->SetMinMax(-1 * COODINATE_WIDTH, COODINATE_WIDTH);
 	m_pChartStandarAxisY->SetMinMax(-1 * COODINATE_HEIGHT, COODINATE_HEIGHT);
 
-	/*m_pChartPointsSerie.push_back(m_coodinate.CreatePointsSerie());
-	m_pChartPointsSerie[0]->AddPoints(m_chartctrldata.x.data(), m_chartctrldata.y.data(), DATA_SIZE);
-
-	m_pChartPointsSerie[0]->SetColor(ColorTable[0]);
-	m_pChartPointsSerie[0]->SetPointSize(5, 5);*/
-
 	m_pChartPointsSerie_Head.push_back(m_coodinate.CreatePointsSerie());
 	m_pChartPointsSerie_Head[0]->AddPoint(0, 0);
 
 	m_pChartPointsSerie_Head[0]->SetColor(ColorTable[0]);
 	m_pChartPointsSerie_Head[0]->SetPointSize(15, 15);
+	m_pChartPointsSerie_Head[0]->SetPointType(CChartPointsSerie::ptRectangle);
 
 	m_pChartLineSerie.push_back(m_coodinate.CreateLineSerie());
-	m_pChartLineSerie[0]->AddPoints(m_chartctrldata.x.data(), m_chartctrldata.y.data(), DATA_SIZE);
+	m_pChartLineSerie[0]->AddPoints(chartctrldata.x.data(), chartctrldata.y.data(), DATA_SIZE);
 
 	m_pChartLineSerie[0]->SetColor(ColorTable[0]);
 	m_pChartLineSerie[0]->SetWidth(5);
@@ -118,21 +114,12 @@ void CCoordinatePage::UpdateChartCtrlData()
 {
 	m_coodinate.EnableRefresh(false);
 	
-	//m_pChartPointsSerie[0]->ClearSerie();
+	m_pChartLineSerie[0]->RemovePointsFromBegin(1);
+	m_pChartLineSerie[0]->AddPoint(m_showdata->angle.Roll, m_showdata->angle.Yaw);
+	
 	m_pChartPointsSerie_Head[0]->ClearSerie();
-	m_pChartLineSerie[0]->ClearSerie();
-
-	m_chartctrldata.x.push_back(m_showdata->angle.Roll);
-	m_chartctrldata.y.push_back(m_showdata->angle.Yaw);
-	m_chartctrldata.x.erase(m_chartctrldata.x.begin());
-	m_chartctrldata.y.erase(m_chartctrldata.y.begin());
-
-	//m_pChartPointsSerie[0]->AddPoints(m_chartctrldata.x.data(), m_chartctrldata.y.data(), DATA_SIZE);
 	m_pChartPointsSerie_Head[0]->AddPoint(m_showdata->angle.Roll, m_showdata->angle.Yaw);
-	m_pChartLineSerie[0]->AddPoints(m_chartctrldata.x.data(), m_chartctrldata.y.data(), DATA_SIZE);
-	/*m_pChartPointsSerie[0]->AddPoint(m_showdata->angle.Roll, m_showdata->angle.Yaw);
-	m_pChartPointsSerie[0]->RemovePointsFromBegin(0);*/
-
+	
 	m_coodinate.EnableRefresh(true);
 }
 

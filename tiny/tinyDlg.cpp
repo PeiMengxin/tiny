@@ -942,7 +942,7 @@ void CtinyDlg::UpdateChartCtrlData()
 
 	for (size_t i = DataName::ACC_X; i < DataName::END; i++)
 	{
-		m_pChartLineSerie[i]->RemovePointsFromBegin(0);
+		m_pChartLineSerie[i]->RemovePointsFromBegin(1);
 	}
 
 	m_pChartStandarAxisX->SetMinMax(m_count - SHOW_DATA_SIZE, m_count + SHOW_DATA_SIZE_MARGIN);
