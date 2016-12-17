@@ -41,17 +41,17 @@ public:
 	Sensor();
 	~Sensor();
 
-	short VAL_ACC_X;
-	short VAL_ACC_Y;
-	short VAL_ACC_Z;
+	short acc_x;
+	short acc_y;
+	short acc_z;
 
-	short VAL_GYR_X;
-	short VAL_GYR_Y;
-	short VAL_GYR_Z;
+	short gry_x;
+	short gry_y;
+	short gry_z;
 	
-	short VAL_HM_X;
-	short VAL_HM_Y;
-	short VAL_HM_Z;
+	short hm_x;
+	short hm_y;
+	short hm_z;
 
 private:
 

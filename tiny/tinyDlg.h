@@ -113,18 +113,6 @@ private:
 	CStatic m_icon_comstate;
 	CStatic m_static_comstate;
 
-	int m_datashow_pwm1;
-	int m_datashow_pwm2;
-	int m_datashow_pwm3;
-	int m_datashow_pwm4;
-	int m_datashow_pwm5;
-	int m_datashow_control1;
-	int m_datashow_control2;
-	int m_datashow_control3;
-	int m_datashow_control4;
-	float m_datashow_fusiondata;
-	float m_datashow_height;
-
 	int m_edit_pid_p_custom;
 	int m_edit_pid_i_custom;
 	int m_edit_pid_d_custom;
@@ -204,15 +192,7 @@ public:
 
 	afx_msg void OnBnClickedButtonZoomin();
 	afx_msg void OnBnClickedButtonZoomout();
-	short m_datashow_acc_x;
-	short m_datashow_acc_y;
-	short m_datashow_acc_z;
-	short m_datashow_gry_x;
-	short m_datashow_gry_y;
-	short m_datashow_gry_z;
-	short m_datashow_hm_x;
-	short m_datashow_hm_y;
-	short m_datashow_hm_z;
+	
 	void sendCommand();
 	void DataAnl(unsigned char* data_buf_temp, int len, unsigned char* RX_Data);
 	void FrameAnl(unsigned char* RX_Data, int len);
@@ -226,4 +206,5 @@ public:
 	CButton m_check_hm;
 	bool initSerial();
 	virtual void OnOK();
+	CButton m_check_angle;
 };

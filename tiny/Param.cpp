@@ -51,15 +51,15 @@ Sensor::~Sensor()
 
 Sensor::Sensor()
 {
-	VAL_ACC_X = 0;
-	VAL_ACC_Y = 0;
-	VAL_ACC_Z = 0;
-	VAL_GYR_X = 0;
-	VAL_GYR_Y = 0;
-	VAL_GYR_Z = 0;
-	VAL_HM_X = 0;
-	VAL_HM_Y = 0;
-	VAL_HM_Z = 0;
+	acc_x = 0;
+	acc_y = 0;
+	acc_z = 0;
+	gry_x = 0;
+	gry_y = 0;
+	gry_z = 0;
+	hm_x = 0;
+	hm_y = 0;
+	hm_z = 0;
 }
 
 GPS::~GPS()

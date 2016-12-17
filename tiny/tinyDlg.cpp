@@ -53,15 +53,6 @@ CtinyDlg::CtinyDlg(/*CWnd* pParent /*=NULL*/)
 	, isTerminal(false)
 	, m_serial_closing(false)
 	, m_scope_y(100)
-	, m_datashow_acc_x(0)
-	, m_datashow_acc_y(0)
-	, m_datashow_acc_z(0)
-	, m_datashow_gry_x(0)
-	, m_datashow_gry_y(0)
-	, m_datashow_gry_z(0)
-	, m_datashow_hm_x(0)
-	, m_datashow_hm_y(0)
-	, m_datashow_hm_z(0)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
@@ -78,18 +69,6 @@ void CtinyDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_STATIC_COMSTATE, m_static_comstate);
 	DDX_Control(pDX, IDC_ENABLE_SETHEIGHT, m_check_setheight);
 	DDX_Control(pDX, IDC_ENABLE_AVOIDOBJECTION, m_check_avoidobjection);
-
-	DDX_Text(pDX, IDC_DATASHOW_PWM1, m_datashow_pwm1);
-	DDX_Text(pDX, IDC_DATASHOW_PWM2, m_datashow_pwm2);
-	DDX_Text(pDX, IDC_DATASHOW_PWM3, m_datashow_pwm3);
-	DDX_Text(pDX, IDC_DATASHOW_PWM4, m_datashow_pwm4);
-	DDX_Text(pDX, IDC_DATASHOW_PWM5, m_datashow_pwm5);
-	DDX_Text(pDX, IDC_DATASHOW_CONTROL1, m_datashow_control1);
-	DDX_Text(pDX, IDC_DATASHOW_CONTROL2, m_datashow_control2);
-	DDX_Text(pDX, IDC_DATASHOW_CONTROL3, m_datashow_control3);
-	DDX_Text(pDX, IDC_DATASHOW_CONTROL4, m_datashow_control4);
-	DDX_Text(pDX, IDC_DATASHOW_RADAEFUSIONDATA, m_datashow_fusiondata);
-	DDX_Text(pDX, IDC_DATASHOW_EXPECTEDHEIGHT, m_datashow_height);
 
 	DDX_Text(pDX, IDC_DATASETTING_ROCKERMID1, m_edit_rockermid1);
 	DDX_Text(pDX, IDC_DATASETTING_ROCKERMID2, m_edit_rockermid2);
@@ -121,19 +100,11 @@ void CtinyDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_CHECK_FUSIONDATA, m_check_fusiondata);
 	DDX_Control(pDX, IDC_CHECK_EXCEPTEDHEIGHT, m_check_height);
 	DDX_Control(pDX, IDC_BUTTON_COLOR_EXCEPTEDHEIGHT, m_btn_color_height);
-	DDX_Text(pDX, IDC_DATASHOW_ACCX, m_datashow_acc_x);
-	DDX_Text(pDX, IDC_DATASHOW_ACCY, m_datashow_acc_y);
-	DDX_Text(pDX, IDC_DATASHOW_ACCZ, m_datashow_acc_z);
-	DDX_Text(pDX, IDC_DATASHOW_GRYX, m_datashow_gry_x);
-	DDX_Text(pDX, IDC_DATASHOW_GRYY, m_datashow_gry_y);
-	DDX_Text(pDX, IDC_DATASHOW_GRYZ, m_datashow_gry_z);
-	DDX_Text(pDX, IDC_DATASHOW_HMX, m_datashow_hm_x);
-	DDX_Text(pDX, IDC_DATASHOW_HMY, m_datashow_hm_y);
-	DDX_Text(pDX, IDC_DATASHOW_HMZ, m_datashow_hm_z);
 	DDX_Control(pDX, IDC_CHECK_AUTOSCOPE, m_check_autoscope);
 	DDX_Control(pDX, IDC_CHECK_ACC, m_check_acc);
 	DDX_Control(pDX, IDC_CHECK_GRY, m_check_gry);
 	DDX_Control(pDX, IDC_CHECK_HM, m_check_hm);
+	DDX_Control(pDX, IDC_CHECK_ANGLE, m_check_angle);
 }
 
 BEGIN_MESSAGE_MAP(CtinyDlg, CPropertyPage)
@@ -299,18 +270,6 @@ bool CtinyDlg::initCom()
 
 bool CtinyDlg::initDataShow()
 {
-	m_datashow_pwm1 = 0;
-	m_datashow_pwm2 = 0;
-	m_datashow_pwm3 = 0;
-	m_datashow_pwm4 = 0;
-	m_datashow_pwm5 = 0;
-	m_datashow_control1 = 0;
-	m_datashow_control2 = 0;
-	m_datashow_control3 = 0;
-	m_datashow_control4 = 0;
-	m_datashow_height = 0;
-	m_datashow_fusiondata = 0;
-
 	m_edit_pid_p_custom = 0;
 	m_edit_pid_i_custom = 0;
 	m_edit_pid_d_custom = 0;
@@ -623,30 +582,6 @@ void CtinyDlg::OnTimer(UINT_PTR nIDEvent)
 {
 	// TODO:  在此添加消息处理程序代码和/或调用默认值
 
-	/*if (m_serialport.isOpen())
-	{
-	serialSend(READ_DATA);
-	}*/
-
-	m_datashow_pwm1 = m_showdata->pwm[0];
-	m_datashow_pwm2 = m_showdata->pwm[1];
-	m_datashow_pwm3 = m_showdata->pwm[2];
-	m_datashow_pwm4 = m_showdata->pwm[3];
-	m_datashow_pwm5 = m_showdata->pwm[4];
-	m_datashow_control1 = m_showdata->control[0];
-	m_datashow_control2 = m_showdata->control[1];
-	m_datashow_control3 = m_showdata->control[2];
-	m_datashow_control4 = m_showdata->control[3];
-	m_datashow_height = m_showdata->height;
-	m_datashow_fusiondata = m_showdata->fusion_data;
-
-	m_datashow_acc_x = m_showdata->sensor.VAL_ACC_X;
-	m_datashow_acc_y = m_showdata->sensor.VAL_ACC_Y;
-	m_datashow_acc_z = m_showdata->sensor.VAL_ACC_Z;
-	m_datashow_gry_x = m_showdata->sensor.VAL_GYR_X;
-	m_datashow_gry_y = m_showdata->sensor.VAL_GYR_Y;
-	m_datashow_gry_z = m_showdata->sensor.VAL_GYR_Z;
-
 	UpdateDataShow();
 
 	UpdateChartCtrlData();
@@ -665,65 +600,74 @@ void CtinyDlg::UpdateDataShow()
 {
 	CStringW cstr_temp;
 
-	cstr_temp.Format(_T("%d"), m_datashow_pwm1);
+	cstr_temp.Format(_T("%d"), m_showdata->pwm[0]);
 	GetDlgItem(IDC_DATASHOW_PWM1)->SetWindowText(cstr_temp);
 
-	cstr_temp.Format(_T("%d"), m_datashow_pwm2);
+	cstr_temp.Format(_T("%d"), m_showdata->pwm[1]);
 	GetDlgItem(IDC_DATASHOW_PWM2)->SetWindowText(cstr_temp);
 
-	cstr_temp.Format(_T("%d"), m_datashow_pwm3);
+	cstr_temp.Format(_T("%d"), m_showdata->pwm[2]);
 	GetDlgItem(IDC_DATASHOW_PWM3)->SetWindowText(cstr_temp);
 
-	cstr_temp.Format(_T("%d"), m_datashow_pwm4);
+	cstr_temp.Format(_T("%d"), m_showdata->pwm[3]);
 	GetDlgItem(IDC_DATASHOW_PWM4)->SetWindowText(cstr_temp);
 
-	cstr_temp.Format(_T("%d"), m_datashow_pwm5);
+	cstr_temp.Format(_T("%d"), m_showdata->pwm[4]);
 	GetDlgItem(IDC_DATASHOW_PWM5)->SetWindowText(cstr_temp);
 
-	cstr_temp.Format(_T("%d"), m_datashow_control1);
+	cstr_temp.Format(_T("%d"), m_showdata->control[0]);
 	GetDlgItem(IDC_DATASHOW_CONTROL1)->SetWindowText(cstr_temp);
 
-	cstr_temp.Format(_T("%d"), m_datashow_control2);
+	cstr_temp.Format(_T("%d"), m_showdata->control[1]);
 	GetDlgItem(IDC_DATASHOW_CONTROL2)->SetWindowText(cstr_temp);
 
-	cstr_temp.Format(_T("%d"), m_datashow_control3);
+	cstr_temp.Format(_T("%d"), m_showdata->control[2]);
 	GetDlgItem(IDC_DATASHOW_CONTROL3)->SetWindowText(cstr_temp);
 
-	cstr_temp.Format(_T("%d"), m_datashow_control4);
+	cstr_temp.Format(_T("%d"), m_showdata->control[3]);
 	GetDlgItem(IDC_DATASHOW_CONTROL4)->SetWindowText(cstr_temp);
 
-	cstr_temp.Format(_T("%.2f"), m_datashow_fusiondata);
+	cstr_temp.Format(_T("%.2f"), m_showdata->fusion_data);
 	GetDlgItem(IDC_DATASHOW_RADAEFUSIONDATA)->SetWindowText(cstr_temp);
 
-	cstr_temp.Format(_T("%.2f"), m_datashow_height);
+	cstr_temp.Format(_T("%.2f"), m_showdata->height);
 	GetDlgItem(IDC_DATASHOW_EXPECTEDHEIGHT)->SetWindowText(cstr_temp);
 
-	cstr_temp.Format(_T("%d"), m_datashow_acc_x);
+	cstr_temp.Format(_T("%d"), m_showdata->sensor.acc_x);
 	GetDlgItem(IDC_DATASHOW_ACCX)->SetWindowText(cstr_temp);
 
-	cstr_temp.Format(_T("%d"), m_datashow_acc_y);
+	cstr_temp.Format(_T("%d"), m_showdata->sensor.acc_y);
 	GetDlgItem(IDC_DATASHOW_ACCY)->SetWindowText(cstr_temp);
 
-	cstr_temp.Format(_T("%d"), m_datashow_acc_z);
+	cstr_temp.Format(_T("%d"), m_showdata->sensor.acc_z);
 	GetDlgItem(IDC_DATASHOW_ACCZ)->SetWindowText(cstr_temp);
 
-	cstr_temp.Format(_T("%d"), m_datashow_gry_x);
+	cstr_temp.Format(_T("%d"), m_showdata->sensor.gry_x);
 	GetDlgItem(IDC_DATASHOW_GRYX)->SetWindowText(cstr_temp);
 
-	cstr_temp.Format(_T("%d"), m_datashow_gry_y);
+	cstr_temp.Format(_T("%d"), m_showdata->sensor.gry_y);
 	GetDlgItem(IDC_DATASHOW_GRYY)->SetWindowText(cstr_temp);
 
-	cstr_temp.Format(_T("%d"), m_datashow_gry_z);
+	cstr_temp.Format(_T("%d"), m_showdata->sensor.gry_z);
 	GetDlgItem(IDC_DATASHOW_GRYZ)->SetWindowText(cstr_temp);
 
-	cstr_temp.Format(_T("%d"), m_datashow_hm_x);
+	cstr_temp.Format(_T("%d"), m_showdata->sensor.hm_x);
 	GetDlgItem(IDC_DATASHOW_HMX)->SetWindowText(cstr_temp);
 
-	cstr_temp.Format(_T("%d"), m_datashow_hm_y);
+	cstr_temp.Format(_T("%d"), m_showdata->sensor.hm_y);
 	GetDlgItem(IDC_DATASHOW_HMY)->SetWindowText(cstr_temp);
 
-	cstr_temp.Format(_T("%d"), m_datashow_hm_z);
+	cstr_temp.Format(_T("%d"), m_showdata->sensor.hm_z);
 	GetDlgItem(IDC_DATASHOW_HMZ)->SetWindowText(cstr_temp);
+
+	cstr_temp.Format(_T("%d"), m_showdata->angle.Pitch);
+	GetDlgItem(IDC_DATASHOW_ANGLE_PITCH)->SetWindowText(cstr_temp);
+
+	cstr_temp.Format(_T("%d"), m_showdata->angle.Roll);
+	GetDlgItem(IDC_DATASHOW_ANGLE_ROLL)->SetWindowText(cstr_temp);
+
+	cstr_temp.Format(_T("%d"), m_showdata->angle.Yaw);
+	GetDlgItem(IDC_DATASHOW_ANGLE_YAW)->SetWindowText(cstr_temp);
 
 	m_icon_state.SetIcon(m_hIcon_indicator_red);
 }
@@ -923,15 +867,15 @@ void CtinyDlg::UpdateChartCtrlData()
 
 	m_chartctrl.EnableRefresh(false);
 
-	m_pChartLineSerie[DataName::ACC_X]->AddPoint(m_count, m_showdata->sensor.VAL_ACC_X);
-	m_pChartLineSerie[DataName::ACC_Y]->AddPoint(m_count, m_showdata->sensor.VAL_ACC_Y);
-	m_pChartLineSerie[DataName::ACC_Z]->AddPoint(m_count, m_showdata->sensor.VAL_ACC_Z);
-	m_pChartLineSerie[DataName::GRY_X]->AddPoint(m_count, m_showdata->sensor.VAL_GYR_X);
-	m_pChartLineSerie[DataName::GRY_Y]->AddPoint(m_count, m_showdata->sensor.VAL_GYR_Y);
-	m_pChartLineSerie[DataName::GRY_Z]->AddPoint(m_count, m_showdata->sensor.VAL_GYR_Z);
-	m_pChartLineSerie[DataName::HM_X]->AddPoint(m_count, m_showdata->sensor.VAL_HM_X);
-	m_pChartLineSerie[DataName::HM_Y]->AddPoint(m_count, m_showdata->sensor.VAL_HM_Y);
-	m_pChartLineSerie[DataName::HM_Z]->AddPoint(m_count, m_showdata->sensor.VAL_HM_Z);
+	m_pChartLineSerie[DataName::ACC_X]->AddPoint(m_count, m_showdata->sensor.acc_x);
+	m_pChartLineSerie[DataName::ACC_Y]->AddPoint(m_count, m_showdata->sensor.acc_y);
+	m_pChartLineSerie[DataName::ACC_Z]->AddPoint(m_count, m_showdata->sensor.acc_z);
+	m_pChartLineSerie[DataName::GRY_X]->AddPoint(m_count, m_showdata->sensor.gry_x);
+	m_pChartLineSerie[DataName::GRY_Y]->AddPoint(m_count, m_showdata->sensor.gry_y);
+	m_pChartLineSerie[DataName::GRY_Z]->AddPoint(m_count, m_showdata->sensor.gry_z);
+	m_pChartLineSerie[DataName::HM_X]->AddPoint(m_count, m_showdata->sensor.hm_x);
+	m_pChartLineSerie[DataName::HM_Y]->AddPoint(m_count, m_showdata->sensor.hm_y);
+	m_pChartLineSerie[DataName::HM_Z]->AddPoint(m_count, m_showdata->sensor.hm_z);
 	m_pChartLineSerie[DataName::FUSIONDATA]->AddPoint(m_count, m_showdata->fusion_data);
 	m_pChartLineSerie[DataName::HEIGHT]->AddPoint(m_count, m_showdata->height);
 	m_pChartLineSerie[DataName::PWM_1]->AddPoint(m_count, m_showdata->pwm[0]);
@@ -1135,7 +1079,7 @@ void CtinyDlg::FrameAnl(unsigned char* RX_Data, int len)
 	static char init;
 	static float offx, offy;
 	unsigned char sum = 0;
-	for (size_t i = 0; i < (len - 1); i++)
+	for (int i = 0; i < (len - 1); i++)
 	{
 		sum += *(RX_Data + i);
 	}
@@ -1163,12 +1107,12 @@ void CtinyDlg::FrameAnl(unsigned char* RX_Data, int len)
 			}
 			case 2://senser
 			{
-				m_showdata->sensor.VAL_ACC_X = BytetoUint(RX_Data, 4);
-				m_showdata->sensor.VAL_ACC_Y = BytetoUint(RX_Data, 6);
-				m_showdata->sensor.VAL_ACC_Z = BytetoUint(RX_Data, 8);
-				m_showdata->sensor.VAL_GYR_X = BytetoUint(RX_Data, 10);
-				m_showdata->sensor.VAL_GYR_Y = BytetoUint(RX_Data, 12);
-				m_showdata->sensor.VAL_GYR_Z = BytetoUint(RX_Data, 14);
+				m_showdata->sensor.acc_x = BytetoUint(RX_Data, 4);
+				m_showdata->sensor.acc_y = BytetoUint(RX_Data, 6);
+				m_showdata->sensor.acc_z = BytetoUint(RX_Data, 8);
+				m_showdata->sensor.gry_x = BytetoUint(RX_Data, 10);
+				m_showdata->sensor.gry_y = BytetoUint(RX_Data, 12);
+				m_showdata->sensor.gry_z = BytetoUint(RX_Data, 14);
 				break;
 			}
 			case 3:
@@ -1209,12 +1153,12 @@ void CtinyDlg::FrameAnl(unsigned char* RX_Data, int len)
 			}
 			case 8://sensor
 			{
-				m_showdata->sensor.VAL_ACC_X = BytetoUint(RX_Data, 4);
-				m_showdata->sensor.VAL_ACC_Y = BytetoUint(RX_Data, 6);
-				m_showdata->sensor.VAL_ACC_Z = BytetoUint(RX_Data, 8);
-				m_showdata->sensor.VAL_GYR_X = BytetoUint(RX_Data, 10);
-				m_showdata->sensor.VAL_GYR_Y = BytetoUint(RX_Data, 12);
-				m_showdata->sensor.VAL_GYR_Z = BytetoUint(RX_Data, 14);
+				m_showdata->sensor.acc_x = BytetoUint(RX_Data, 4);
+				m_showdata->sensor.acc_y = BytetoUint(RX_Data, 6);
+				m_showdata->sensor.acc_z = BytetoUint(RX_Data, 8);
+				m_showdata->sensor.gry_x = BytetoUint(RX_Data, 10);
+				m_showdata->sensor.gry_y = BytetoUint(RX_Data, 12);
+				m_showdata->sensor.gry_z = BytetoUint(RX_Data, 14);
 				break;
 			}
 			default:
@@ -1236,7 +1180,7 @@ void CtinyDlg::OnBnClickedCheckAutoscope()
 		double maxval = 0;
 		double minval = 0;
 		m_pChartStandarAxisY->GetMinMax(minval, maxval);
-		m_scope_y = fabs(maxval) > fabs(minval) ? fabs(maxval) : fabs(minval);
+		m_scope_y = int(fabs(maxval) > fabs(minval) ? fabs(maxval) : fabs(minval));
 
 		m_pChartStandarAxisY->SetAutomatic(false);
 
