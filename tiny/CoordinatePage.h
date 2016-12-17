@@ -32,6 +32,7 @@ public:
 	CChartStandardAxis *m_pChartStandarAxisY;
 	std::vector <CChartLineSerie*> m_pChartLineSerie;
 	std::vector <CChartPointsSerie*> m_pChartPointsSerie;
+	std::vector <CChartPointsSerie*> m_pChartPointsSerie_Head;
 	std::vector < COLORREF > ColorTable;
 	ChartCtrlData m_chartctrldata;
 
