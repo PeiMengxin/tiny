@@ -76,6 +76,7 @@ bool CCoordinatePage::initChartCtrl()
 
 	m_pChartStandarAxisY = m_chartctrl_coodinate.CreateStandardAxis(CChartCtrl::LeftAxis);
 	m_pChartStandarAxisX = m_chartctrl_coodinate.CreateStandardAxis(CChartCtrl::BottomAxis);
+	//m_pChartStandarAxisY->SetInverted(true);
 	m_pChartStandarAxisX->SetAutomatic(false);
 	m_pChartStandarAxisY->SetAutomatic(false);
 	m_pChartStandarAxisX->SetAxisColor(RGB(255, 255, 255));
@@ -107,7 +108,7 @@ bool CCoordinatePage::initChartCtrl()
 		m_pChartPointsSerie_Head[i]->AddPoint(0, 0);
 
 		m_pChartPointsSerie_Head[i]->SetColor(ColorTable[i]);
-		m_pChartPointsSerie_Head[i]->SetPointSize(15, 15);
+		m_pChartPointsSerie_Head[i]->SetPointSize(10, 10);
 		m_pChartPointsSerie_Head[i]->SetPointType(CChartPointsSerie::ptRectangle);
 		m_pChartPointsSerie_Head[i]->SetVisible(false);
 
@@ -115,7 +116,7 @@ bool CCoordinatePage::initChartCtrl()
 		m_pChartLineSerie[i]->AddPoints(chartctrldata.x.data(), chartctrldata.y.data(), DATA_SIZE);
 		m_pChartLineSerie[i]->SetName(LineName[i]);
 		m_pChartLineSerie[i]->SetColor(ColorTable[i]);
-		m_pChartLineSerie[i]->SetWidth(5);
+		m_pChartLineSerie[i]->SetWidth(3);
 		m_pChartLineSerie[i]->SetSeriesOrdering(poNoOrdering);
 		m_pChartLineSerie[i]->SetVisible(false);
 	}
