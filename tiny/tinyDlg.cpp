@@ -250,6 +250,7 @@ bool CtinyDlg::init()
 
 bool CtinyDlg::initCom()
 {
+	initFile();
 	m_combo_combaudrate.InsertString(0, _T("4800"));
 	m_combo_combaudrate.InsertString(1, _T("9600"));
 	m_combo_combaudrate.InsertString(2, _T("115200"));
@@ -265,6 +266,43 @@ bool CtinyDlg::initCom()
 
 	m_combo_combaudrate.SetCurSel(2);
 	m_combo_comnum.SetCurSel(0);
+
+	/*std::fstream _file;
+	_file.open(FILENAME, std::ios::in);*/
+	
+	char ComNum_char[6], ComBaudrate_char[10];
+	int res = GetPrivateProfileStringA("sec1", "comnum", "COM12", ComNum_char, sizeof(ComNum_char), FILENAME);
+	res = GetPrivateProfileStringA("sec1", "combaudrate", "115200", ComBaudrate_char, sizeof(ComBaudrate_char), FILENAME);
+
+	std::string ComNum_string(ComNum_char);
+	std::string ComBaudrate_string(ComBaudrate_char);
+
+	CString temp_cstring;
+	for (size_t i = 0; i < m_combo_comnum.GetCount(); i++)
+	{
+		USES_CONVERSION;
+		m_combo_comnum.GetLBText(i, temp_cstring);
+		std::string com_str(W2A(temp_cstring));
+
+		if (com_str.compare(ComNum_string) == 0)
+		{
+			m_combo_comnum.SetCurSel(i);
+			break;
+		}
+	}
+
+	for (size_t i = 0; i < m_combo_combaudrate.GetCount(); i++)
+	{
+		USES_CONVERSION;
+		m_combo_combaudrate.GetLBText(i, temp_cstring);
+		std::string combaudrate_str(W2A(temp_cstring));
+
+		if (combaudrate_str.compare(ComBaudrate_string) == 0)
+		{
+			m_combo_combaudrate.SetCurSel(i);
+			break;
+		}
+	}
 
 	return true;
 }
@@ -387,6 +425,8 @@ void CtinyDlg::OnBnClickedButtonOpencom()
 		m_combo_combaudrate.EnableWindow(FALSE);
 		m_combo_comnum.EnableWindow(FALSE);
 
+		saveCom();
+
 		return;
 	}
 }
@@ -492,6 +532,13 @@ void CtinyDlg::OnClose()
 
 void CtinyDlg::writeParam()
 {
+	INT_PTR nRes;
+	nRes = MessageBox(_T("确认写入吗？"), _T("写入参数"), MB_OKCANCEL | MB_ICONQUESTION);
+	if (nRes == IDCANCEL)
+	{
+		return;
+	}
+
 	UpdateData(TRUE);
 	m_param.avoid_scope = m_edit_avoidscope;
 	m_param.pid_custom.p = m_edit_pid_p_custom;
@@ -519,10 +566,18 @@ void CtinyDlg::writeParam()
 	m_param.enable_avoidObj = m_check_avoidobjection.GetCheck();
 
 	// TODO
-	if (serialSend(WRITE_PARAM))
+
+	serialSend(PID_1);
+	serialSend(PID_2);
+	serialSend(PID_1);
+	serialSend(PID_2);
+
+	sendCommand(WRITE_PARAM);
+	sendCommand(WRITE_PARAM);
+	/*if (serialSend(WRITE_PARAM))
 	{
-		MessageBox(_T("参数已写入！"), _T("提示"));
-	}
+	MessageBox(_T("参数已写入！"), _T("提示"));
+	}*/
 }
 
 
@@ -550,9 +605,9 @@ void CtinyDlg::readParam()
 	m_edit_pid_i_innerlayer = m_param.pid_innerlayer.i;
 	m_edit_pid_d_innerlayer = m_param.pid_innerlayer.d;
 
-	m_edit_pid_p_outerlayer = m_param.pid_position.p;
-	m_edit_pid_i_outerlayer = m_param.pid_position.i;
-	m_edit_pid_d_outerlayer = m_param.pid_position.d;
+	m_edit_pid_p_outerlayer = m_param.pid_outerlayer.p;
+	m_edit_pid_i_outerlayer = m_param.pid_outerlayer.i;
+	m_edit_pid_d_outerlayer = m_param.pid_outerlayer.d;
 
 	m_edit_rockermid1 = m_param.rocker_mid[0];
 	m_edit_rockermid2 = m_param.rocker_mid[1];
@@ -592,7 +647,7 @@ void CtinyDlg::OnTimer(UINT_PTR nIDEvent)
 	{
 		return;
 	}
-	sendCommand();
+	sendCommand(HEART_BEAT);
 
 	CPropertyPage::OnTimer(nIDEvent);
 }
@@ -712,99 +767,82 @@ bool CtinyDlg::serialSend(SerialSendOrder sendOrder)
 	{
 		case CtinyDlg::WRITE_PARAM:
 		{
-			data_to_send[_cnt++] = 0x00;
-			data_to_send[_cnt++] = 0;
-
-			data_to_send[_cnt++] = uint16_t(m_param.pid_custom.p) / 256;
-			data_to_send[_cnt++] = uint16_t(m_param.pid_custom.p) % 256;
-			data_to_send[_cnt++] = uint16_t(m_param.pid_custom.i) / 256;
-			data_to_send[_cnt++] = uint16_t(m_param.pid_custom.i) % 256;
-			data_to_send[_cnt++] = uint16_t(m_param.pid_custom.d) / 256;
-			data_to_send[_cnt++] = uint16_t(m_param.pid_custom.d) % 256;
-
-			uint16_t temp = 0;
-			temp = m_param.excepted_height * 1000;
-			data_to_send[_cnt++] = temp / 256;
-			data_to_send[_cnt++] = temp % 256;
-
-			temp = m_param.avoid_scope * 1000;
-			data_to_send[_cnt++] = temp / 256;
-			data_to_send[_cnt++] = temp % 256;
-
-			temp = m_param.sensitivity * 1000;
-			data_to_send[_cnt++] = temp / 256;
-			data_to_send[_cnt++] = temp % 256;
-
-			data_to_send[_cnt++] = m_param.enable_height;
-			data_to_send[_cnt++] = m_param.enable_avoidObj;
-
-			temp = m_param.rocker_mid[0];
-			data_to_send[_cnt++] = temp / 256;
-			data_to_send[_cnt++] = temp % 256;
-			temp = m_param.rocker_mid[1];
-			data_to_send[_cnt++] = temp / 256;
-			data_to_send[_cnt++] = temp % 256;
-			temp = m_param.rocker_mid[2];
-			data_to_send[_cnt++] = temp / 256;
-			data_to_send[_cnt++] = temp % 256;
-			temp = m_param.rocker_mid[3];
-			data_to_send[_cnt++] = temp / 256;
-			data_to_send[_cnt++] = temp % 256;
-
-			for (i = 0; i < _cnt; i++)
-				sum += data_to_send[i];
-			data_to_send[_cnt++] = sum;
-
+			
 			break;
 		}
 
 		case CtinyDlg::READ_PARAM:
 		{
-			data_to_send[_cnt++] = 0x01;
-			data_to_send[_cnt++] = 0;
-
-			for (i = 0; i < _cnt; i++)
-				sum += data_to_send[i];
-			data_to_send[_cnt++] = sum;
-
+			
 			break;
 		}
 
 		case CtinyDlg::WRITE_FLASH:
 		{
-			data_to_send[_cnt++] = 0x02;
-			data_to_send[_cnt++] = 0;
-
-			for (i = 0; i < _cnt; i++)
-				sum += data_to_send[i];
-			data_to_send[_cnt++] = sum;
-
+	
 			break;
 		}
 
 		case CtinyDlg::READ_DATA:
 		{
-			data_to_send[_cnt++] = 0x03;
-			data_to_send[_cnt++] = 0;
-
-			for (i = 0; i < _cnt; i++)
-				sum += data_to_send[i];
-			data_to_send[_cnt++] = sum;
-
+		
 			break;
 		}
 
-		case CtinyDlg::SEND_COMMAND:
+		case CtinyDlg::HEART_BEAT:
 		{
-			data_to_send[_cnt++] = 0x01;
-			data_to_send[_cnt++] = 0x01;
-			data_to_send[_cnt++] = 0xff;
-			data_to_send[_cnt++] = 0xff;
+			break;
+		}
 
-			for (i = 0; i < 5; i++)
+		case CtinyDlg::PID_1:
+		{
+			data_to_send[2] = (byte)0x10;
+			data_to_send[3] = (byte)18;
+			data_to_send[4] = (byte)(m_param.pid_outerlayer.p / 256);
+			data_to_send[5] = (byte)(m_param.pid_outerlayer.p % 256);
+			data_to_send[6] = (byte)(m_param.pid_outerlayer.i / 256);
+			data_to_send[7] = (byte)(m_param.pid_outerlayer.i % 256);
+			data_to_send[8] = (byte)(m_param.pid_outerlayer.d / 256);
+			data_to_send[9] = (byte)(m_param.pid_outerlayer.d % 256);
+
+			data_to_send[10] = (byte)(m_param.pid_innerlayer.p / 256);
+			data_to_send[11] = (byte)(m_param.pid_innerlayer.p % 256);
+			data_to_send[12] = (byte)(m_param.pid_innerlayer.i / 256);
+			data_to_send[13] = (byte)(m_param.pid_innerlayer.i % 256);
+			data_to_send[14] = (byte)(m_param.pid_innerlayer.d / 256);
+			data_to_send[15] = (byte)(m_param.pid_innerlayer.d % 256);
+
+			data_to_send[16] = (byte)(m_param.pid_custom.p / 256);
+			data_to_send[17] = (byte)(m_param.pid_custom.p % 256);
+			data_to_send[18] = (byte)(m_param.pid_custom.i / 256);
+			data_to_send[19] = (byte)(m_param.pid_custom.i % 256);
+			data_to_send[20] = (byte)(m_param.pid_custom.d / 256);
+			data_to_send[21] = (byte)(m_param.pid_custom.d % 256);
+
+			for (int i = 0; i < 22; i++) 
 				sum += data_to_send[i];
-			data_to_send[5] = sum;
+			data_to_send[22] = sum;
 
+			m_serial_instance->serial_port.write(data_to_send, 23);
+			break;
+		}
+
+		case CtinyDlg::PID_2:
+		{
+			data_to_send[2] = (byte)0x11;
+			data_to_send[3] = (byte)18;
+			data_to_send[4] = (byte)(m_param.pid_height.p / 256);
+			data_to_send[5] = (byte)(m_param.pid_height.p % 256);
+			data_to_send[6] = (byte)(m_param.pid_height.i / 256);
+			data_to_send[7] = (byte)(m_param.pid_height.i % 256);
+			data_to_send[8] = (byte)(m_param.pid_height.d / 256);
+			data_to_send[9] = (byte)(m_param.pid_height.d % 256);
+
+			for (int i = 0; i < 22; i++) 
+				sum += data_to_send[i];
+			data_to_send[22] = sum;
+
+			m_serial_instance->serial_port.write(data_to_send, 23);
 			break;
 		}
 
@@ -813,8 +851,6 @@ bool CtinyDlg::serialSend(SerialSendOrder sendOrder)
 	}
 
 	//data_to_send[3] = _cnt - 4;
-
-	m_serial_instance->serial_port.write(data_to_send, _cnt);
 
 	return true;
 }
@@ -887,7 +923,7 @@ void CtinyDlg::UpdateChartCtrlData()
 	m_pChartLineSerie[DataName::ANGLE_PITCH]->AddPoint(m_count, m_showdata->angle.Pitch);
 	m_pChartLineSerie[DataName::ANGLE_ROLL]->AddPoint(m_count, m_showdata->angle.Roll);
 	m_pChartLineSerie[DataName::ANGLE_YAW]->AddPoint(m_count, m_showdata->angle.Yaw);
-	
+
 
 	for (size_t i = DataName::ACC_X; i < DataName::END; i++)
 	{
@@ -1009,9 +1045,82 @@ void CtinyDlg::OnBnClickedButtonZoomin()
 
 }
 
-void CtinyDlg::sendCommand()
+void CtinyDlg::sendCommand(SerialSendOrder serialOrder)
 {
-	serialSend(SEND_COMMAND);
+	if (!m_serial_instance->serial_port.isOpen())
+	{
+		MessageBox(_T("    串口未打开!"), _T("提示"));
+		return;
+	}
+
+	int _cnt = 0, i = 0, sum = 0;
+	unsigned char data_to_send[50];
+
+	data_to_send[_cnt++] = 0xAA;
+	data_to_send[_cnt++] = 0xAF;
+
+	switch (serialOrder)
+	{
+		case CtinyDlg::WRITE_PARAM:
+		{
+			data_to_send[_cnt++] = 0x01;
+			data_to_send[_cnt++] = 0x01;
+			data_to_send[_cnt++] = 0xA3;
+			data_to_send[_cnt++] = 0xA3;
+
+			for (i = 0; i < 5; i++)
+				sum += data_to_send[i];
+			data_to_send[5] = sum;
+
+			break;
+		}
+
+		case CtinyDlg::READ_PARAM:
+		{
+
+			break;
+		}
+
+		case CtinyDlg::WRITE_FLASH:
+		{
+
+
+			break;
+		}
+
+		case CtinyDlg::READ_DATA:
+		{
+			data_to_send[_cnt++] = 0x03;
+			data_to_send[_cnt++] = 0;
+
+			for (i = 0; i < _cnt; i++)
+				sum += data_to_send[i];
+			data_to_send[_cnt++] = sum;
+
+			break;
+		}
+
+		case CtinyDlg::HEART_BEAT:
+		{
+			data_to_send[_cnt++] = 0x01;
+			data_to_send[_cnt++] = 0x01;
+			data_to_send[_cnt++] = 0xff;
+			data_to_send[_cnt++] = 0xff;
+
+			for (i = 0; i < 5; i++)
+				sum += data_to_send[i];
+			data_to_send[5] = sum;
+
+			break;
+		}
+
+		default:
+			break;
+	}
+
+	//data_to_send[3] = _cnt - 4;
+
+	m_serial_instance->serial_port.write(data_to_send, _cnt);
 }
 
 void CtinyDlg::DataAnl(unsigned char* data_buf_temp, int len, unsigned char* RX_Data)
@@ -1100,8 +1209,8 @@ void CtinyDlg::FrameAnl(unsigned char* RX_Data, int len)
 				m_showdata->angle.Yaw = ((float)(BytetoUint(RX_Data, 8))) / 100;
 
 				m_showdata->coodinate.id = BytetoUint(RX_Data, 17);
-				m_showdata->coodinate.x = ((float)BytetoUint(RX_Data, 19)) / 5 - offx;
-				m_showdata->coodinate.y = ((float)BytetoUint(RX_Data, 21)) / 5 - offy;
+				m_showdata->coodinate.x = ((float)BytetoUint(RX_Data, 19)) - offx*0;
+				m_showdata->coodinate.y = ((float)BytetoUint(RX_Data, 21)) - offy*0;
 				if (!init)
 				{
 					init = 1;
@@ -1260,6 +1369,22 @@ void CtinyDlg::OnBnClickedCheckHm()
 	}
 }
 
+bool CtinyDlg::initFile()
+{
+	std::fstream _file;
+	_file.open(FILENAME, std::ios::in);
+	if (!_file)
+	{
+		_file.close();
+		_file.open(FILENAME, std::ios::out);
+		_file << "[sec1]" << std::endl;
+		_file << "comnum=" << "COM1" << std::endl;
+		_file << "combaudrate=" << "115200" << std::endl;
+		_file.close();
+	}
+
+	return true;
+}
 
 bool CtinyDlg::initSerial()
 {
@@ -1295,13 +1420,13 @@ void CtinyDlg::OnOK()
 
 	isTerminal = true;
 	serial_thread.join();
-	
+
 	if (m_serial_instance->serial_port.isOpen())
 	{
 		m_serial_instance->serial_port.close();
 		Sleep(30);
 	}
-	
+
 	CPropertyPage::OnOK();
 }
 
@@ -1324,4 +1449,18 @@ void CtinyDlg::OnBnClickedCheckAngle()
 		m_pChartLineSerie[DataName::ANGLE_ROLL]->SetVisible(true);
 		m_pChartLineSerie[DataName::ANGLE_YAW]->SetVisible(true);
 	}
+}
+
+void CtinyDlg::saveCom()
+{
+	std::fstream _file;
+	_file.open(FILENAME, std::ios::out);
+	if (_file)
+	{
+		_file << "[sec1]" << std::endl;
+		_file << "comnum=" << m_serial_instance->serial_port.getPort() << std::endl;
+		_file << "combaudrate=" << m_serial_instance->serial_port.getBaudrate() << std::endl;
+		_file.close();
+	}
+	
 }

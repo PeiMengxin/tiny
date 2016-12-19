@@ -10,7 +10,7 @@
 
 #define COODINATE_WIDTH 500
 #define COODINATE_HEIGHT 500
-#define DATA_SIZE 25
+#define DATA_SIZE 15
 #define ID_NUM 3
 
 class CCoordinatePage : public CPropertyPage

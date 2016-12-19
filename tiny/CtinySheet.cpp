@@ -30,7 +30,17 @@ CtinySheet::~CtinySheet()
 
 
 BEGIN_MESSAGE_MAP(CtinySheet, CPropertySheet)
+	ON_WM_CLOSE()
 END_MESSAGE_MAP()
 
 
 // CtinySheet 消息处理程序
+
+
+void CtinySheet::OnClose()
+{
+	// TODO:  在此添加消息处理程序代码和/或调用默认值
+
+	m_page_tiny.OnOK();
+	CPropertySheet::OnClose();
+}

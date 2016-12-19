@@ -17,9 +17,12 @@
 #include "ChartCtrl/ChartLegend.h"
 #include "ColorButton/ColorButton.h"
 #include "SerialSingleton.h"
+#include <fstream>
+#include <ios>
 
 #define SHOW_DATA_SIZE 300
 #define SHOW_DATA_SIZE_MARGIN 50
+#define FILENAME ".\\tiny.ini"
 
 // CtinyDlg ¶Ô»°¿ò
 class CtinyDlg : public CPropertyPage
@@ -30,7 +33,9 @@ class CtinyDlg : public CPropertyPage
 		READ_PARAM,
 		WRITE_FLASH,
 		READ_DATA,
-		SEND_COMMAND
+		HEART_BEAT,
+		PID_1,
+		PID_2
 	};
 
 	enum DataName
@@ -192,7 +197,7 @@ public:
 	afx_msg void OnBnClickedButtonZoomin();
 	afx_msg void OnBnClickedButtonZoomout();
 	
-	void sendCommand();
+	void sendCommand(SerialSendOrder serialOrder);
 	void DataAnl(unsigned char* data_buf_temp, int len, unsigned char* RX_Data);
 	void FrameAnl(unsigned char* RX_Data, int len);
 	CButton m_check_autoscope;
@@ -203,10 +208,12 @@ public:
 	CButton m_check_acc;
 	CButton m_check_gry;
 	CButton m_check_hm;
+	bool initFile();
 	bool initSerial();
 	bool initLineName();
 	virtual void OnOK();
 	CButton m_check_angle;
 	std::vector<TChartString> LineName;
 	afx_msg void OnBnClickedCheckAngle();
+	void saveCom();
 };
