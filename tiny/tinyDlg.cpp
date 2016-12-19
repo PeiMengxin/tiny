@@ -1215,8 +1215,8 @@ void CtinyDlg::FrameAnl(unsigned char* RX_Data, int len)
 				m_showdata->angle.Yaw = ((float)(BytetoUint(RX_Data, 8))) / 100;
 
 				m_showdata->coodinate.id = BytetoUint(RX_Data, 17);
-				m_showdata->coodinate.x = ((float)BytetoUint(RX_Data, 19)) - offx*0;
-				m_showdata->coodinate.y = ((float)BytetoUint(RX_Data, 21)) - offy*0;
+				m_showdata->coodinate.x = ((float)BytetoUint(RX_Data, 19)) / 10 - offx*0;
+				m_showdata->coodinate.y = ((float)BytetoUint(RX_Data, 21)) / 10- offy*0;
 				if (!init)
 				{
 					init = 1;

@@ -9,7 +9,7 @@
 // CCoodinatePage ¶Ô»°¿ò
 
 #define COODINATE_WIDTH 500
-#define COODINATE_HEIGHT 500
+#define COODINATE_HEIGHT 350
 #define DATA_SIZE 15
 #define ID_NUM 3
 
