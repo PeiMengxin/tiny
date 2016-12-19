@@ -270,7 +270,7 @@ bool CtinyDlg::initCom()
 	/*std::fstream _file;
 	_file.open(FILENAME, std::ios::in);*/
 	
-	char ComNum_char[6], ComBaudrate_char[10];
+	char ComNum_char[10], ComBaudrate_char[10];
 	int res = GetPrivateProfileStringA("sec1", "comnum", "COM12", ComNum_char, sizeof(ComNum_char), FILENAME);
 	res = GetPrivateProfileStringA("sec1", "combaudrate", "115200", ComBaudrate_char, sizeof(ComBaudrate_char), FILENAME);
 
@@ -896,6 +896,12 @@ bool CtinyDlg::initChartCtrl()
 		m_pChartLineSerie[i]->AddPoints(m_chartctrldata.x.data(), m_chartctrldata.y.data(), SHOW_DATA_SIZE);
 		m_pChartLineSerie[i]->SetVisible(false);
 	}
+
+	m_pChartLineSerie[DataName::ANGLE_PITCH]->SetVisible(true);
+	m_pChartLineSerie[DataName::ANGLE_ROLL]->SetVisible(true);
+	m_pChartLineSerie[DataName::ANGLE_YAW]->SetVisible(true);
+
+	m_check_angle.SetCheck(1);
 
 	m_chartctrl.EnableRefresh(true);
 

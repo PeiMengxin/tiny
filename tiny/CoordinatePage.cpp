@@ -95,8 +95,8 @@ bool CCoordinatePage::initChartCtrl()
 	m_chartctrl_coodinate.RemoveAllSeries();
 	m_pChartStandarAxisX->SetMinMax(-50, COODINATE_WIDTH);
 	m_pChartStandarAxisY->SetMinMax(-1 * COODINATE_HEIGHT, 50);
-	m_pChartStandarAxisX->SetTickIncrement(false, 100);
-	m_pChartStandarAxisY->SetTickIncrement(false, 100);
+	m_pChartStandarAxisX->SetTickIncrement(false, 50);
+	m_pChartStandarAxisY->SetTickIncrement(false, 50);
 
 	m_chartctrl_coodinate.GetLegend()->SetVisible(true);
 	m_chartctrl_coodinate.GetLegend()->EnableShadow(false);
