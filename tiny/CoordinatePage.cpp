@@ -12,6 +12,10 @@ IMPLEMENT_DYNAMIC(CCoordinatePage, CPropertyPage)
 
 CCoordinatePage::CCoordinatePage()
 	: CPropertyPage(CCoordinatePage::IDD)
+	, m_axis_xmin(-100)
+	, m_axis_xmax(500)
+	, m_axis_ymin(-100)
+	, m_axis_ymax(500)
 {
 
 }
@@ -27,6 +31,11 @@ void CCoordinatePage::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_CHECK_COOR_ID0, m_check_coor_id0);
 	DDX_Control(pDX, IDC_CHECK_COOR_ID1, m_check_coor_id1);
 	DDX_Control(pDX, IDC_CHECK_COOR_ID2, m_check_coor_id2);
+	DDX_Control(pDX, IDC_CHECK_LONGTRAJ, m_check_longtraj);
+	DDX_Text(pDX, IDC_EDIT_AXIS_XMIN, m_axis_xmin);
+	DDX_Text(pDX, IDC_EDIT_AXIS_XMAX, m_axis_xmax);
+	DDX_Text(pDX, IDC_EDIT_AXIS_YMIN, m_axis_ymin);
+	DDX_Text(pDX, IDC_EDIT_AXIS_YMAX, m_axis_ymax);
 }
 
 
@@ -35,6 +44,8 @@ BEGIN_MESSAGE_MAP(CCoordinatePage, CPropertyPage)
 	ON_BN_CLICKED(IDC_CHECK_COOR_ID0, &CCoordinatePage::OnBnClickedCheckCoorId0)
 	ON_BN_CLICKED(IDC_CHECK_COOR_ID1, &CCoordinatePage::OnBnClickedCheckCoorId1)
 	ON_BN_CLICKED(IDC_CHECK_COOR_ID2, &CCoordinatePage::OnBnClickedCheckCoorId2)
+	ON_BN_CLICKED(IDC_CHECK_LONGTRAJ, &CCoordinatePage::OnBnClickedCheckLongtraj)
+	ON_BN_CLICKED(IDC_BUTTON_SETAXISSCOPE, &CCoordinatePage::OnBnClickedButtonSetaxisscope)
 END_MESSAGE_MAP()
 
 
@@ -94,8 +105,8 @@ bool CCoordinatePage::initChartCtrl()
 
 	m_chartctrl_coodinate.EnableRefresh(false);
 	m_chartctrl_coodinate.RemoveAllSeries();
-	m_pChartStandarAxisX->SetMinMax(-50, COODINATE_WIDTH);
-	m_pChartStandarAxisY->SetMinMax(-1 * COODINATE_HEIGHT, 50);
+	m_pChartStandarAxisX->SetMinMax(m_axis_xmin, m_axis_xmax);
+	m_pChartStandarAxisY->SetMinMax(m_axis_ymin, m_axis_ymax);
 	m_pChartStandarAxisX->SetTickIncrement(false, 50);
 	m_pChartStandarAxisY->SetTickIncrement(false, 50);
 
@@ -144,11 +155,23 @@ void CCoordinatePage::UpdateChartCtrlData()
 {
 	m_chartctrl_coodinate.EnableRefresh(false);
 	
-	m_pChartLineSerie[0]->RemovePointsFromBegin(1);
+	if (!m_check_longtraj.GetCheck())
+	{
+		m_pChartLineSerie[0]->RemovePointsFromBegin(1);
+		m_pChartLineSerie[1]->RemovePointsFromBegin(1);
+		m_pChartLineSerie[2]->RemovePointsFromBegin(1);
+	}
+	
 	m_pChartLineSerie[0]->AddPoint(m_showdata->coodinate.x, m_showdata->coodinate.y);
+	m_pChartLineSerie[1]->AddPoint(m_showdata->hopecoor.x, m_showdata->hopecoor.y);
+	m_pChartLineSerie[2]->AddPoint(m_showdata->originalQR.x, m_showdata->originalQR.y);
 	
 	m_pChartPointsSerie_Head[0]->ClearSerie();
 	m_pChartPointsSerie_Head[0]->AddPoint(m_showdata->coodinate.x, m_showdata->coodinate.y);
+	m_pChartPointsSerie_Head[1]->ClearSerie();
+	m_pChartPointsSerie_Head[1]->AddPoint(m_showdata->hopecoor.x, m_showdata->hopecoor.y);
+	m_pChartPointsSerie_Head[2]->ClearSerie();
+	m_pChartPointsSerie_Head[2]->AddPoint(m_showdata->originalQR.x, m_showdata->originalQR.y);
 	
 	m_chartctrl_coodinate.EnableRefresh(true);
 }
@@ -173,19 +196,19 @@ void CCoordinatePage::OnTimer(UINT_PTR nIDEvent)
 	cstr_temp.Format(_T("%d"), 0);
 	GetDlgItem(IDC_CHECK_COOR_ID1)->SetWindowText(cstr_temp);
 
-	cstr_temp.Format(_T("%d"), m_showdata->coodinate.x);
+	cstr_temp.Format(_T("%d"), m_showdata->hopecoor.x);
 	GetDlgItem(IDC_STATIC_ID1_X)->SetWindowText(cstr_temp);
 
-	cstr_temp.Format(_T("%d"), m_showdata->coodinate.y);
+	cstr_temp.Format(_T("%d"), m_showdata->hopecoor.y);
 	GetDlgItem(IDC_STATIC_ID1_Y)->SetWindowText(cstr_temp);
 
 	cstr_temp.Format(_T("%d"), 0);
 	GetDlgItem(IDC_CHECK_COOR_ID2)->SetWindowText(cstr_temp);
 
-	cstr_temp.Format(_T("%d"), m_showdata->coodinate.x);
+	cstr_temp.Format(_T("%d"), m_showdata->originalQR.x);
 	GetDlgItem(IDC_STATIC_ID2_X)->SetWindowText(cstr_temp);
 
-	cstr_temp.Format(_T("%d"), m_showdata->coodinate.y);
+	cstr_temp.Format(_T("%d"), m_showdata->originalQR.y);
 	GetDlgItem(IDC_STATIC_ID2_Y)->SetWindowText(cstr_temp);
 
 	cstr_temp.Format(_T("%d"), m_showdata->angle.Pitch);
@@ -253,4 +276,37 @@ void CCoordinatePage::OnBnClickedCheckCoorId2()
 		m_pChartLineSerie[2]->SetVisible(true);
 		m_pChartPointsSerie_Head[2]->SetVisible(true);
 	}
+}
+
+
+void CCoordinatePage::OnBnClickedCheckLongtraj()
+{
+	// TODO:  在此添加控件通知处理程序代码
+
+	int state = m_check_longtraj.GetCheck();
+
+	if (state == 0)
+	{
+		m_pChartLineSerie[0]->ClearSerie();
+		m_pChartLineSerie[1]->ClearSerie();
+		m_pChartLineSerie[2]->ClearSerie();
+		for (size_t i = 0; i < DATA_SIZE; i++)
+		{
+			m_pChartLineSerie[0]->AddPoint(m_showdata->coodinate.x, m_showdata->coodinate.y);
+			m_pChartLineSerie[1]->AddPoint(m_showdata->hopecoor.x, m_showdata->hopecoor.y);
+			m_pChartLineSerie[2]->AddPoint(m_showdata->originalQR.x, m_showdata->originalQR.y);
+		}
+	}
+	
+}
+
+
+void CCoordinatePage::OnBnClickedButtonSetaxisscope()
+{
+	// TODO:  在此添加控件通知处理程序代码
+
+	UpdateData(TRUE);
+
+	m_pChartStandarAxisX->SetMinMax(m_axis_xmin, m_axis_xmax);
+	m_pChartStandarAxisY->SetMinMax(m_axis_ymin, m_axis_ymax);
 }

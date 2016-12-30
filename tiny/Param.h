@@ -149,6 +149,8 @@ public:
 	Sensor sensor;
 	Angle angle;
 	Coordinate coodinate;
+	Coordinate hopecoor;
+	Coordinate originalQR;
 };
 
 

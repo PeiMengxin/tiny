@@ -8,8 +8,6 @@
 
 // CCoodinatePage ¶Ô»°¿ò
 
-#define COODINATE_WIDTH 500
-#define COODINATE_HEIGHT 350
 #define DATA_SIZE 15
 #define ID_NUM 3
 
@@ -51,4 +49,11 @@ public:
 	afx_msg void OnBnClickedCheckCoorId0();
 	afx_msg void OnBnClickedCheckCoorId1();
 	afx_msg void OnBnClickedCheckCoorId2();
+	CButton m_check_longtraj;
+	afx_msg void OnBnClickedCheckLongtraj();
+	afx_msg void OnBnClickedButtonSetaxisscope();
+	double m_axis_xmin;
+	double m_axis_xmax;
+	double m_axis_ymin;
+	double m_axis_ymax;
 };

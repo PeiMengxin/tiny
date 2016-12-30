@@ -1217,6 +1217,13 @@ void CtinyDlg::FrameAnl(unsigned char* RX_Data, int len)
 				m_showdata->coodinate.id = BytetoUint(RX_Data, 17);
 				m_showdata->coodinate.x = ((float)BytetoUint(RX_Data, 19)) / 10 - offx*0;
 				m_showdata->coodinate.y = ((float)BytetoUint(RX_Data, 21)) / 10- offy*0;
+				m_showdata->coodinate.z = ((float)BytetoUint(RX_Data, 23)) / 10 - offx * 0;
+				m_showdata->hopecoor.x = ((float)BytetoUint(RX_Data, 25)) / 10 - offy * 0;
+				m_showdata->hopecoor.y = ((float)BytetoUint(RX_Data, 27)) / 10 - offy * 0;
+				m_showdata->hopecoor.z = ((float)BytetoUint(RX_Data, 29)) / 10 - offy * 0;
+				m_showdata->originalQR.x = ((float)BytetoUint(RX_Data, 31)) / 10 - offy * 0;
+				m_showdata->originalQR.y = ((float)BytetoUint(RX_Data, 33)) / 10 - offy * 0;
+				m_showdata->originalQR.z = ((float)BytetoUint(RX_Data, 35)) / 10 - offy * 0;
 				if (!init)
 				{
 					init = 1;
