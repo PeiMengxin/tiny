@@ -151,6 +151,8 @@ public:
 	Coordinate coodinate;
 	Coordinate hopecoor;
 	Coordinate originalQR;
+
+	bool obstacle;
 };
 
 

@@ -27,6 +27,11 @@ protected:
 
 	DECLARE_MESSAGE_MAP()
 public:
+	HICON m_hIcon_indicator_black;
+	HICON m_hIcon_indicator_green;
+	HICON m_hIcon_indicator_yellow;
+	HICON m_hIcon_indicator_red;
+
 	CChartCtrl m_chartctrl_coodinate;
 	CChartStandardAxis *m_pChartStandarAxisX;
 	CChartStandardAxis *m_pChartStandarAxisY;
@@ -56,4 +61,6 @@ public:
 	double m_axis_xmax;
 	double m_axis_ymin;
 	double m_axis_ymax;
+	CStatic m_icon_obstacle;
+	bool initIcon();
 };

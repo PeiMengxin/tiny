@@ -36,6 +36,7 @@ void CCoordinatePage::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_AXIS_XMAX, m_axis_xmax);
 	DDX_Text(pDX, IDC_EDIT_AXIS_YMIN, m_axis_ymin);
 	DDX_Text(pDX, IDC_EDIT_AXIS_YMAX, m_axis_ymax);
+	DDX_Control(pDX, IDC_ICON_OBSTACLE, m_icon_obstacle);
 }
 
 
@@ -68,6 +69,8 @@ BOOL CCoordinatePage::OnInitDialog()
 bool CCoordinatePage::init()
 {
 	m_showdata = DataShow::GetInstance();
+
+	initIcon();
 
 	initLineName();
 	initColorTable(ColorTable);
@@ -220,6 +223,15 @@ void CCoordinatePage::OnTimer(UINT_PTR nIDEvent)
 	cstr_temp.Format(_T("%d"), m_showdata->angle.Yaw);
 	GetDlgItem(IDC_STATIC_ANGLE_YAW)->SetWindowText(cstr_temp);
 
+	if (m_showdata->obstacle)
+	{
+		m_icon_obstacle.SetIcon(m_hIcon_indicator_red);
+	}
+	else
+	{
+		m_icon_obstacle.SetIcon(m_hIcon_indicator_green);
+	}
+
 	CPropertyPage::OnTimer(nIDEvent);
 }
 
@@ -309,4 +321,17 @@ void CCoordinatePage::OnBnClickedButtonSetaxisscope()
 
 	m_pChartStandarAxisX->SetMinMax(m_axis_xmin, m_axis_xmax);
 	m_pChartStandarAxisY->SetMinMax(m_axis_ymin, m_axis_ymax);
+}
+
+
+bool CCoordinatePage::initIcon()
+{
+	m_hIcon_indicator_black = AfxGetApp()->LoadIcon(IDI_ICON_INDICATOR_BLACK);
+	m_hIcon_indicator_green = AfxGetApp()->LoadIcon(IDI_ICON_INDICATOR_GREEN);
+	m_hIcon_indicator_yellow = AfxGetApp()->LoadIcon(IDI_ICON_INDICATOR_YELLOW);
+	m_hIcon_indicator_red = AfxGetApp()->LoadIcon(IDI_ICON_INDICATOR_RED);
+
+	m_icon_obstacle.SetIcon(m_hIcon_indicator_green);
+
+	return true;
 }

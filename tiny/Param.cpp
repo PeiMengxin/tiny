@@ -100,6 +100,7 @@ DataShow::DataShow()
 	state = 0;
 	fusion_data = 0;
 	height = 0;
+	obstacle = false;
 }
 
 DataShow * DataShow::GetInstance()

@@ -1224,6 +1224,7 @@ void CtinyDlg::FrameAnl(unsigned char* RX_Data, int len)
 				m_showdata->originalQR.x = ((float)BytetoUint(RX_Data, 31)) / 10 - offy * 0;
 				m_showdata->originalQR.y = ((float)BytetoUint(RX_Data, 33)) / 10 - offy * 0;
 				m_showdata->originalQR.z = ((float)BytetoUint(RX_Data, 35)) / 10 - offy * 0;
+				m_showdata->obstacle = (bool)(RX_Data[37]);
 				if (!init)
 				{
 					init = 1;
