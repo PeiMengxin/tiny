@@ -223,6 +223,9 @@ void CCoordinatePage::OnTimer(UINT_PTR nIDEvent)
 	cstr_temp.Format(_T("%d"), m_showdata->angle.Yaw);
 	GetDlgItem(IDC_STATIC_ANGLE_YAW)->SetWindowText(cstr_temp);
 
+	cstr_temp.Format(_T("%.2f"), m_showdata->height);
+	GetDlgItem(IDC_STATIC_ANGLE_HEIGHT)->SetWindowText(cstr_temp);
+
 	if (m_showdata->obstacle)
 	{
 		m_icon_obstacle.SetIcon(m_hIcon_indicator_red);
