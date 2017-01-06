@@ -37,6 +37,8 @@ void CCoordinatePage::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_AXIS_YMIN, m_axis_ymin);
 	DDX_Text(pDX, IDC_EDIT_AXIS_YMAX, m_axis_ymax);
 	DDX_Control(pDX, IDC_ICON_OBSTACLE, m_icon_obstacle);
+	DDX_Control(pDX, IDC_CHECK_RADARMODEL, m_check_radarmodel);
+	DDX_Control(pDX, IDC_BUTTON_SETAXISSCOPE, m_button_setaxisscope);
 }
 
 
@@ -47,6 +49,7 @@ BEGIN_MESSAGE_MAP(CCoordinatePage, CPropertyPage)
 	ON_BN_CLICKED(IDC_CHECK_COOR_ID2, &CCoordinatePage::OnBnClickedCheckCoorId2)
 	ON_BN_CLICKED(IDC_CHECK_LONGTRAJ, &CCoordinatePage::OnBnClickedCheckLongtraj)
 	ON_BN_CLICKED(IDC_BUTTON_SETAXISSCOPE, &CCoordinatePage::OnBnClickedButtonSetaxisscope)
+	ON_BN_CLICKED(IDC_CHECK_RADARMODEL, &CCoordinatePage::OnBnClickedCheckRadarmodel)
 END_MESSAGE_MAP()
 
 
@@ -156,27 +159,59 @@ bool CCoordinatePage::initLineName()
 
 void CCoordinatePage::UpdateChartCtrlData()
 {
-	m_chartctrl_coodinate.EnableRefresh(false);
-	
-	if (!m_check_longtraj.GetCheck())
+	int state = m_check_radarmodel.GetCheck();
+
+	if (state == 1)
 	{
-		m_pChartLineSerie[0]->RemovePointsFromBegin(1);
-		m_pChartLineSerie[1]->RemovePointsFromBegin(1);
-		m_pChartLineSerie[2]->RemovePointsFromBegin(1);
+		m_chartctrl_coodinate.EnableRefresh(false);
+		
+		if (!m_check_longtraj.GetCheck())
+		{
+			m_pChartLineSerie[0]->RemovePointsFromBegin(1);
+			m_pChartLineSerie[1]->RemovePointsFromBegin(1);
+			m_pChartLineSerie[2]->RemovePointsFromBegin(1);
+		}
+
+		m_pChartLineSerie[0]->AddPoint(m_showdata->coodinate.x, m_showdata->coodinate.y);
+		m_pChartLineSerie[1]->AddPoint(m_showdata->hopecoor.x, m_showdata->hopecoor.y);
+		m_pChartLineSerie[2]->AddPoint(m_showdata->originalQR.x, m_showdata->originalQR.y);
+
+		m_pChartPointsSerie_Head[0]->ClearSerie();
+		m_pChartPointsSerie_Head[0]->AddPoint(m_showdata->coodinate.x, m_showdata->coodinate.y);
+		m_pChartPointsSerie_Head[1]->ClearSerie();
+		m_pChartPointsSerie_Head[1]->AddPoint(m_showdata->hopecoor.x, m_showdata->hopecoor.y);
+		m_pChartPointsSerie_Head[2]->ClearSerie();
+		m_pChartPointsSerie_Head[2]->AddPoint(m_showdata->originalQR.x, m_showdata->originalQR.y);
+
+		m_pChartStandarAxisX->SetMinMax(m_showdata->coodinate.x - 500, m_showdata->coodinate.x + 500);
+		m_pChartStandarAxisY->SetMinMax(m_showdata->coodinate.y - 500, m_showdata->coodinate.y + 500);
+
+		m_chartctrl_coodinate.EnableRefresh(true);
 	}
-	
-	m_pChartLineSerie[0]->AddPoint(m_showdata->coodinate.x, m_showdata->coodinate.y);
-	m_pChartLineSerie[1]->AddPoint(m_showdata->hopecoor.x, m_showdata->hopecoor.y);
-	m_pChartLineSerie[2]->AddPoint(m_showdata->originalQR.x, m_showdata->originalQR.y);
-	
-	m_pChartPointsSerie_Head[0]->ClearSerie();
-	m_pChartPointsSerie_Head[0]->AddPoint(m_showdata->coodinate.x, m_showdata->coodinate.y);
-	m_pChartPointsSerie_Head[1]->ClearSerie();
-	m_pChartPointsSerie_Head[1]->AddPoint(m_showdata->hopecoor.x, m_showdata->hopecoor.y);
-	m_pChartPointsSerie_Head[2]->ClearSerie();
-	m_pChartPointsSerie_Head[2]->AddPoint(m_showdata->originalQR.x, m_showdata->originalQR.y);
-	
-	m_chartctrl_coodinate.EnableRefresh(true);
+	else
+	{
+		m_chartctrl_coodinate.EnableRefresh(false);
+
+		if (!m_check_longtraj.GetCheck())
+		{
+			m_pChartLineSerie[0]->RemovePointsFromBegin(1);
+			m_pChartLineSerie[1]->RemovePointsFromBegin(1);
+			m_pChartLineSerie[2]->RemovePointsFromBegin(1);
+		}
+
+		m_pChartLineSerie[0]->AddPoint(m_showdata->coodinate.x, m_showdata->coodinate.y);
+		m_pChartLineSerie[1]->AddPoint(m_showdata->hopecoor.x, m_showdata->hopecoor.y);
+		m_pChartLineSerie[2]->AddPoint(m_showdata->originalQR.x, m_showdata->originalQR.y);
+
+		m_pChartPointsSerie_Head[0]->ClearSerie();
+		m_pChartPointsSerie_Head[0]->AddPoint(m_showdata->coodinate.x, m_showdata->coodinate.y);
+		m_pChartPointsSerie_Head[1]->ClearSerie();
+		m_pChartPointsSerie_Head[1]->AddPoint(m_showdata->hopecoor.x, m_showdata->hopecoor.y);
+		m_pChartPointsSerie_Head[2]->ClearSerie();
+		m_pChartPointsSerie_Head[2]->AddPoint(m_showdata->originalQR.x, m_showdata->originalQR.y);
+
+		m_chartctrl_coodinate.EnableRefresh(true);
+	}
 }
 
 void CCoordinatePage::OnTimer(UINT_PTR nIDEvent)
@@ -337,4 +372,27 @@ bool CCoordinatePage::initIcon()
 	m_icon_obstacle.SetIcon(m_hIcon_indicator_green);
 
 	return true;
+}
+
+
+void CCoordinatePage::OnBnClickedCheckRadarmodel()
+{
+	// TODO:  在此添加控件通知处理程序代码
+
+	int state = m_check_radarmodel.GetCheck();
+
+	if (state == 0)
+	{
+		m_pChartStandarAxisX->SetTickIncrement(true, 100);
+		m_pChartStandarAxisY->SetTickIncrement(true, 100);
+		m_button_setaxisscope.EnableWindow(true);
+		OnBnClickedButtonSetaxisscope();
+	}
+	else
+	{
+		m_pChartStandarAxisX->SetTickIncrement(false, 100);
+		m_pChartStandarAxisY->SetTickIncrement(false, 100);
+
+		m_button_setaxisscope.EnableWindow(false);
+	}
 }

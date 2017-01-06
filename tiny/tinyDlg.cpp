@@ -1435,12 +1435,15 @@ void CtinyDlg::OnOK()
 	isTerminal = true;
 	serial_thread.join();
 
-	if (m_serial_instance->serial_port.isOpen())
+	if (m_serial_instance)
 	{
-		m_serial_instance->serial_port.close();
-		Sleep(30);
+		if (m_serial_instance->serial_port.isOpen())
+		{
+			m_serial_instance->serial_port.close();
+			Sleep(30);
+		}
 	}
-
+	
 	CPropertyPage::OnOK();
 }
 

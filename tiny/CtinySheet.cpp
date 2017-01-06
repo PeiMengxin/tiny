@@ -25,7 +25,7 @@ CtinySheet::CtinySheet(LPCTSTR pszCaption, CWnd* pParentWnd, UINT iSelectPage)
 
 CtinySheet::~CtinySheet()
 {
-	m_page_tiny.OnOK();
+	
 }
 
 

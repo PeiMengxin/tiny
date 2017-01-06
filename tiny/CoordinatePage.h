@@ -63,4 +63,7 @@ public:
 	double m_axis_ymax;
 	CStatic m_icon_obstacle;
 	bool initIcon();
+	CButton m_check_radarmodel;
+	afx_msg void OnBnClickedCheckRadarmodel();
+	CButton m_button_setaxisscope;
 };
