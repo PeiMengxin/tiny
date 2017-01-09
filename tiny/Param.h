@@ -152,7 +152,7 @@ public:
 	Coordinate hopecoor;
 	Coordinate originalQR;
 
-	bool obstacle;
+	int obstacle;
 };
 
 

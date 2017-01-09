@@ -687,7 +687,10 @@ void CtinyDlg::UpdateDataShow()
 	cstr_temp.Format(_T("%.2f"), m_showdata->fusion_data);
 	GetDlgItem(IDC_DATASHOW_RADAEFUSIONDATA)->SetWindowText(cstr_temp);
 
-	cstr_temp.Format(_T("%.2f"), m_showdata->height);
+	/*cstr_temp.Format(_T("%.2f"), m_showdata->height);
+	GetDlgItem(IDC_DATASHOW_EXPECTEDHEIGHT)->SetWindowText(cstr_temp);*/
+
+	cstr_temp.Format(_T("%d"), m_showdata->originalQR.z);
 	GetDlgItem(IDC_DATASHOW_EXPECTEDHEIGHT)->SetWindowText(cstr_temp);
 
 	cstr_temp.Format(_T("%d"), m_showdata->sensor.acc_x);
@@ -925,7 +928,7 @@ void CtinyDlg::UpdateChartCtrlData()
 	m_pChartLineSerie[DataName::HM_Y]->AddPoint(m_count, m_showdata->sensor.hm_y);
 	m_pChartLineSerie[DataName::HM_Z]->AddPoint(m_count, m_showdata->sensor.hm_z);
 	m_pChartLineSerie[DataName::FUSIONDATA]->AddPoint(m_count, m_showdata->fusion_data);
-	m_pChartLineSerie[DataName::HEIGHT]->AddPoint(m_count, m_showdata->height);
+	m_pChartLineSerie[DataName::HEIGHT]->AddPoint(m_count, m_showdata->originalQR.z);
 	m_pChartLineSerie[DataName::ANGLE_PITCH]->AddPoint(m_count, m_showdata->angle.Pitch);
 	m_pChartLineSerie[DataName::ANGLE_ROLL]->AddPoint(m_count, m_showdata->angle.Roll);
 	m_pChartLineSerie[DataName::ANGLE_YAW]->AddPoint(m_count, m_showdata->angle.Yaw);
@@ -1217,14 +1220,14 @@ void CtinyDlg::FrameAnl(unsigned char* RX_Data, int len)
 				m_showdata->coodinate.id = BytetoUint(RX_Data, 17);
 				m_showdata->coodinate.x = ((float)BytetoUint(RX_Data, 19)) / 10 - offx*0;
 				m_showdata->coodinate.y = ((float)BytetoUint(RX_Data, 21)) / 10- offy*0;
-				m_showdata->coodinate.z = ((float)BytetoUint(RX_Data, 23)) / 10 - offx * 0;
-				m_showdata->hopecoor.x = ((float)BytetoUint(RX_Data, 25)) / 10 - offy * 0;
-				m_showdata->hopecoor.y = ((float)BytetoUint(RX_Data, 27)) / 10 - offy * 0;
-				m_showdata->hopecoor.z = ((float)BytetoUint(RX_Data, 29)) / 10 - offy * 0;
-				m_showdata->originalQR.x = ((float)BytetoUint(RX_Data, 31)) / 10 - offy * 0;
-				m_showdata->originalQR.y = ((float)BytetoUint(RX_Data, 33)) / 10 - offy * 0;
-				m_showdata->originalQR.z = ((float)BytetoUint(RX_Data, 35)) / 10 - offy * 0;
-				m_showdata->obstacle = (bool)(RX_Data[37]);
+				m_showdata->coodinate.z = ((float)BytetoUint(RX_Data, 23)) / 10;
+				m_showdata->hopecoor.x = ((float)BytetoUint(RX_Data, 25)) / 10;
+				m_showdata->hopecoor.y = ((float)BytetoUint(RX_Data, 27)) / 10;
+				m_showdata->hopecoor.z = ((float)BytetoUint(RX_Data, 29)) / 10;
+				m_showdata->originalQR.x = ((float)BytetoUint(RX_Data, 31)) / 10;
+				m_showdata->originalQR.y = ((float)BytetoUint(RX_Data, 33)) / 10;
+				m_showdata->originalQR.z = ((float)BytetoUint(RX_Data, 35)) / 10;
+				m_showdata->obstacle = (int)(RX_Data[37]);
 				if (!init)
 				{
 					init = 1;

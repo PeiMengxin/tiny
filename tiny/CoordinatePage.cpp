@@ -62,6 +62,10 @@ BOOL CCoordinatePage::OnInitDialog()
 
 	// TODO:  在此添加额外的初始化
 
+	/*CButton *pokbutton = (CButton *)GetDlgItem(IDOK);
+
+	pokbutton->ModifyStyle(BS_DEFPUSHBUTTON, 0);*/
+
 	init();
 
 	return TRUE;  // return TRUE unless you set the focus to a control
@@ -183,8 +187,11 @@ void CCoordinatePage::UpdateChartCtrlData()
 		m_pChartPointsSerie_Head[2]->ClearSerie();
 		m_pChartPointsSerie_Head[2]->AddPoint(m_showdata->originalQR.x, m_showdata->originalQR.y);
 
-		m_pChartStandarAxisX->SetMinMax(m_showdata->coodinate.x - 500, m_showdata->coodinate.x + 500);
-		m_pChartStandarAxisY->SetMinMax(m_showdata->coodinate.y - 500, m_showdata->coodinate.y + 500);
+		/*m_pChartStandarAxisX->SetMinMax(m_showdata->coodinate.x - 500, m_showdata->coodinate.x + 500);
+		m_pChartStandarAxisY->SetMinMax(m_showdata->coodinate.y - 500, m_showdata->coodinate.y + 500);*/
+
+		m_pChartStandarAxisX->SetMinMax(m_showdata->coodinate.x + m_axis_xmin, m_showdata->coodinate.x + m_axis_xmax);
+		m_pChartStandarAxisY->SetMinMax(m_showdata->coodinate.y + m_axis_ymin, m_showdata->coodinate.y + m_axis_ymax);
 
 		m_chartctrl_coodinate.EnableRefresh(true);
 	}
@@ -258,7 +265,7 @@ void CCoordinatePage::OnTimer(UINT_PTR nIDEvent)
 	cstr_temp.Format(_T("%d"), m_showdata->angle.Yaw);
 	GetDlgItem(IDC_STATIC_ANGLE_YAW)->SetWindowText(cstr_temp);
 
-	cstr_temp.Format(_T("%.2f"), m_showdata->height);
+	cstr_temp.Format(_T("%d"), m_showdata->originalQR.z);
 	GetDlgItem(IDC_STATIC_ANGLE_HEIGHT)->SetWindowText(cstr_temp);
 
 	if (m_showdata->obstacle)
@@ -268,6 +275,32 @@ void CCoordinatePage::OnTimer(UINT_PTR nIDEvent)
 	else
 	{
 		m_icon_obstacle.SetIcon(m_hIcon_indicator_green);
+	}
+
+	switch (m_showdata->obstacle)
+	{
+		case 0:
+		{
+			m_icon_obstacle.SetIcon(m_hIcon_indicator_red);
+			break;
+		}
+		case 1:
+		{
+			m_icon_obstacle.SetIcon(m_hIcon_indicator_green);
+			break;
+		}
+		case 2:
+		{
+			m_icon_obstacle.SetIcon(m_hIcon_indicator_yellow);
+			break;
+		}
+		case 3:
+		{
+			m_icon_obstacle.SetIcon(m_hIcon_indicator_black);
+			break;
+		}
+		default:
+			break;
 	}
 
 	CPropertyPage::OnTimer(nIDEvent);
@@ -383,16 +416,16 @@ void CCoordinatePage::OnBnClickedCheckRadarmodel()
 
 	if (state == 0)
 	{
-		m_pChartStandarAxisX->SetTickIncrement(true, 100);
-		m_pChartStandarAxisY->SetTickIncrement(true, 100);
-		m_button_setaxisscope.EnableWindow(true);
+		/*m_pChartStandarAxisX->SetTickIncrement(true, 100);
+		m_pChartStandarAxisY->SetTickIncrement(true, 100);*/
+		//m_button_setaxisscope.EnableWindow(true);
 		OnBnClickedButtonSetaxisscope();
 	}
 	else
 	{
-		m_pChartStandarAxisX->SetTickIncrement(false, 100);
-		m_pChartStandarAxisY->SetTickIncrement(false, 100);
+		/*m_pChartStandarAxisX->SetTickIncrement(false, 100);
+		m_pChartStandarAxisY->SetTickIncrement(false, 100);*/
 
-		m_button_setaxisscope.EnableWindow(false);
+		//m_button_setaxisscope.EnableWindow(false);
 	}
 }
